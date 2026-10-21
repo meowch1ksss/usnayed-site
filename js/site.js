@@ -316,7 +316,7 @@
       if (!name || !text) return;
 
       try {
-        const response = await fetch('https://usnayed-api.aleksejmacu1n1.workers.dev/api/reviews', {
+        const response = await fetch('https://usnayed-api.aleksejmaculin1.workers.dev/api/reviews', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, text })
@@ -335,7 +335,7 @@
   // Загрузка одобренных отзывов при открытии страницы
   async function loadApprovedReviews() {
     try {
-      const response = await fetch('https://usnayed-api.aleksejmacu1n1.workers.dev/api/reviews?status=approved');
+      const response = await fetch('https://usnayed-api.aleksejmaculin1.workers.dev/api/reviews');
       const approved = await response.json();
       const hiddenGrid = document.querySelector('#hiddenReviews .reviews-grid');
       
