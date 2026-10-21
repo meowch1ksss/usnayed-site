@@ -97,23 +97,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 3. ЗАКАЗЫ (Оставляем в localStorage, так как это личные заказы пользователя)
-  function renderOrders() {
-    const orders = JSON.parse(localStorage.getItem('nyxora:orders') || '[]');
+  // 3. ЗАКАЗЫ (ТЕПЕРЬ ЗАГРУЖАЮТСЯ ИЗ БАЗЫ ДАННЫХ)
+  async function renderOrders() {
+    tabContent.innerHTML = '<div class="admin-empty">Загрузка заказов с сервера...</div>';
     
-    if (!orders.length) {
-      tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>';
-      return;
-    }
+    try {
+      const response = await fetch('https://usnayed-api.aleksejmaculin1.workers.dev/api/orders');
+      const orders = await response.json();
+      
+      if (!orders.length) {
+        tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>';
+        return;
+      }
 
-    tabContent.innerHTML = orders.map(o => `
-      <div class="admin-card">
-        <h3>Заказ ${o.number || '—'} — ${o.total || 0} ₽</h3>
-        <p>${new Date(o.date).toLocaleString('ru-RU')}</p>
-        <p>Клиент: ${o.name || 'Не указан'} · Город: ${o.city || 'Не указан'}</p>
-        <small>Состав: ${(o.items || []).map(i => `${i.name} × ${i.qty}`).join(', ')}</small>
-      </div>
-    `).join('');
+      tabContent.innerHTML = orders.map(o => `
+        <div class="admin-card" style="margin-bottom: 20px;">
+          <h3>Заказ ${o.number || '—'} — ${o.total || 0} ₽</h3>
+          <p>${new Date(o.date).toLocaleString('ru-RU')}</p>
+          <p>Клиент: <strong>${o.name || 'Не указан'}</strong></p>
+          <p>Телефон: ${o.phone || 'Не указан'} · Город: ${o.city || 'Не указан'}</p>
+          <p>Адрес: ${o.address || 'Не указан'}</p>
+          ${o.comment ? `<p style="color:#ffaa00;">Комментарий: ${o.comment}</p>` : ''}
+          
+          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(220,204,255,0.1);">
+            <small style="color: #a49ab8; display: block; margin-bottom: 5px;">Состав заказа:</small>
+            <ul style="list-style: none; padding: 0; margin: 0; color: #f6f1ff; font-size: 14px;">
+              ${(o.items || []).map(i => `
+                <li style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span>${i.name}</span>
+                  <span style="color:#a879ff;">${i.qty} шт. × ${i.price} ₽</span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Ошибка загрузки заказов. Проверьте интернет.</div>';
+    }
   }
 
   // 4. ОТЗЫВЫ (Теперь через Cloudflare API)
