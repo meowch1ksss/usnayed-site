@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Корзина пуста</td></tr>`;
   } else {
     tbody.innerHTML = cart.map(item => {
-      // ВАЖНО: приводим ID к строке для поиска
       const p = products.find(x => String(x.id) === String(item.id));
       
       if (!p) return `<tr><td colspan="4" style="color:#ff6d78;">Товар ID ${item.id} не найден</td></tr>`;
@@ -182,9 +181,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ============================================================
-  // Отправка
+  // ОТПРАВКА НА СЕРВЕР (ОБНОВЛЕНО)
   // ============================================================
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (cart.length === 0) {
       alert('Корзина пуста!');
@@ -201,10 +200,15 @@ document.addEventListener('DOMContentLoaded', () => {
       ? document.querySelector('input[name="companyName"]').value 
       : document.querySelector('input[name="fullName"]').value;
     const city = document.querySelector('#cityDropdown .selected-text').textContent;
+    const phone = isJur
+      ? document.querySelector('input[name="jurPhone"]').value
+      : document.querySelector('input[name="phone"]').value;
+    const address = document.querySelector('input[name="address"]').value;
+    const comment = document.querySelector('textarea[name="comment"]').value;
 
+    // Формируем объект заказа
     const orderData = {
       number: 'ORD-' + Math.floor(Math.random() * 900000 + 100000),
-      date: new Date().toISOString(),
       items: cart.map(item => {
         const p = products.find(x => String(x.id) === String(item.id));
         return {
@@ -215,24 +219,43 @@ document.addEventListener('DOMContentLoaded', () => {
         };
       }),
       total: totalSum,
-      status: 'Принят',
       name: name || 'Покупатель',
-      city: city || 'Не указан'
+      phone: phone || '',
+      city: city || 'Не указан',
+      address: address || '',
+      comment: comment || ''
     };
 
-    let allOrders = JSON.parse(localStorage.getItem('nyxora:orders') || '[]');
-    allOrders.unshift(orderData);
-    localStorage.setItem('nyxora:orders', JSON.stringify(allOrders));
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = 'Отправка...';
+    submitBtn.disabled = true;
 
-    alert('Заказ успешно оформлен! (Демо-режим)');
-    localStorage.removeItem('nyxora:cart');
-    
-    const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
-    inputs.forEach(input => localStorage.removeItem('checkout_saved_' + input.name));
-    localStorage.removeItem('checkout_saved_city');
-    localStorage.removeItem('checkout_saved_payment');
+    try {
+      // Отправляем на сервер Cloudflare
+      const response = await fetch('https://usnayed-api.aleksejmaculin1.workers.dev/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
 
-    window.location.href = 'index.html';
+      if (!response.ok) throw new Error('Ошибка сервера');
+
+      alert('Заказ успешно оформлен! Спасибо!');
+      localStorage.removeItem('nyxora:cart');
+      
+      // Очищаем сохраненные поля формы
+      const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
+      inputs.forEach(input => localStorage.removeItem('checkout_saved_' + input.name));
+      localStorage.removeItem('checkout_saved_city');
+      localStorage.removeItem('checkout_saved_payment');
+
+      window.location.href = 'index.html';
+    } catch (error) {
+      alert('Не удалось отправить заказ. Проверьте интернет и попробуйте снова.');
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
+    }
   });
 
   // ============================================================
