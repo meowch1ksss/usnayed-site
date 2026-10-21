@@ -1,0 +1,107 @@
+/* ============================================================
+ * Стили для страницы Заказов
+ * ============================================================ */
+
+.orders-list { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 24px; 
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto; 
+}
+
+.order-card { 
+  background: rgba(255, 255, 255, 0.02); 
+  border: 1px solid rgba(220, 204, 255, 0.1); 
+  border-radius: 24px; 
+  padding: 28px; 
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.order-card:hover {
+  border-color: rgba(168, 121, 255, 0.4);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.order-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: flex-start;
+  border-bottom: 1px dashed rgba(220, 204, 255, 0.2); 
+  padding-bottom: 20px; 
+  margin-bottom: 20px; 
+}
+
+.order-number { 
+  font-weight: 800; 
+  color: #f6f1ff; 
+  font-size: 22px; 
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.order-date { 
+  color: #a49ab8; 
+  font-size: 14px; 
+  margin-top: 6px;
+}
+
+.order-status { 
+  color: #b7ff70; 
+  font-size: 12px; 
+  font-weight: 700; 
+  background: rgba(183, 255, 112, 0.1); 
+  padding: 8px 16px; 
+  border-radius: 20px; 
+  border: 1px solid rgba(183, 255, 112, 0.2);
+}
+
+.order-items { 
+  color: #a49ab8; 
+  font-size: 15px; 
+  line-height: 1.6; 
+  margin-bottom: 24px; 
+}
+
+.order-bottom {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  border-top: 1px solid rgba(220, 204, 255, 0.1);
+  padding-top: 20px;
+}
+
+.order-client {
+  font-size: 14px;
+  color: #a49ab8;
+}
+
+.order-total { 
+  text-align: right; 
+  font-size: 26px; 
+  font-weight: 800; 
+  color: #a879ff; 
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Кнопка очистки */
+#clearOrdersBtn {
+  background: rgba(255, 109, 120, 0.08);
+  border: 1px solid rgba(255, 109, 120, 0.3);
+  color: #ff6d78;
+  padding: 16px 32px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.2s;
+  margin-top: 40px;
+}
+
+#clearOrdersBtn:hover {
+  background: rgba(255, 109, 120, 0.2);
+  transform: translateY(-2px);
+}

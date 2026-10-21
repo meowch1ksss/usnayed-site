@@ -1,0 +1,317 @@
+/* ============================================================
+ * Стили для страницы Профиля
+ * ============================================================ */
+.profile-container {
+  max-width: 400px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 24px;
+  padding: 30px;
+}
+
+.auth-box h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-group label {
+  font-size: 12px;
+  color: #a49ab8;
+  font-weight: 600;
+}
+
+.input-group input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px;
+  color: #f6f1ff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+  border-color: #a879ff;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #a49ab8;
+}
+
+.auth-switch a {
+  color: #a879ff;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.avatar-large {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 15px;
+  background: linear-gradient(135deg, #a879ff, #7c3aed);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+}
+
+/* Соцсети */
+.social-login-separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 25px 0 15px;
+  color: #7d718e;
+  font-size: 12px;
+}
+.social-login-separator::before,
+.social-login-separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(220, 204, 255, 0.1);
+}
+.social-login-separator span {
+  padding: 0 10px;
+}
+
+.social-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 10px;
+  color: #f6f1ff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.social-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.social-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Форма в 2 колонки */
+.form-row {
+  display: flex;
+  gap: 10px;
+}
+.form-row .input-group {
+  flex: 1;
+}
+
+/* Капча */
+.captcha-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.captcha-wrapper canvas {
+  border: 1px solid rgba(220, 204, 255, 0.2);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+
+.captcha-wrapper input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px;
+  color: #f6f1ff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.captcha-wrapper input:focus {
+  border-color: #a879ff;
+}
+
+/* ============================================================
+ * Кастомные уведомления (Тосты)
+ * ============================================================ */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: rgba(30, 22, 45, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(220, 204, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  color: #f6f1ff;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Manrope', sans-serif;
+  min-width: 250px;
+  max-width: 350px;
+  pointer-events: auto;
+  animation: toastSlideIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.toast.hiding {
+  animation: toastSlideOut 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.toast-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.toast.success {
+  border-color: rgba(183, 255, 112, 0.3);
+}
+.toast.success .toast-icon {
+  background: rgba(183, 255, 112, 0.15);
+  color: #b7ff70;
+}
+
+.toast.error {
+  border-color: rgba(255, 109, 120, 0.3);
+}
+.toast.error .toast-icon {
+  background: rgba(255, 109, 120, 0.15);
+  color: #ff6d78;
+}
+
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateX(50px) scale(0.9); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes toastSlideOut {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to { opacity: 0; transform: translateX(50px) scale(0.9); }
+}
+
+/* Стили для формы редактирования */
+#editProfileForm {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#editProfileForm input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px;
+  color: #f6f1ff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#editProfileForm input:focus {
+  border-color: #a879ff;
+}
+
+/* ============================================================
+ * Быстрые ссылки в профиле
+ * ============================================================ */
+.profile-quick-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.profile-link-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 16px;
+  color: #a49ab8;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.profile-link-card:hover {
+  background: rgba(168, 121, 255, 0.1);
+  border-color: rgba(168, 121, 255, 0.4);
+  color: #f6f1ff;
+  transform: translateY(-3px);
+}
+
+.profile-link-card svg {
+  width: 24px;
+  height: 24px;
+  color: #a879ff;
+  transition: color 0.2s;
+}
+
+.profile-link-card span {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}

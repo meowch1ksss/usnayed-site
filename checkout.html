@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100b1c">
+  <title>Оформление заказа — У нас обед</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/sections.css">
+  <link rel="stylesheet" href="css/checkout.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="js/site.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <script src="js/data.js" defer></script>
+  <script src="js/checkout.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="У нас обед — главная">
+      <svg viewBox="0 0 49 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M48.4734 25.3728C48.4734 12.6485 38.9302 3.55976 26.8118 2.49941C26.8118 -0.833136 21.813 -0.833136 21.813 2.49941C9.54319 3.55976 0 12.497 0 25.2213C0 29.4627 48.4734 29.4627 48.4734 25.3728Z" fill="#FE0000"/>
+          <path d="M22.7219 5.98346C18.4805 6.58938 14.6935 8.71009 12.1184 11.7397C9.54321 14.7693 8.33137 18.8592 8.63433 22.6462C8.63433 24.6154 5.30179 24.6154 5.30179 22.6462C5.60475 18.1018 7.57398 13.5574 10.9065 10.5278C14.2391 7.49825 18.4805 5.98346 22.7219 5.98346Z" fill="white"/>
+          <path d="M45.4438 31.5834C45.4438 40.2177 35.2947 50.3668 24.2367 50.3668C13.1787 50.3668 3.02959 40.2177 3.02959 31.5834C3.02959 28.7053 0 28.7053 0 31.5834C0 48.2461 20.9041 64 24.2367 64C27.5692 64 48.4734 48.0947 48.4734 31.5834C48.4734 28.8568 45.4438 28.8568 45.4438 31.5834Z" fill="#FFAA00"/>
+          <path d="M31.0533 37.0367C31.0533 27.9479 17.5716 27.9479 17.5716 37.0367C17.4201 49.155 31.0533 49.155 31.0533 37.0367Z" fill="#FFAA00"/>
+      </svg>
+      <span>У нас обед<span class="brand-dot">.</span><small>Столовая</small></span>
+    </a>
+    <form class="search search-desktop" id="search-form" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>
+      <input id="search-input" type="search" placeholder="Найти что-то особенное..." autocomplete="off" aria-label="Поиск по меню">
+    </form>
+    <nav class="main-nav" aria-label="Разделы сайта">
+      <a href="index.html#home">Главная</a><a href="index.html#menu">Меню</a><a href="index.html#reviews">Отзывы</a><a href="index.html#faq">FAQ</a><a href="contacts.html">Контакты</a>
+    </nav>
+    <nav class="header-actions" aria-label="Основная навигация">
+        <!-- Избранное -->
+        <a href="favorites.html" class="icon-button nav-fav" aria-label="Избранное" title="Избранное" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>
+            <span class="count-badge" id="favorite-count">0</span>
+        </a>
+        
+        <!-- Заказы -->
+        <a href="orders.html" class="icon-button" aria-label="Заказы" title="Заказы" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
+        </a>
+        
+        <!-- Корзина -->
+        <a href="cart.html" class="icon-button cart-trigger" aria-label="Корзина" title="Корзина" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+            <span class="count-badge" id="cart-count">0</span>
+        </a>
+        
+        <!-- Профиль -->
+        <a href="profile.html" class="profile-trigger" style="text-decoration: none;">
+            <span class="avatar">N</span><span class="profile-label">Профиль</span>
+        </a>
+        </nav>
+  </header>
+
+  <main class="page-section page-shell checkout-page">
+    <div class="checkout-header">
+      <p class="checkout-eyebrow">ЕЩЁ ПАРА ШАГОВ</p>
+      <h1 class="checkout-title">📝 Оформление заказа</h1>
+      <p class="checkout-subtitle">Заполните данные — мы подготовим заказ к выбранному времени.</p>
+    </div>
+
+    <!-- Шаги -->
+    <div class="checkout-steps">
+      <div class="step done"><span>1</span> Корзина</div>
+      <div class="step-line"></div>
+      <div class="step active"><span>2</span> Доставка</div>
+      <div class="step-line"></div>
+      <div class="step"><span>3</span> Готово</div>
+    </div>
+
+    <!-- Переключатель Физ/Юр лицо -->
+    <div class="payer-switch">
+      <div class="payer-slider"></div>
+      <button class="payer-btn active" data-type="phys">Физическое лицо</button>
+      <button class="payer-btn" data-type="jur">Юридическое лицо</button>
+    </div>
+
+    <form id="checkoutForm" class="checkout-form">
+      <div class="form-group">
+        <label>Желаемое время доставки *</label>
+        <input type="text" id="deliveryTimeInput" name="deliveryTime" placeholder="Выберите дату и время" required readonly style="cursor: pointer;">
+      </div>
+
+      <!-- Блок Физлица -->
+      <div id="fieldsPhys">
+        <div class="form-group">
+          <label>Ф.И.О. *</label>
+          <input type="text" name="fullName" placeholder="Иванов Иван Иванович" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>E-Mail *</label>
+            <input type="email" name="email" placeholder="mail@example.com" required>
+          </div>
+          <div class="form-group">
+            <label>Телефон *</label>
+            <input type="tel" name="phone" placeholder="+7 (900) 000-00-00" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Блок Юрлица (скрыт по умолчанию через класс hidden) -->
+      <div id="fieldsJur" class="hidden">
+        <div class="form-group">
+          <label>Название компании *</label>
+          <input type="text" name="companyName" placeholder='ООО "Ромашка"'>
+        </div>
+        
+        <div class="form-group">
+          <label>Юридический адрес</label>
+          <input type="text" name="legalAddress" placeholder="Индекс, город, улица, дом">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>ИНН</label>
+            <input type="text" name="inn">
+          </div>
+          <div class="form-group">
+            <label>КПП</label>
+            <input type="text" name="kpp">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Телефон</label>
+            <input type="tel" name="jurPhone" placeholder="+7 (900) 000-00-00">
+          </div>
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" name="jurEmail" placeholder="mail@example.com">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Факс</label>
+            <input type="tel" name="fax" placeholder="+7 (900) 000-00-00">
+          </div>
+          <div class="form-group">
+            <label>Контактное лицо *</label>
+            <input type="text" name="contactPerson">
+          </div>
+        </div>
+      </div>
+
+      <!-- Адрес и комментарий -->
+      <div class="form-group">
+        <label>Адрес доставки</label>
+        <input type="text" name="address" placeholder="Улица, дом, корпус, офис / квартира">
+      </div>
+      <div class="form-group">
+        <label>Комментарий <span style="color: #a49ab8; font-weight: normal;">(необязательно)</span></label>
+        <textarea name="comment" rows="3" placeholder="Например: позвонить за 10 минут до доставки"></textarea>
+      </div>
+
+      <!-- Город (Кастомный селект) -->
+      <div class="form-group">
+        <label>Город *</label>
+        <div class="custom-dropdown" id="cityDropdown">
+          <div class="custom-dropdown-trigger">
+            <span class="selected-text">Выберите город...</span>
+            <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="custom-dropdown-options">
+            <div class="custom-option" data-value="rostov">Ростов-на-Дону</div>
+            <div class="custom-option" data-value="bataysk">Батайск</div>
+            <div class="custom-option" data-value="aksay">Аксай</div>
+          </div>
+          <input type="hidden" name="city" id="cityInput" required>
+        </div>
+      </div>
+
+      <!-- Блок выбора службы доставки (появляется после выбора города) -->
+      <div class="form-group hidden" id="deliveryServiceGroup">
+        <label>Служба доставки</label>
+        <div class="delivery-methods">
+          
+          <div class="delivery-method active" data-method="courier">
+            <div class="delivery-method-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            </div>
+            <div class="delivery-method-info">
+              <strong>Доставка курьером</strong>
+              <span>Условия доставки читайте здесь или по телефону</span>
+            </div>
+          </div>
+          
+          <div class="delivery-method" data-method="pickup">
+            <div class="delivery-method-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </div>
+            <div class="delivery-method-info">
+              <strong>Самовывоз</strong>
+              <span>Вы можете самостоятельно забрать заказ из нашего магазина.</span>
+            </div>
+          </div>
+
+          <input type="hidden" name="deliveryMethod" id="deliveryMethodInput" value="courier">
+        </div>
+      </div>
+
+      <!-- Таблица товаров -->
+      <div class="order-summary-box">
+        <div class="summary-header">
+          <span>🛒</span>
+          <h3>Товары в заказе</h3>
+        </div>
+        <table class="checkout-table">
+          <thead>
+            <tr>
+              <th>Название</th>
+              <th>Кол-во</th>
+              <th>Цена</th>
+              <th>Сумма</th>
+            </tr>
+          </thead>
+          <tbody id="checkoutTableBody">
+            <!-- Заполняется через JS -->
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">Итого:</td>
+              <td id="checkoutTotalPrice">0 ₽</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Оплата -->
+      <div class="form-group">
+        <label>Платёжная система</label>
+        <div class="custom-dropdown" id="paymentDropdown">
+          <div class="custom-dropdown-trigger">
+            <span class="selected-text">💵 Наличные курьеру</span>
+            <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="custom-dropdown-options">
+            <div class="custom-option selected" data-value="cash">💵 Наличные курьеру</div>
+            <div class="custom-option" data-value="sber">🏦 Сбербанк</div>
+            <div class="custom-option" data-value="bank">🏦 Банковский перевод</div>
+          </div>
+          <input type="hidden" name="payment" id="paymentInput" value="cash">
+        </div>
+        <p class="payment-hint" id="paymentHint">Оплата наличными при получении заказа курьеру.</p>
+      </div>
+
+      <!-- Итоговый вес и сумма -->
+      <div class="total-summary">
+        <div>
+          <span class="label">ОБЩИЙ ВЕС</span>
+          <strong id="totalWeight">0 г</strong>
+        </div>
+        <div>
+          <span class="label">ОБЩАЯ ЦЕНА</span>
+          <strong id="totalPriceBottom">0 ₽</strong>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">✅ Подтвердить заказ</button>
+      
+      <button type="button" id="resetFormBtn" style="width: 100%; background: transparent; border: 1px solid rgba(255, 109, 120, 0.3); color: #ff6d78; padding: 15px; border-radius: 12px; margin-top: 10px; cursor: pointer; font-weight: 700; transition: 0.2s;">
+        🗑️ Очистить форму
+      </button>
+    </form>
+  </main>
+
+  <!-- Модалка подтверждения очистки -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-modal">
+      <div class="confirm-icon">🗑️</div>
+      <h2>Очистить форму?</h2>
+      <p>Все введённые данные будут удалены. Это действие нельзя отменить.</p>
+      <div class="confirm-actions">
+        <button class="confirm-btn confirm-cancel" id="confirmCancel">Отмена</button>
+        <button class="confirm-btn confirm-delete" id="confirmDelete">Да, очистить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="delivery-custom-section">
+      <!-- Верхняя цветная плашка с шагами -->
+      <div class="delivery-steps-banner">
+        <div class="delivery-step-item">
+          <div class="delivery-step-icon"><img src="images/deliver-item.png" alt="Выберите блюда"></div>
+          <div class="delivery-step-text">
+            <p>Выберите блюда</p>
+            <strong>из каталога</strong>
+            <div class="step-dots"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+
+        <div class="delivery-step-item">
+          <div class="delivery-step-icon"><img src="images/deliver-item-1.png" alt="Оформите заказ"></div>
+          <div class="delivery-step-text">
+            <p>Оформите заказ</p>
+            <strong>на сайте или по телефону</strong>
+            <div class="step-dots"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+
+        <div class="delivery-step-item">
+          <div class="delivery-step-icon"><img src="images/deliver-item-2.png" alt="Успейте заказать"></div>
+          <div class="delivery-step-text">
+            <p>Успейте совершить</p>
+            <strong>заказ до 13:30</strong>
+            <div class="step-dots"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Средняя строка с текстом -->
+      <div class="delivery-info-text">
+        <p>Вся информация о меню и доставке содержится на сайте.</p>
+        <p>Принимаем заказы ежедневно до 13:30 для следующего дня или до 8:30 для текущего.</p>
+        <p>Телефоны для заказа:<br>8 (918) 564-72-12<br>8 (863) 311-32-12</p>
+        <p>Доставим ваш заказ при покупке от пяти комплексных обедов.</p>
+        <p>Предварительные заказы принимаются за 3 дня по согласованному меню.</p>
+      </div>
+
+      <!-- Нижний блок с условиями -->
+      <div class="delivery-bottom-banner">
+        <div class="delivery-bottom-left">
+          <h3>Бесплатная доставка<br>по районам при<br>заказе от:</h3>
+          <div class="delivery-pin">
+            <!-- Иконка пина на SVG -->
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+          </div>
+        </div>
+        <div class="delivery-bottom-middle">
+          <p>Телефоны для заказа:<br>8 (918) 564-72-12<br>8 (863) 311-32-12</p>
+        </div>
+        <div class="delivery-bottom-right">
+          <strong>Условия доставки уточнять по номеру телефона.</strong>
+        </div>
+      </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-column footer-brand-column">
+      <a class="brand footer-brand" href="index.html" aria-label="У нас обед — главная">
+        <svg class="footer-logo" viewBox="0 0 49 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M48.4734 25.3728C48.4734 12.6485 38.9302 3.55976 26.8118 2.49941C26.8118 -0.833136 21.813 -0.833136 21.813 2.49941C9.54319 3.55976 0 12.497 0 25.2213C0 29.4627 48.4734 29.4627 48.4734 25.3728Z" fill="#FE0000"/>
+            <path d="M22.7219 5.98346C18.4805 6.58938 14.6935 8.71009 12.1184 11.7397C9.54321 14.7693 8.33137 18.8592 8.63433 22.6462C8.63433 24.6154 5.30179 24.6154 5.30179 22.6462C5.60475 18.1018 7.57398 13.5574 10.9065 10.5278C14.2391 7.49825 18.4805 5.98346 22.7219 5.98346Z" fill="white"/>
+            <path d="M45.4438 31.5834C45.4438 40.2177 35.2947 50.3668 24.2367 50.3668C13.1787 50.3668 3.02959 40.2177 3.02959 31.5834C3.02959 28.7053 0 28.7053 0 31.5834C0 48.2461 20.9041 64 24.2367 64C27.5692 64 48.4734 48.0947 48.4734 31.5834C48.4734 28.8568 45.4438 28.8568 45.4438 31.5834Z" fill="#FFAA00"/>
+            <path d="M31.0533 37.0367C31.0533 27.9479 17.5716 27.9479 17.5716 37.0367C17.4201 49.155 31.0533 49.155 31.0533 37.0367Z" fill="#FFAA00"/>
+        </svg>
+        <span>У нас обед<span class="brand-dot">.</span><small>Столовая</small></span>
+      </a>
+      <p>ООО «У нас обед»<br>Все права защищены, 2026 ©</p>
+      <a class="footer-policy" href="privacy.html">Политика конфиденциальности</a>
+    </div>
+    
+    <nav class="footer-links footer-pages" aria-label="Информация">
+      <a href="index.html#home">Главная</a>
+      <a href="organizations.html">Организациям</a>
+      <a href="delivery.html">Доставка и оплата</a>
+      <a href="about.html">О компании</a>
+      <a href="privacy.html">Политика конфиденциальности</a>
+      <a href="contacts.html">Контакты</a>
+    </nav>
+    
+    <div class="footer-hours">
+      <strong>Часы работы:</strong>
+      <p>Пн–Пт: 8:00 — 15:00</p>
+      <p>Без обеда и выходных</p>
+      <strong>Заказы принимаются до 13:30</strong>
+    </div>
+    
+    <div class="footer-contact">
+      <div class="email-picker">
+        <button class="footer-email email-picker-trigger" type="button" aria-expanded="false" aria-controls="email-provider-list">✉ &nbsp; kolibri831@yandex.ru <span class="email-chevron">▾</span></button>
+        <div class="email-provider-list" id="email-provider-list" hidden>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot gmail"></i><span>Gmail<small>@gmail.com</small></span></a>
+            <a href="https://outlook.live.com/mail/0/deeplink/compose?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot outlook"></i><span>Outlook / Hotmail<small>@outlook.com · @hotmail.com</small></span></a>
+            <a href="https://compose.mail.yahoo.com/?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yahoo"></i><span>Yahoo Mail<small>@yahoo.com</small></span></a>
+            <a href="https://www.icloud.com/mail/" target="_blank" rel="noopener noreferrer"><i class="mail-dot icloud"></i><span>iCloud Mail<small>@icloud.com</small></span></a>
+            <a href="https://mail.proton.me/u/0/inbox" target="_blank" rel="noopener noreferrer"><i class="mail-dot proton"></i><span>Proton Mail<small>@proton.me · @protonmail.com</small></span></a>
+            <a href="https://mail.zoho.com/" target="_blank" rel="noopener noreferrer"><i class="mail-dot zoho"></i><span>Zoho Mail<small>@zoho.com</small></span></a>
+            <a href="https://mail.yandex.ru/compose?mailto=kolibri831@yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yandex"></i><span>Яндекс Почта<small>@yandex.ru</small></span></a>
+            <a href="https://e.mail.ru/compose/" target="_blank" rel="noopener noreferrer"><i class="mail-dot mailru"></i><span>Mail.ru<small>@mail.ru</small></span></a>
+        </div>
+      </div>
+      <a href="tel:+79185647212">☎ &nbsp;8 (918) 564-72-12</a>
+      <a href="tel:+78633113212">☎ &nbsp;8 (863) 311-32-12</a>
+    </div>
+  </footer>
+</body>
+</html>

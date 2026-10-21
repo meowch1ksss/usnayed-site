@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100b1c">
+  <meta name="description" content="У нас обед — домашние обеды, доставка в офисы Ростова.">
+  <title>У нас обед — вкусная столовая</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/sections.css">
+  <script src="js/data.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <script src="js/site.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="У нас обед — главная">
+      <svg viewBox="0 0 49 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M48.4734 25.3728C48.4734 12.6485 38.9302 3.55976 26.8118 2.49941C26.8118 -0.833136 21.813 -0.833136 21.813 2.49941C9.54319 3.55976 0 12.497 0 25.2213C0 29.4627 48.4734 29.4627 48.4734 25.3728Z" fill="#FE0000"/>
+          <path d="M22.7219 5.98346C18.4805 6.58938 14.6935 8.71009 12.1184 11.7397C9.54321 14.7693 8.33137 18.8592 8.63433 22.6462C8.63433 24.6154 5.30179 24.6154 5.30179 22.6462C5.60475 18.1018 7.57398 13.5574 10.9065 10.5278C14.2391 7.49825 18.4805 5.98346 22.7219 5.98346Z" fill="white"/>
+          <path d="M45.4438 31.5834C45.4438 40.2177 35.2947 50.3668 24.2367 50.3668C13.1787 50.3668 3.02959 40.2177 3.02959 31.5834C3.02959 28.7053 0 28.7053 0 31.5834C0 48.2461 20.9041 64 24.2367 64C27.5692 64 48.4734 48.0947 48.4734 31.5834C48.4734 28.8568 45.4438 28.8568 45.4438 31.5834Z" fill="#FFAA00"/>
+          <path d="M31.0533 37.0367C31.0533 27.9479 17.5716 27.9479 17.5716 37.0367C17.4201 49.155 31.0533 49.155 31.0533 37.0367Z" fill="#FFAA00"/>
+      </svg>
+      <span>У нас обед<span class="brand-dot">.</span><small>Столовая</small></span>
+    </a>
+    <form class="search search-desktop" id="search-form" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>
+      <input id="search-input" type="search" placeholder="Найти что-то особенное..." autocomplete="off" aria-label="Поиск по меню">
+    </form>
+    <nav class="main-nav" aria-label="Разделы сайта">
+      <a href="index.html#home">Главная</a><a href="menu.html">Меню</a><a href="index.html#reviews">Отзывы</a><a href="index.html#faq">FAQ</a><a href="contacts.html">Контакты</a>
+    </nav>
+    <nav class="header-actions" aria-label="Основная навигация">
+      <!-- Избранное -->
+      <a href="favorites.html" class="icon-button nav-fav" aria-label="Избранное" title="Избранное" style="text-decoration: none;">
+        <svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>
+        <span class="count-badge" id="favorite-count">0</span>
+      </a>
+      
+      <!-- Заказы -->
+      <a href="orders.html" class="icon-button" aria-label="Заказы" title="Заказы" style="text-decoration: none;">
+        <svg viewBox="0 0 24 24"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
+      </a>
+      
+      <!-- Корзина -->
+      <a href="cart.html" class="icon-button cart-trigger" aria-label="Корзина" title="Корзина" style="text-decoration: none;">
+        <svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span class="count-badge" id="cart-count">0</span>
+      </a>
+      
+      <!-- Профиль -->
+      <a href="profile.html" class="profile-trigger" style="text-decoration: none;">
+        <span class="avatar">N</span><span class="profile-label">Профиль</span>
+      </a>
+    </nav>
+  </header>
+
+  <main id="app-main">
+    <section class="hero page-section" id="home">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse"></span> ТВОЯ НОВАЯ ТОЧКА ПРИТЯЖЕНИЯ</div>
+        <h1>Доставка обедов в<br>офисы <br><span class="gradient-text">Ростова.</span></h1>
+        <p>«Наваристый бульон, томлёная подлива и десерт, от которого теплеет на душе. Всё, как в детстве у бабушки, только без очереди и с комфортом.»</p>
+        <div class="hero-buttons"><a class="button button-primary" id="explore-button" href="#menu">Исследовать меню <span>↗</span></a><a class="button button-quiet" href="delivery.html">Доставка и оплата <span>→</span></a></div>
+        <div class="delivery-partners">
+          <a href="https://eda.yandex.ru" target="_blank" class="partner-btn partner-yandex">
+            <img src="https://fusionpos.ru/wp-content/uploads/2026/03/orig-1.jpg" alt="Яндекс Еда" class="partner-logo">
+          </a>
+          <a href="https://www.delivery-club.ru" target="_blank" class="partner-btn partner-delivery">
+            <img src="https://10.rospotrebnadzor.ru/upload/medialibrary/7cd/delivery.jpg" alt="Delivery Club" class="partner-logo">
+          </a>
+        </div>
+        <div class="hero-proof"><div class="proof-avatars"><span>А</span><span>М</span><span>К</span><span>+</span></div><div><strong>12 000+</strong><small>клиентов</small></div><div class="proof-divider"></div><div><strong>4.6 <span class="star">★</span></strong><small>средняя оценка</small></div><div class="proof-divider"></div><div><strong>более 2700+ <span class="star">★</span></strong><small>отзывов</small></div></div>
+      </div>
+      <div class="hero-art" aria-label="Наши блюда">
+        <div class="orb orb-large"></div><div class="orb orb-small"></div>
+        <div class="hero-tag tag-top"><span class="tag-dot"></span>ВКУСНЫЕ<b>ЗАВТРАКИ</b></div>
+        <div class="hero-product hero-product-back"><img src="images/our-menu-1.jpg" alt="Завтрак в нашей столовой"></div>
+        <div class="hero-product hero-product-front"><img src="images/our-menu-2.jpg" alt="Готовый обед"></div>
+        <div class="floating-price"><small>ДОМАШНЯЯ ЕДА</small><strong>Сытно, быстро и вкусно</strong><span>Выбирайте нас<b>↗</b></span></div>
+        <div class="hero-tag tag-bottom"><span class="tag-dot"></span>ВКУСНЫЕ<b>ОБЕДЫ</b></div>
+      </div>
+    </section>
+
+    <!-- КАТЕГОРИИ -->
+    <section id="menu" class="reveal">
+      <div class="section-header">
+        <h2 class="page-title">Комплексное питание с доставкой <span class="typewriter">✦ выберите категорию ✦</span></h2>
+      </div>
+      <div class="categories-grid" id="categoriesGrid">
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Завтраки')" class="category-card" data-category="Завтраки" style="background-image: url('images/our-menu-1.jpg');">
+            <div class="category-overlay"></div>
+            <h3 class="category-name">ЗАВТРАКИ</h3>
+        </a>
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Обеды в офис')" class="category-card" data-category="Обеды в офис" style="background-image: url('images/our-menu-2.jpg');">
+            <div class="category-overlay"></div>
+            <h3 class="category-name">ОБЕДЫ В ОФИС</h3>
+        </a>
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Комплексные обеды')" class="category-card" data-category="Комплексные обеды" style="background-image: url('images/our-menu-3.jpg');">
+            <div class="category-overlay"></div>
+            <h3 class="category-name">КОМПЛЕКСНЫЕ ОБЕДЫ</h3>
+        </a>
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Банкеты и фуршеты')" class="category-card" data-category="Банкеты и фуршеты" style="background-image: url('images/our-menu-4.jpg');">
+            <div class="category-overlay"></div>
+            <h3 class="category-name">БАНКЕТЫ И ФУРШЕТЫ</h3>
+        </a>
+      </div>
+      <div class="office-delivery-note" id="officeDeliveryNote">Особенно удобна доставка обедов для коллективов, работающих в одном ритме и над одной задачей, которые могут заказывать комплексные обеды с доставкой. Можно выбирать обеды в офис с одинаковыми меню из предлагаемых вариантов, а можно несколько любых, предлагаемых меню, в количестве более 5 комплексных обедов. В таких случаях доставка обедов в офисы позволяет сотрудникам сэкономить время на прием пищи, и ускорить решение поставленных задач.</div>
+    </section>
+
+    <!-- Блок ДОСТАВКА И ОПЛАТА -->
+    <div class="delivery-custom-section">
+      <div class="delivery-steps-banner">
+        <div class="delivery-step-item">
+          <div class="delivery-step-icon"><img src="images/deliver-item.png" alt="Выберите блюда"></div>
+          <div class="delivery-step-text">
+            <p>Выберите блюда</p>
+            <strong>из каталога</strong>
+            <div class="step-dots"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+        <div class="delivery-step-item">
+          <div class="delivery-step-icon"><img src="images/deliver-item-1.png" alt="Оформите заказ"></div>
+          <div class="delivery-step-text">
+            <p>Оформите заказ</p>
+            <strong>на сайте или по телефону</strong>
+            <div class="step-dots"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+        <div class="delivery-step-item">
+          <div class="delivery-step-icon"><img src="images/deliver-item-2.png" alt="Успейте заказать"></div>
+          <div class="delivery-step-text">
+            <p>Успейте совершить</p>
+            <strong>заказ до 13:30</strong>
+            <div class="step-dots"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="delivery-info-text">
+        <p>Вся информация о меню и доставке содержится на сайте.</p>
+        <p>Принимаем заказы ежедневно до 13:30 для следующего дня или до 8:30 для текущего.</p>
+        <p>Телефоны для заказа:<br>8 (918) 564-72-12<br>8 (863) 311-32-12</p>
+        <p>Доставим ваш заказ при покупке от пяти комплексных обедов.</p>
+        <p>Предварительные заказы принимаются за 3 дня по согласованному меню.</p>
+      </div>
+      <div class="delivery-bottom-banner">
+        <div class="delivery-bottom-left">
+          <h3>Бесплатная доставка<br>по районам при<br>заказе от:</h3>
+          <div class="delivery-pin">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+          </div>
+        </div>
+        <div class="delivery-bottom-middle">
+          <p>Телефоны для заказа:<br>8 (918) 564-72-12<br>8 (863) 311-32-12</p>
+        </div>
+        <div class="delivery-bottom-right">
+          <strong>Условия доставки уточнять по номеру телефона.</strong>
+        </div>
+      </div>
+    </div>
+
+    <section class="why-us-section page-section" id="why-us">
+      <div class="why-us-heading"><span class="eyebrow section-pill">✦ НАШИ ПРЕИМУЩЕСТВА ✦</span><h2>Почему выбирают нас?</h2><p class="section-subtitle">✦ просто, удобно, вкусно ✦</p></div>
+      <div class="why-us-grid">
+        <article class="why-us-card"><div class="why-us-icon">♨</div><h3>Свежая готовка</h3><p>Готовим блюда для заказов, чтобы обед приехал свежим и готовым к подаче.</p></article>
+        <article class="why-us-card"><div class="why-us-icon">▤</div><h3>Понятное меню</h3><p>У каждого блюда можно посмотреть описание, стоимость и вес порции.</p></article>
+        <article class="why-us-card"><div class="why-us-icon">🚚</div><h3>Доставка в офис</h3><p>Получайте горячие комплексные обеды прямо на рабочем месте.</p></article>
+        <article class="why-us-card"><div class="why-us-icon">♡</div><h3>Удобный заказ</h3><p>Заказывайте заранее и выбирайте удобный способ оформления заказа.</p></article>
+      </div>
+    </section>
+
+    <section class="reviews-section page-section" id="reviews">
+      <div class="reviews-heading">
+        <span class="eyebrow section-pill">✦ ОТЗЫВЫ ✦</span>
+        <h2>Что говорят гости</h2>
+        <p class="section-subtitle">✦ честные слова ✦</p>
+      </div>
+      
+      <div class="reviews-grid" id="reviewsGrid">
+        <!-- 8 ВИДИМЫХ ОТЗЫВОВ -->
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <blockquote>Все очень вкусно! Оперативно! Поднесли еду прям к вагону, накормили группу из 18 человек. Работают даже в 21 часов, что было очень удобно. Поезд стоял всего 20 минут, сработали оперативно! Обратимся ещё.  С ув. Ваша «Культурная революция» г. Керчь</blockquote>
+          <strong>— Кристина</strong>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <blockquote>Заказывали в компании проведение корпоратива. Результатом более чем довольны. Сотрудники сумели изысканно, красиво и быстро украсить рабочее помещение. Еда была горячая и вкусная, домашняя. Порции большие, никто голодным не остался. Рассматриваем перспективу дальнейшего сотрудничества.</blockquote>
+          <strong>— Виктор Васильевич</strong>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <blockquote>Очень нравятся обеды в офис. В ноябре заказывали еду на фуршет. Это показалось очень удобным. Ненужно бегать по магазинам, что-то искать вкусненького. Всё привезли в лучшем виде. В декабре повторим заказ. Надеемся что компания нас не подведёт.</blockquote>
+          <strong>— Александр</strong>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <blockquote>«Сегодня заказывали комплексные обеды на пять человек. все остались приятно довольны.»</blockquote>
+          <strong>— Сергей</strong>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <blockquote>Хочу сказать огромное спасибо за качественный и вкусный обед который был организован для детей следовавших из Калининграда в Анапу поездом.Питание было доставлено вовремя прямо к вагону.Было все очень вкусно по домашнему!</blockquote>
+          <strong>— Екатерина Калининград</strong>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <blockquote>Благодарю за вкусную и оперативную доставку. Буду ещё пользоваться Вашими услугами.</blockquote>
+          <strong>— Жанна</strong>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <blockquote>Ходим в  столовую на Портовой 543, всегда хороший ассортимент и выбор, всё очень вкусно по домашнему, не высокие цены, чисто и уютно. Теперь весь наш офис в обед идет только сюда. Спасибо</blockquote>
+          <strong>— Юлия</strong>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <blockquote>Второй день заказываю еду очень вкусно буду заказывать еще! Большое спасибо!</blockquote>
+          <strong>— Анжелика</strong>
+        </article>
+
+        <!-- СКРЫТЫЕ ОТЗЫВЫ (появятся при клике) -->
+        <div id="hiddenReviews" style="display: none; grid-column: 1 / -1;">
+          <div class="reviews-grid">
+            
+            <!-- ТУТ ВСТАВЛЯЙ СВОИ ОСТАЛЬНЫЕ ОТЗЫВЫ -->
+            <!-- Пример:
+            <article class="review-card">
+              <div class="review-stars">★★★★★</div>
+              <blockquote>«Текст отзыва...»</blockquote>
+              <strong>— Имя</strong>
+            </article>
+            -->
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- Кнопка "Показать все" -->
+      <div style="text-align: center; margin-top: 40px;" id="showMoreWrapper">
+        <button id="showMoreReviewsBtn" class="button button-quiet" style="border: 1px solid rgba(168, 121, 255, 0.3); color: #a879ff; padding: 12px 24px; border-radius: 12px;">
+          Показать все отзывы ↓
+        </button>
+      </div>
+
+      <!-- Форма для отзыва (появится вместе со скрытыми) -->
+      <div id="addReviewFormWrapper" class="hidden" style="max-width: 600px; margin: 40px auto 0; text-align: left;">
+        <h3 style="text-align: center; margin-bottom: 20px; color: #f6f1ff;">Оставить отзыв</h3>
+        <form id="addReviewForm" class="info-panel" style="display: flex; flex-direction: column; gap: 15px;">
+          <input type="text" id="reviewName" placeholder="Ваше имя" required style="width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(220,204,255,0.1); border-radius: 12px; color: #fff; outline: none;">
+          <textarea id="reviewText" placeholder="Ваш отзыв..." rows="4" required style="width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(220,204,255,0.1); border-radius: 12px; color: #fff; outline: none; resize: vertical;"></textarea>
+          <button type="submit" class="button button-primary" style="width: 100%;">Отправить отзыв</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="gallery-section page-section" id="gallery">
+      <div class="section-center">
+        <span class="eyebrow section-pill">✦ НАША СТОЛОВАЯ ✦</span>
+        <h2>Загляните к нам</h2>
+        <p class="section-subtitle">✦ пять моментов нашей столовой ✦</p>
+      </div>
+      <div class="gallery-grid">
+        <figure style="background-image: url('images/gallery/canteen-1.jpg'); background-size: cover; background-position: center;">
+          <figcaption>Наша столовая · 01</figcaption>
+        </figure>
+        <figure style="background-image: url('images/gallery/canteen-2.jpg'); background-size: cover; background-position: center;">
+          <figcaption>Наша столовая · 02</figcaption>
+        </figure>
+        <figure style="background-image: url('images/gallery/canteen-3.jpg'); background-size: cover; background-position: center;">
+          <figcaption>Наша столовая · 03</figcaption>
+        </figure>
+        <figure style="background-image: url('images/gallery/canteen-4.jpg'); background-size: cover; background-position: center;">
+          <figcaption>Наша столовая · 04</figcaption>
+        </figure>
+        <figure style="background-image: url('images/gallery/canteen-5.jpg'); background-size: cover; background-position: center;">
+          <figcaption>Наша столовая · 05</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="faq-section page-section" id="faq">
+      <div class="section-center"><span class="eyebrow section-pill">✦ FAQ ✦</span><h2>Частые вопросы</h2><p class="section-subtitle">✦ отвечаем коротко и понятно ✦</p></div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">Есть ли доставка?</button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              <p>Да, мы доставляем обеды по <strong>Ростову, Батайску и Аксаю.</strong> Цена доставки уточняется по номеру телефону.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Работаете ли вы в выходные?</button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              <p>Мы работаем с понедельника по пятницу 08:00-15:00. В воскресенье и субботу — выходной.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Можно ли заказать банкет?</button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              <p>Конечно! Мы организуем банкеты и корпоративы на 10–50 человек. Свяжитесь с нами за 3 дня до события.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Как оплатить заказ?</button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              <p>Наличными курьеру, переводом на карту Сбербанк или безналичным расчётом по счёту (для юр. лиц).</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">За сколько дней оформлять заказ?</button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              <p>Срочный заказ — до 8:00 день в день. Обычный — до 13:30 на следующий день. Предварительный — за 3 дня.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Можно ли заказать обеды для большого коллектива?</button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              <p>Да, мы готовим комплексные обеды для офисов и помогаем согласовать объём и время доставки.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Как связаться с вами?</button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              <p>Позвоните по номерам <a href="tel:+79185647212">8 (918) 564-72-12</a> или <a href="tel:+78633113212">8 (863) 311-32-12</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hours-section page-section" id="hours"><div class="section-center"><span class="eyebrow section-pill">✦ ГРАФИК ✦</span><h2>Режим работы</h2><p class="section-subtitle">✦ всегда открыты для вас ✦</p></div><div class="hours-grid"><article><h3>Понедельник — пятница</h3><strong>8:00 — 15:00</strong><p>● работаем</p></article><article><h3>Суббота</h3><strong>Выходной</strong><p>● закрыто</p></article><article><h3>Воскресенье</h3><strong>Выходной</strong><p>● закрыто</p></article><article><h3>Заказы принимаются до</h3><strong>13:30</strong><p>● по городу</p></article></div></section>
+
+    <main class="page-section page-shell">
+      <div class="section-center">
+      <span class="eyebrow section-pill">✦ У НАС ОБЕД ✦</span>
+      <h2>Контакты</h2>
+      <p class="section-subtitle">✦ всегда на связи ✦</p>
+      </div>
+      
+      <div class="contacts-layout">
+      <article class="info-panel">
+          <p><span>⌖ Адрес</span><strong>Производственная ул., 8, Батайск</strong></p>
+          <p><span>☎ Телефон</span><a href="tel:+79185647212">8 (918) 564-72-12</a></p>
+          <p><span>☎ Телефон</span><a href="tel:+78633113212">8 (863) 311-32-12</a></p>
+          <p><span>✉ Email</span><a href="mailto:kolibri831@yandex.ru">kolibri831@yandex.ru</a></p>
+          <p><span>◷ Часы</span><strong>Пн–Пт 8:00 — 15:00</strong></p>
+          <a class="button button-primary" href="index.html" style="margin-top: 20px;">← Вернуться на главную</a>
+      </article>
+      <div class="map-wrapper">
+          <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A55b07f0347ec48026462cd2207c54e3fbaba016532d28fd7766e2f888981ad7c&amp;width=100%25&amp;height=100%25&amp;lang=ru_RU&amp;scroll=true"></script>
+      </div>
+      </div>
+    </main>
+  </main>
+
+  <main id="view-main" class="view-main" hidden></main>
+
+  <footer class="site-footer" id="footer">
+    <div class="footer-column footer-brand-column">
+      <a class="brand footer-brand" href="index.html" aria-label="У нас обед — главная">
+        <svg class="footer-logo" viewBox="0 0 49 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M48.4734 25.3728C48.4734 12.6485 38.9302 3.55976 26.8118 2.49941C26.8118 -0.833136 21.813 -0.833136 21.813 2.49941C9.54319 3.55976 0 12.497 0 25.2213C0 29.4627 48.4734 29.4627 48.4734 25.3728Z" fill="#FE0000"/>
+            <path d="M22.7219 5.98346C18.4805 6.58938 14.6935 8.71009 12.1184 11.7397C9.54321 14.7693 8.33137 18.8592 8.63433 22.6462C8.63433 24.6154 5.30179 24.6154 5.30179 22.6462C5.60475 18.1018 7.57398 13.5574 10.9065 10.5278C14.2391 7.49825 18.4805 5.98346 22.7219 5.98346Z" fill="white"/>
+            <path d="M45.4438 31.5834C45.4438 40.2177 35.2947 50.3668 24.2367 50.3668C13.1787 50.3668 3.02959 40.2177 3.02959 31.5834C3.02959 28.7053 0 28.7053 0 31.5834C0 48.2461 20.9041 64 24.2367 64C27.5692 64 48.4734 48.0947 48.4734 31.5834C48.4734 28.8568 45.4438 28.8568 45.4438 31.5834Z" fill="#FFAA00"/>
+            <path d="M31.0533 37.0367C31.0533 27.9479 17.5716 27.9479 17.5716 37.0367C17.4201 49.155 31.0533 49.155 31.0533 37.0367Z" fill="#FFAA00"/>
+        </svg>
+        <span>У нас обед<span class="brand-dot">.</span><small>Столовая</small></span>
+      </a>
+      <p>ООО «У нас обед»<br>Все права защищены, 2026 ©</p>
+      <a class="footer-policy" href="privacy.html">Политика конфиденциальности</a>
+    </div>
+    <nav class="footer-links footer-pages" aria-label="Информация"><a href="index.html#home">Главная</a><a href="organizations.html">Организациям</a><a href="delivery.html">Доставка и оплата</a><a href="about.html">О компании</a><a href="privacy.html">Политика конфиденциальности</a><a href="contacts.html">Контакты</a></nav>
+    <div class="footer-hours"><strong>Часы работы:</strong><p>Пн–Пт: 8:00 — 15:00</p><p>Без обеда и выходных</p><strong>Заказы принимаются до 13:30</strong></div>
+    <div class="footer-contact"><div class="email-picker">
+      <button class="footer-email email-picker-trigger" type="button" aria-expanded="false" aria-controls="email-provider-list">✉ &nbsp; kolibri831@yandex.ru <span class="email-chevron">▾</span></button>
+      <div class="email-provider-list" id="email-provider-list" hidden>
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot gmail"></i><span>Gmail<small>@gmail.com</small></span></a>
+        <a href="https://outlook.live.com/mail/0/deeplink/compose?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot outlook"></i><span>Outlook / Hotmail<small>@outlook.com · @hotmail.com</small></span></a>
+        <a href="https://compose.mail.yahoo.com/?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yahoo"></i><span>Yahoo Mail<small>@yahoo.com</small></span></a>
+        <a href="https://www.icloud.com/mail/" target="_blank" rel="noopener noreferrer"><i class="mail-dot icloud"></i><span>iCloud Mail<small>@icloud.com</small></span></a>
+        <a href="https://mail.proton.me/u/0/inbox" target="_blank" rel="noopener noreferrer"><i class="mail-dot proton"></i><span>Proton Mail<small>@proton.me · @protonmail.com</small></span></a>
+        <a href="https://mail.zoho.com/" target="_blank" rel="noopener noreferrer"><i class="mail-dot zoho"></i><span>Zoho Mail<small>@zoho.com</small></span></a>
+        <a href="https://mail.yandex.ru/compose?mailto=kolibri831@yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yandex"></i><span>Яндекс Почта<small>@yandex.ru</small></span></a>
+        <a href="https://e.mail.ru/compose/" target="_blank" rel="noopener noreferrer"><i class="mail-dot mailru"></i><span>Mail.ru<small>@mail.ru</small></span></a>
+      </div>
+    </div><a href="tel:+79185647212">☎ &nbsp;8 (918) 564-72-12</a><a href="tel:+78633113212">☎ &nbsp;8 (863) 311-32-12</a></div>
+  </footer>
+
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <dialog class="product-dialog" id="product-dialog"><button class="dialog-close" id="dialog-close" aria-label="Закрыть">×</button><div id="dialog-content"></div></dialog>
+  <dialog class="checkout-dialog" id="checkout-dialog"><button class="dialog-close" id="checkout-close" aria-label="Закрыть">×</button><div id="checkout-content"></div></dialog>
+</body>
+</html>

@@ -1,0 +1,355 @@
+/* ============================================================
+ * БАЗА
+ * ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: #100b1c;
+  color: #f6f1ff;
+  min-height: 100vh;
+}
+
+.hidden { display: none !important; }
+
+/* ============================================================
+ * ЭКРАН ВХОДА / ОТКАЗА
+ * ============================================================ */
+#accessDenied {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 20px;
+}
+
+.admin-login-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.admin-login-box h1 {
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: #ff6d78;
+}
+
+.admin-login-box p {
+  color: #a49ab8;
+  margin-bottom: 24px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s;
+}
+
+.admin-btn-primary {
+  background: #a879ff;
+  color: #100b1c;
+}
+
+.admin-btn-primary:hover {
+  background: #c6a6ff;
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+ * МАКЕТ АДМИНКИ (Исправлено: сайдбар больше не плавает)
+ * ============================================================ */
+.admin-screen {
+  max-width: var(--content);
+  margin: 0 auto;
+  padding: 40px 28px 60px;
+  min-height: 60vh;
+}
+
+#adminPanel {
+  max-width: var(--content);
+  margin: 0 auto;
+  padding: 40px 28px 60px;
+}
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  align-items: start; /* Жестко привязывает сайдбар к верху */
+}
+
+/* Сайдбар */
+.admin-sidebar {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  /* Убрали sticky, теперь он просто стоит на месте */
+  position: static; 
+}
+
+.admin-brand {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 40px;
+  color: #f6f1ff;
+}
+
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.admin-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: #a49ab8;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  transition: 0.2s;
+}
+
+.admin-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f6f1ff;
+}
+
+.admin-nav-btn.active {
+  background: rgba(168, 121, 255, 0.15);
+  border-color: rgba(168, 121, 255, 0.3);
+  color: #a879ff;
+}
+
+.admin-user-info {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgba(220, 204, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-user-info span { font-size: 11px; color: #7d718e; }
+.admin-user-info strong { font-size: 14px; color: #f6f1ff; }
+
+.admin-logout-btn {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(255, 109, 120, 0.1);
+  border: 1px solid rgba(255, 109, 120, 0.3);
+  border-radius: 10px;
+  color: #ff6d78;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.admin-logout-btn:hover {
+  background: rgba(255, 109, 120, 0.2);
+}
+
+/* Основная область */
+.admin-main {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 20px;
+  padding: 30px;
+  min-height: 60vh;
+}
+
+.admin-header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(220, 204, 255, 0.1);
+}
+
+.admin-header h2 {
+  font-size: 28px;
+  color: #f6f1ff;
+}
+
+/* ============================================================
+ * КАРТОЧКИ / КОНТЕНТ
+ * ============================================================ */
+.admin-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.admin-card h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: #f6f1ff;
+}
+
+.admin-card p {
+  margin: 0 0 10px;
+  color: #a49ab8;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.admin-card small {
+  color: #7d718e;
+  font-size: 12px;
+}
+
+.admin-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #a49ab8;
+  font-style: italic;
+  border: 1px dashed rgba(220, 204, 255, 0.15);
+  border-radius: 16px;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.admin-btn-success {
+  background: rgba(183, 255, 112, 0.1);
+  border: 1px solid rgba(183, 255, 112, 0.3);
+  color: #b7ff70;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.admin-btn-success:hover {
+  background: rgba(183, 255, 112, 0.2);
+}
+
+.admin-btn-danger {
+  background: rgba(255, 109, 120, 0.1);
+  border: 1px solid rgba(255, 109, 120, 0.3);
+  color: #ff6d78;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.admin-btn-danger:hover {
+  background: rgba(255, 109, 120, 0.2);
+}
+
+/* ============================================================
+ * ЗАГРУЗКА МЕНЮ
+ * ============================================================ */
+.admin-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 40px 20px;
+  border: 2px dashed rgba(168, 121, 255, 0.4);
+  border-radius: 16px;
+  background: rgba(168, 121, 255, 0.04);
+  cursor: pointer;
+  transition: 0.2s;
+  margin-bottom: 20px;
+}
+
+.admin-dropzone:hover,
+.admin-dropzone.dragover {
+  background: rgba(168, 121, 255, 0.1);
+  border-color: #a879ff;
+}
+
+.admin-dropzone-icon { font-size: 40px; }
+.admin-dropzone-text { color: #f6f1ff; font-size: 15px; font-weight: 700; }
+.admin-dropzone-hint { color: #7d718e; font-size: 12px; }
+
+.admin-textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 12px;
+  color: #f6f1ff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  resize: vertical;
+  outline: none;
+  margin-bottom: 20px;
+}
+
+.admin-textarea:focus {
+  border-color: #a879ff;
+}
+
+.admin-status {
+  margin-top: 20px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  display: none;
+}
+
+.admin-status.show { display: block; }
+.admin-status.success {
+  background: rgba(183, 255, 112, 0.1);
+  color: #b7ff70;
+  border: 1px solid rgba(183, 255, 112, 0.3);
+}
+.admin-status.error {
+  background: rgba(255, 109, 120, 0.1);
+  color: #ff6d78;
+  border: 1px solid rgba(255, 109, 120, 0.3);
+}
+
+/* Адаптив */
+@media (max-width: 900px) {
+  .admin-layout { grid-template-columns: 1fr; }
+  .admin-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-screen, #adminPanel { padding: 20px 18px; }
+  .admin-nav { flex-direction: row; overflow-x: auto; }
+  .admin-brand { margin-bottom: 16px; }
+  .admin-user-info { flex-direction: row; align-items: center; justify-content: space-between; }
+  .admin-logout-btn { margin-top: 0; width: auto; }
+}

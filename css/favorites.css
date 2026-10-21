@@ -1,0 +1,141 @@
+/* ============================================================
+ * Стили для страницы Избранного
+ * ============================================================ */
+
+/* Карточка */
+.favorite-card-remove {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(255, 109, 120, 0.2); border: 1px solid #ff6d78;
+  color: #ff6d78; width: 36px; height: 36px; border-radius: 12px;
+  cursor: pointer; display: grid; place-items: center; z-index: 10;
+  transition: 0.2s; font-size: 16px; font-weight: bold;
+}
+.favorite-card-remove:hover { background: #ff6d78; color: #100b1c; }
+
+/* Сетка карточек (как в меню) */
+#favoritesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  max-width: var(--content);
+  margin: 0 auto;
+}
+
+/* Стили для карточки товара */
+.product-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 19px;
+  overflow: hidden;
+  transition: transform 0.25s, border-color 0.25s;
+}
+.product-card:hover {
+  border-color: rgba(168, 121, 255, 0.45);
+  transform: translateY(-5px);
+}
+
+.product-image-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1.04;
+  background-color: #21182e;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.product-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+/* Стили для счетчика Плюс/Минус */
+.card-action-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 38px;
+}
+
+.qty-counter {
+  display: flex;
+  align-items: center;
+  background: rgba(168, 121, 255, 0.1);
+  border: 1px solid rgba(168, 121, 255, 0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  height: 38px;
+}
+
+.qty-btn {
+  background: transparent;
+  border: none;
+  color: #f6f1ff;
+  width: 34px;
+  height: 100%;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.qty-btn:hover {
+  background: rgba(168, 121, 255, 0.3);
+  color: #a879ff;
+}
+
+.qty-value {
+  min-width: 30px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 800;
+  color: #f6f1ff;
+  pointer-events: none;
+}
+
+/* Кнопка добавления (когда товара нет) */
+.add-cart {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(168, 121, 255, 0.1);
+  border: 1px solid rgba(168, 121, 255, 0.3);
+  border-radius: 10px;
+  color: #d6bdff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-cart:hover {
+  background: #a879ff;
+  color: #1a1027;
+}
+
+.add-cart svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Адаптив */
+@media (max-width: 1024px) {
+  #favoritesGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  #favoritesGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+}
+@media (max-width: 480px) {
+  #favoritesGrid { grid-template-columns: 1fr; }
+}
