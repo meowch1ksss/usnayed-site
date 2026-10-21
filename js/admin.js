@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tabContent.innerHTML = '<div class="admin-empty">Загрузка отзывов с сервера...</div>';
     
     try {
-      const response = await fetch('https://usnayed-api.aleksejmacu1n1.workers.dev/api/reviews?status=pending');
+      const response = await fetch('https://usnayed-api.aleksejmaculin1.workers.dev/api/reviews?status=pending');
       const pending = await response.json();
       
       if (!pending.length) {
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Одобрить отзыв (PUT запрос на сервер)
   window.approveReview = async (id) => {
     try {
-      await fetch(`https://usnayed-api.aleksejmacu1n1.workers.dev/api/reviews/${id}`, {
+      await fetch(`https://usnayed-api.aleksejmaculin1.workers.dev/api/reviews/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'approved' })
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Отклонить отзыв (PUT запрос на сервер)
   window.rejectReview = async (id) => {
     try {
-      await fetch(`https://usnayed-api.aleksejmacu1n1.workers.dev/api/reviews/${id}`, {
+      await fetch(`https://usnayed-api.aleksejmaculin1.workers.dev/api/reviews/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'rejected' })
