@@ -1,19 +1,13 @@
-// js/favorites.js
-// Требует: js/config.js, js/store.js (подключены ДО этого файла).
 document.addEventListener('DOMContentLoaded', () => {
   const grid = document.getElementById('favoritesGrid');
   const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
 
-  // Бейджи — единая точка
   Store.updateBadges();
 
-  // ============================================================
-  // ОТРИСОВКА
-  // ============================================================
   function renderFavorites() {
     if (!grid) return;
-
     const favorites = Store.getFavorites();
+    
     if (favorites.length === 0) {
       grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #a49ab8; padding: 40px 0;">В избранном пока пусто.</p>`;
       return;
@@ -30,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const actionButton = qty > 0
         ? `<div class="qty-counter" data-id="${sid}">
              <button type="button" class="qty-btn minus" data-action="minus">−</button>
-             <span class="qty-value">${qty}</span>
+             <input type="number" class="qty-input" data-action="input" data-id="${sid}" value="${qty}" min="1" max="99">
              <button type="button" class="qty-btn plus" data-action="plus">+</button>
            </div>`
         : `<button class="add-cart" data-action="add" data-id="${sid}" aria-label="В корзину">
@@ -40,22 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
         <article class="product-card" data-card-id="${sid}">
           <div class="product-image-wrap" style="background-image: url('${item.image}'); background-size: cover; background-position: center;"></div>
-
           <button class="favorite-card-remove" data-id="${sid}" aria-label="Удалить">✕</button>
-
           <div class="product-info" style="padding: 20px;">
             <div class="product-category">${item.category}</div>
             <div class="product-title" style="font-size: 15px; margin-bottom: 8px;">${item.name}</div>
             <p style="font-size: 12px; color: var(--muted); margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${item.description || ''}</p>
-
             <div class="product-bottom">
               <div class="price-block">
                 <span class="product-price">${item.price} ₽</span>
                 <span class="old-price" style="margin-left: 8px;">${item.weight || ''}</span>
               </div>
-              <div class="card-action-container">
-                ${actionButton}
-              </div>
+              <div class="card-action-container">${actionButton}</div>
             </div>
           </div>
         </article>
@@ -63,13 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // ============================================================
-  // ОБНОВЛЕНИЕ ОДНОЙ КАРТОЧКИ
-  // ============================================================
   function updateCardUI(id, newQty) {
     const card = grid.querySelector(`[data-card-id="${id}"]`);
     if (!card) return;
-
     const container = card.querySelector('.card-action-container');
     if (!container) return;
 
@@ -77,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
       container.innerHTML = `
         <div class="qty-counter" data-id="${id}">
           <button type="button" class="qty-btn minus" data-action="minus">−</button>
-          <span class="qty-value">${newQty}</span>
+          <input type="number" class="qty-input" data-action="input" data-id="${id}" value="${newQty}" min="1" max="99">
           <button type="button" class="qty-btn plus" data-action="plus">+</button>
         </div>
       `;
@@ -90,26 +75,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ============================================================
-  // КЛИКИ
-  // ============================================================
   grid.addEventListener('click', (e) => {
-    // 1. Удаление из избранного
     const removeBtn = e.target.closest('.favorite-card-remove');
     if (removeBtn) {
       const id = String(removeBtn.dataset.id);
       const product = products.find(p => String(p.id) === id);
+      const img = product ? product.image : null;
       
       Store.toggleFavorite(id);
       renderFavorites();
       
-      if (window.showToast && product) {
-        window.showToast('Удалено из избранного', 'error', product.image);
+      if (window.showToast) {
+        window.showToast('Удалено из избранного', 'error', img);
       }
       return;
     }
 
-    // 2. Корзина
     const btn = e.target.closest('button');
     if (btn && btn.dataset.action) {
       e.preventDefault();
@@ -121,17 +102,37 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!id) return;
       
       const product = products.find(p => String(p.id) === id);
+      const img = product ? product.image : null;
 
       if (btn.dataset.action === 'add' || btn.dataset.action === 'plus') {
         Store.addToCart(id, +1);
-        if (window.showToast && product) {
-          window.showToast('Добавлено в корзину', 'success', product.image);
-        }
+        if (window.showToast) window.showToast('Добавлено в корзину', 'success', img);
       } else if (btn.dataset.action === 'minus') {
-        Store.addToCart(id, -1);
+        const currentQty = Store.getCartQty(id);
+        if (currentQty > 0) {
+          Store.addToCart(id, -1);
+          if (window.showToast) window.showToast('Удалено из корзины', 'error', img);
+        }
       }
 
       updateCardUI(id, Store.getCartQty(id));
+    }
+  });
+
+  grid.addEventListener('change', (e) => {
+    if (e.target.classList.contains('qty-input')) {
+      const id = e.target.dataset.id;
+      let newQty = parseInt(e.target.value, 10);
+      if (isNaN(newQty) || newQty < 1) newQty = 1;
+      if (newQty > 99) newQty = 99;
+
+      const cart = Store.getCart();
+      const item = cart.find(i => i.id === String(id));
+      if (item) {
+        item.qty = newQty;
+        Store.saveCart(cart);
+        updateCardUI(id, newQty);
+      }
     }
   });
 

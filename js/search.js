@@ -70,27 +70,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = btn.dataset.id;
     const action = btn.dataset.action;
     const product = window.LUNCH_DATA.products.find(p => String(p.id) === id);
+    const img = product ? product.image : null;
 
     if (action === 'fav') {
       const isFav = Store.toggleFavorite(id);
-      btn.classList.toggle('active', isFav);
-      if (window.showToast && product) {
-        window.showToast(isFav ? 'Добавлено в избранное' : 'Удалено из избранного', isFav ? 'success' : 'error', product.image);
+      if (window.showToast) {
+        window.showToast(isFav ? 'Добавлено в избранное' : 'Удалено из избранного', isFav ? 'success' : 'error', img);
       }
     } 
     else if (action === 'add' || action === 'plus') {
       Store.addToCart(id, +1);
-      if (window.showToast && product) window.showToast('Добавлено в корзину', 'success', product.image);
-      updateDropdown();
+      if (window.showToast) window.showToast('Добавлено в корзину', 'success', img);
     } 
     else if (action === 'minus') {
       const currentQty = Store.getCartQty(id);
       if (currentQty > 0) {
         Store.addToCart(id, -1);
-        if (window.showToast && product) window.showToast('Удалено из корзины', 'error', product.image);
-        updateDropdown();
+        if (window.showToast) window.showToast('Удалено из корзины', 'error', img);
       }
     }
+    
+    // Обновляем дропдаун, чтобы обновить кнопки
+    updateDropdown();
   });
 
   searchDropdown.addEventListener('change', (e) => {
