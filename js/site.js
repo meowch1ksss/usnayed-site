@@ -101,7 +101,7 @@
    * Init
    * ============================================================ */
   document.addEventListener('DOMContentLoaded', () => {
-    Store.updateBadges(); // ← вместо локального updateGlobalBadges
+    Store.updateBadges();
     initFaq();
     initEmailPicker();
     initPageFade();
@@ -202,19 +202,17 @@
     renderCategoryMenu();
   });
 
-  // Добавление в корзину из демо-модалки (id из demoMenu, не из LUNCH_DATA — только UX-демо)
   categoryModalMenu?.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-add-cart]');
     if (!btn) return;
     e.preventDefault();
-    // demoMenu-ids не пересекаются с LUNCH_DATA — просто подсветим кнопку
     btn.textContent = '✓';
     setTimeout(() => { btn.textContent = '+'; }, 1200);
   });
 
-  // ============================================================
-  // Уведомления в стиле Яндекс Музыки (снизу)
-  // ============================================================ */
+  /* ============================================================
+   * Уведомления в стиле Яндекс Музыки (снизу, с размытием)
+   * ============================================================ */
   function showToast(message, type = 'success', imageUrl = null) {
     let region = document.getElementById('toast-region');
     if (!region) {
@@ -224,7 +222,6 @@
       document.body.appendChild(region);
     }
 
-    // ЖЕСТКО ЗАДАЕМ СТИЛИ ДЛЯ КОНТЕЙНЕРА (чтобы точно было снизу)
     region.style.position = 'fixed';
     region.style.bottom = '20px';
     region.style.left = '50%';
@@ -239,17 +236,19 @@
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
     
-    // ЖЕСТКО ЗАДАЕМ СТИЛИ ДЛЯ САМОГО УВЕДОМЛЕНИЯ
     toast.style.display = 'flex';
     toast.style.alignItems = 'center';
     toast.style.gap = '12px';
     toast.style.padding = '10px 16px';
-    toast.style.background = 'rgba(30, 30, 30, 0.9)';
-    toast.style.backdropFilter = 'blur(16px)';
-    toast.style.webkitBackdropFilter = 'blur(16px)';
-    toast.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+    
+    // УСИЛЕННЫЙ ЭФФЕКТ СТЕКЛА
+    toast.style.background = 'rgba(20, 15, 25, 0.7)'; 
+    toast.style.backdropFilter = 'blur(20px)';
+    toast.style.webkitBackdropFilter = 'blur(20px)';
+    
+    toast.style.border = '1px solid rgba(255, 255, 255, 0.15)';
     toast.style.borderRadius = '12px';
-    toast.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.4)';
+    toast.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.5)';
     toast.style.color = '#ffffff';
     toast.style.fontSize = '14px';
     toast.style.fontWeight = '500';
@@ -257,10 +256,9 @@
     toast.style.maxWidth = '90vw';
     toast.style.pointerEvents = 'auto';
     toast.style.opacity = '0';
-    toast.style.transform = 'translateY(20px)'; // Выезжает СНИЗУ ВВЕРХ
+    toast.style.transform = 'translateY(20px)';
     toast.style.transition = 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
     
-    // Иконка или картинка
     let iconHtml = '';
     if (imageUrl) {
       iconHtml = `<div style="width: 36px; height: 36px; border-radius: 6px; overflow: hidden; flex-shrink: 0; background: #222;"><img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
@@ -279,20 +277,17 @@
     
     region.appendChild(toast);
 
-    // Анимация появления
     setTimeout(() => {
       toast.style.opacity = '1';
       toast.style.transform = 'translateY(0)';
     }, 10);
 
-    // Обработчик закрытия по крестику
     toast.querySelector('.toast-close').addEventListener('click', () => {
       toast.style.opacity = '0';
       toast.style.transform = 'translateY(20px)';
       setTimeout(() => toast.remove(), 300);
     });
 
-    // Автоматическое скрытие через 4 секунды
     setTimeout(() => {
       if (toast.parentNode) {
         toast.style.opacity = '0';
