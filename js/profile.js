@@ -277,6 +277,11 @@ document.addEventListener('DOMContentLoaded', () => {
       currentUser = { ...adminUser, username: 'admin', isAdmin: true };
       localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
 
+      // ============================================================
+      // ВСТАВЬ СВОЙ НОВЫЙ ТОКЕН СЮДА (вместо ТВОЙ_НОВЫЙ_ТОКЕН_СЮДА)
+      // ============================================================
+      sessionStorage.setItem('nyxora:adminToken', '119d332b8282d04c0f1743b8e28396dd0247f20c4abb285b77e13eddef121d32');
+
       showToast('Вход администратора выполнен', 'success');
       updateUI();
 
@@ -306,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
   logoutBtn?.addEventListener('click', () => {
     currentUser = null;
     localStorage.removeItem('nyxora:user');
+    sessionStorage.removeItem('nyxora:adminToken'); // Удаляем токен при выходе
     showToast('Вы вышли из аккаунта', 'success');
     updateUI();
   });
