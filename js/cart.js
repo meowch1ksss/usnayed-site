@@ -34,22 +34,24 @@ document.addEventListener('DOMContentLoaded', () => {
         <article class="cart-item">
           <div class="cart-item-img" style="background-image: url('${product.image}');"></div>
           <div class="cart-item-info">
-            <div class="cart-item-header">
-              <h3>${product.name}</h3>
-              <button class="cart-fav-btn ${isFav ? 'active' : ''}" data-cart-action="favorite" data-id="${id}" title="${isFav ? 'Убрать из избранного' : 'В избранное'}">
-                <svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>
-              </button>
-            </div>
-            <p>${product.weight || ''} · ${product.category}</p>
+            <h3 style="margin: 0 0 6px; font-size: 15px; line-height: 1.3;">${product.name}</h3>
+            <p style="margin: 0; font-size: 13px; color: #a49ab8;">${product.weight || ''} · ${product.category}</p>
           </div>
+          
           <div class="cart-item-controls">
             <div class="qty-control">
               <button type="button" data-cart-action="minus" data-id="${id}">−</button>
               <input type="number" class="qty-input" data-cart-action="input" data-id="${id}" value="${qty}" min="1" max="99">
               <button type="button" data-cart-action="plus" data-id="${id}">+</button>
             </div>
+            
             <div class="cart-item-price">${itemTotal} ₽</div>
-            <button type="button" class="remove-btn" data-cart-action="remove" data-id="${id}">Удалить</button>
+            
+            <button class="cart-fav-btn ${isFav ? 'active' : ''}" data-cart-action="favorite" data-id="${id}" title="${isFav ? 'Убрать из избранного' : 'В избранное'}" style="margin-left: 15px;">
+              <svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>
+            </button>
+            
+            <button type="button" class="remove-btn" data-cart-action="remove" data-id="${id}" style="margin-left: 10px;">Удалить</button>
           </div>
         </article>
       `;
