@@ -227,11 +227,21 @@
     region.style.left = '50%';
     region.style.transform = 'translateX(-50%)';
     region.style.zIndex = '9999';
+    region.style.display = 'flex';
+    region.style.flexDirection = 'column';
+    region.style.alignItems = 'center';
+    region.style.gap = '12px';
+    region.style.pointerEvents = 'none';
+
+    const toast = document.createElement('div');
+    toast.className = `toast yandex-toast ${type}`;
+    
     toast.style.display = 'flex';
     toast.style.alignItems = 'center';
-    toast.style.gap = '10px'; // Чуть уменьшили отступ
-    toast.style.padding = '6px 12px 6px 6px'; // Уменьшили внутренние отступы (сделали компактнее)
+    toast.style.gap = '10px';
+    toast.style.padding = '6px 12px 6px 6px';
     
+    // УСИЛЕННЫЙ ЭФФЕКТ СТЕКЛА
     toast.style.background = 'rgba(20, 15, 25, 0.7)'; 
     toast.style.backdropFilter = 'blur(20px)';
     toast.style.webkitBackdropFilter = 'blur(20px)';
@@ -240,7 +250,7 @@
     toast.style.borderRadius = '12px';
     toast.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.5)';
     toast.style.color = '#ffffff';
-    toast.style.fontSize = '13px'; // Шрифт сделали чуть меньше (было 14px)
+    toast.style.fontSize = '13px';
     toast.style.fontWeight = '500';
     toast.style.fontFamily = 'Manrope, sans-serif';
     toast.style.maxWidth = '90vw';
@@ -251,20 +261,18 @@
     
     let iconHtml = '';
     if (imageUrl) {
-      // Картинку увеличили до 44x44
-      iconHtml = `<div style="width: 44px; height: 44px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: #222;"><img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
+      iconHtml = `<div style="width: 36px; height: 36px; border-radius: 6px; overflow: hidden; flex-shrink: 0; background: #222;"><img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
     } else {
       const bgColor = type === 'success' ? 'rgba(183, 255, 112, 0.2)' : 'rgba(255, 109, 120, 0.2)';
       const colColor = type === 'success' ? '#b7ff70' : '#ff6d78';
       const iconChar = type === 'success' ? '✓' : '!';
-      // Иконку тоже чуть увеличили, чтобы не терялась на фоне
-      iconHtml = `<div style="width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; background: ${bgColor}; color: ${colColor};">${iconChar}</div>`;
+      iconHtml = `<div style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; background: ${bgColor}; color: ${colColor};">${iconChar}</div>`;
     }
 
     toast.innerHTML = `
       ${iconHtml}
-      <div style="line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px;">${message}</div>
-      <button class="toast-close" style="background: transparent; border: none; color: #888; font-size: 14px; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; flex-shrink: 0;">✕</button>
+      <div style="line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${message}</div>
+      <button class="toast-close" style="background: transparent; border: none; color: #888; font-size: 16px; cursor: pointer; padding: 4px; margin-left: 8px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; flex-shrink: 0;">✕</button>
     `;
     
     region.appendChild(toast);
