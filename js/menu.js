@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const actionButton = qty > 0
         ? `<div class="qty-counter" data-id="${sid}">
              <button type="button" class="qty-btn minus" data-action="minus">−</button>
-             <span class="qty-value">${qty}</span>
+             <input type="number" class="qty-input" data-action="input" data-id="${sid}" value="${qty}" min="1" max="99">
              <button type="button" class="qty-btn plus" data-action="plus">+</button>
            </div>`
         : `<button class="add-cart" data-action="add" data-id="${sid}" aria-label="Добавить в корзину">
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
       container.innerHTML = `
         <div class="qty-counter" data-id="${id}">
           <button type="button" class="qty-btn minus" data-action="minus">−</button>
-          <span class="qty-value">${newQty}</span>
+          <input type="number" class="qty-input" data-action="input" data-id="${id}" value="${newQty}" min="1" max="99">
           <button type="button" class="qty-btn plus" data-action="plus">+</button>
         </div>
       `;
@@ -162,6 +162,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const newQty = Store.getCartQty(id);
     updateCardUI(id, newQty);
+  });
+
+  // ============================================================
+  // РУЧНОЙ ВВОД КОЛИЧЕСТВА
+  // ============================================================
+  menuGrid.addEventListener('change', (e) => {
+    if (e.target.classList.contains('qty-input')) {
+      const id = e.target.dataset.id;
+      let newQty = parseInt(e.target.value, 10);
+      
+      if (isNaN(newQty) || newQty < 1) newQty = 1;
+      if (newQty > 99) newQty = 99;
+
+      const cart = Store.getCart();
+      const item = cart.find(i => i.id === String(id));
+      
+      if (item) {
+        item.qty = newQty;
+        Store.saveCart(cart);
+        updateCardUI(id, newQty);
+      }
+    }
   });
 
   // ============================================================

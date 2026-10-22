@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="cart-item-controls">
             <div class="qty-control">
               <button type="button" data-cart-action="minus" data-id="${id}">−</button>
-              <span>${qty}</span>
+              <input type="number" class="qty-input" data-cart-action="input" data-id="${id}" value="${qty}" min="1" max="99">
               <button type="button" data-cart-action="plus" data-id="${id}">+</button>
             </div>
             <div class="cart-item-price">${itemTotal} ₽</div>
@@ -64,21 +64,50 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // ДЕЙСТВИЯ (делегирование вместо inline onclick)
+  // ДЕЙСТВИЯ (делегирование)
   // ============================================================
+  
+  // Клик по кнопкам + / - / Удалить
   cartItemsContainer.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-cart-action]');
+    const btn = e.target.closest('button[data-cart-action]');
     if (!btn) return;
 
     e.preventDefault();
     const id = btn.dataset.id;
     const action = btn.dataset.cartAction;
 
-    if (action === 'plus')   Store.addToCart(id, +1);
-    if (action === 'minus')  Store.addToCart(id, -1);
-    if (action === 'remove') Store.removeFromCart(id);
+    if (action === 'plus') {
+      Store.addToCart(id, +1);
+      renderCart();
+    }
+    if (action === 'minus') {
+      Store.addToCart(id, -1);
+      renderCart();
+    }
+    if (action === 'remove') {
+      Store.removeFromCart(id);
+      renderCart();
+    }
+  });
 
-    renderCart();
+  // Ручной ввод количества
+  cartItemsContainer.addEventListener('change', (e) => {
+    if (e.target.classList.contains('qty-input')) {
+      const id = e.target.dataset.id;
+      let newQty = parseInt(e.target.value, 10);
+      
+      if (isNaN(newQty) || newQty < 1) newQty = 1;
+      if (newQty > 99) newQty = 99;
+
+      const cart = Store.getCart();
+      const item = cart.find(i => i.id === String(id));
+      
+      if (item) {
+        item.qty = newQty;
+        Store.saveCart(cart);
+        renderCart();
+      }
+    }
   });
 
   // ============================================================

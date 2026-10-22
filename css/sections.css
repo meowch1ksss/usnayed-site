@@ -562,3 +562,30 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   font-weight: 800;
   color: #f6f1ff;
 }
+
+/* Стили для ручного ввода количества */
+.qty-input {
+  width: 32px;
+  background: transparent;
+  border: none;
+  color: #f6f1ff;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+  outline: none;
+  font-family: 'Manrope', sans-serif;
+  -moz-appearance: textfield; /* Убираем стрелки в Firefox */
+}
+
+/* Убираем стрелки в Chrome/Safari */
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* При фокусе делаем красивую обводку */
+.qty-input:focus {
+  background: rgba(168, 121, 255, 0.15);
+  border-radius: 4px;
+}
