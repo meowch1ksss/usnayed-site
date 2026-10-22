@@ -212,9 +212,9 @@
     setTimeout(() => { btn.textContent = '+'; }, 1200);
   });
 
-  /* ============================================================
-   * Уведомления в стиле Яндекс Музыки
-   * ============================================================ */
+  // ============================================================
+  // Уведомления в стиле Яндекс Музыки (снизу)
+  // ============================================================ */
   function showToast(message, type = 'success', imageUrl = null) {
     let region = document.getElementById('toast-region');
     if (!region) {
@@ -224,35 +224,79 @@
       document.body.appendChild(region);
     }
 
+    // ЖЕСТКО ЗАДАЕМ СТИЛИ ДЛЯ КОНТЕЙНЕРА (чтобы точно было снизу)
+    region.style.position = 'fixed';
+    region.style.bottom = '20px';
+    region.style.left = '50%';
+    region.style.transform = 'translateX(-50%)';
+    region.style.zIndex = '9999';
+    region.style.display = 'flex';
+    region.style.flexDirection = 'column';
+    region.style.alignItems = 'center';
+    region.style.gap = '12px';
+    region.style.pointerEvents = 'none';
+
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
     
-    // Иконка или картинка (если передан imageUrl)
-    const iconHtml = imageUrl 
-      ? `<div class="toast-img"><img src="${imageUrl}" alt=""></div>`
-      : `<div class="toast-icon">${type === 'success' ? '✓' : '!'}</div>`;
+    // ЖЕСТКО ЗАДАЕМ СТИЛИ ДЛЯ САМОГО УВЕДОМЛЕНИЯ
+    toast.style.display = 'flex';
+    toast.style.alignItems = 'center';
+    toast.style.gap = '12px';
+    toast.style.padding = '10px 16px';
+    toast.style.background = 'rgba(30, 30, 30, 0.9)';
+    toast.style.backdropFilter = 'blur(16px)';
+    toast.style.webkitBackdropFilter = 'blur(16px)';
+    toast.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+    toast.style.borderRadius = '12px';
+    toast.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.4)';
+    toast.style.color = '#ffffff';
+    toast.style.fontSize = '14px';
+    toast.style.fontWeight = '500';
+    toast.style.fontFamily = 'Manrope, sans-serif';
+    toast.style.maxWidth = '90vw';
+    toast.style.pointerEvents = 'auto';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(20px)'; // Выезжает СНИЗУ ВВЕРХ
+    toast.style.transition = 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    
+    // Иконка или картинка
+    let iconHtml = '';
+    if (imageUrl) {
+      iconHtml = `<div style="width: 36px; height: 36px; border-radius: 6px; overflow: hidden; flex-shrink: 0; background: #222;"><img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
+    } else {
+      const bgColor = type === 'success' ? 'rgba(183, 255, 112, 0.2)' : 'rgba(255, 109, 120, 0.2)';
+      const colColor = type === 'success' ? '#b7ff70' : '#ff6d78';
+      const iconChar = type === 'success' ? '✓' : '!';
+      iconHtml = `<div style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; background: ${bgColor}; color: ${colColor};">${iconChar}</div>`;
+    }
 
     toast.innerHTML = `
       ${iconHtml}
-      <div class="toast-message">${message}</div>
-      <button class="toast-close" aria-label="Закрыть">✕</button>
+      <div style="line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${message}</div>
+      <button class="toast-close" style="background: transparent; border: none; color: #888; font-size: 16px; cursor: pointer; padding: 4px; margin-left: 8px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; flex-shrink: 0;">✕</button>
     `;
     
     region.appendChild(toast);
 
-    // Плавное появление
-    setTimeout(() => toast.classList.add('show'), 10);
+    // Анимация появления
+    setTimeout(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+    }, 10);
 
     // Обработчик закрытия по крестику
     toast.querySelector('.toast-close').addEventListener('click', () => {
-      toast.classList.remove('show');
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(20px)';
       setTimeout(() => toast.remove(), 300);
     });
 
     // Автоматическое скрытие через 4 секунды
     setTimeout(() => {
       if (toast.parentNode) {
-        toast.classList.remove('show');
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
         setTimeout(() => toast.remove(), 300);
       }
     }, 4000);
