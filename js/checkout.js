@@ -312,13 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
       minDate: minDate,
       minuteIncrement: 15,
       monthSelectorType: "static",
-      // Запрещаем выходные (0 - воскресенье, 6 - суббота)
-      disable: [
-        function(date) {
-          return (date.getDay() === 0 || date.getDay() === 6);
-        }
-      ],
-      // Ограничиваем время с 08:00 до 15:00
       minTime: "08:00",
       maxTime: "15:00",
       locale: {
