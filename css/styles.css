@@ -1331,44 +1331,6 @@ h2 {
 /* ============================================================
  * Уведомления в стиле Яндекс Музыки
  * ============================================================ */
-.toast-region.yandex-style {
-  position: fixed;
-  top: 80px; /* Отступ сверху, чтобы не перекрывать шапку */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  pointer-events: none;
-}
-
-.yandex-toast {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 10px 16px;
-  background: rgba(30, 30, 30, 0.85); /* Темный фон с прозрачностью */
-  backdrop-filter: blur(16px); /* Эффект размытия стекла */
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  color: #ffffff;
-  font-family: 'Manrope', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  pointer-events: auto;
-  max-width: 90vw;
-  width: max-content;
-  
-  /* Начальное состояние для анимации */
-  opacity: 0;
-  transform: translateY(-20px) scale(0.95);
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
 /* Состояние, когда уведомление показано */
 .yandex-toast.show {
   opacity: 1;
