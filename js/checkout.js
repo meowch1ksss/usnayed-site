@@ -194,12 +194,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // ПРОВЕРКА ОТ 5 ОБЕДОВ
-    if (totalItemsCount < 5) {
+    // ПРОВЕРКА МИНИМАЛЬНОГО ЗАКАЗА (ОТ 1 ТОВАРА)
+    if (totalItemsCount < 1) {
       if (window.showToast) {
-        window.showToast(`Минимальный заказ — 5 обедов. У вас в корзине: ${totalItemsCount}.`, 'error');
+        window.showToast(`Добавьте хотя бы один товар в корзину.`, 'error');
       } else {
-        alert(`Минимальный заказ — 5 обедов. У вас в корзине: ${totalItemsCount}.`);
+        alert(`Добавьте хотя бы один товар в корзину.`);
       }
       return;
     }
