@@ -213,31 +213,49 @@
   });
 
   /* ============================================================
-   * Уведомления (единый showToast)
+   * Уведомления в стиле Яндекс Музыки
    * ============================================================ */
-  function showToast(message, type = 'success') {
+  function showToast(message, type = 'success', imageUrl = null) {
     let region = document.getElementById('toast-region');
     if (!region) {
       region = document.createElement('div');
       region.id = 'toast-region';
-      region.className = 'toast-region';
+      region.className = 'toast-region yandex-style';
       document.body.appendChild(region);
     }
 
-    // В проекте уже есть .toast стили в styles.css
     const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
+    toast.className = `toast yandex-toast ${type}`;
+    
+    // Иконка или картинка (если передан imageUrl)
+    const iconHtml = imageUrl 
+      ? `<div class="toast-img"><img src="${imageUrl}" alt=""></div>`
+      : `<div class="toast-icon">${type === 'success' ? '✓' : '!'}</div>`;
+
     toast.innerHTML = `
-      <span class="toast-icon">${type === 'success' ? '✓' : '!'}</span>
-      <span>${message}</span>
+      ${iconHtml}
+      <div class="toast-message">${message}</div>
+      <button class="toast-close" aria-label="Закрыть">✕</button>
     `;
+    
     region.appendChild(toast);
 
+    // Плавное появление
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    // Обработчик закрытия по крестику
+    toast.querySelector('.toast-close').addEventListener('click', () => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    });
+
+    // Автоматическое скрытие через 4 секунды
     setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(8px)';
-      setTimeout(() => toast.remove(), 220);
-    }, 3000);
+      if (toast.parentNode) {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }
+    }, 4000);
   }
   window.showToast = showToast;
 
