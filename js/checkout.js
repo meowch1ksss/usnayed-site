@@ -15,15 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
   let cart = JSON.parse(localStorage.getItem('nyxora:cart') || '[]');
   const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
 
-  // Парсим вес
+  // Парсим вес (например, "250 г." -> 250)
   function parseWeight(w) {
     const num = parseFloat(String(w).replace(/[^\d.,]/g, '').replace(',', '.'));
     return isNaN(num) ? 0 : num;
   }
 
-  // Рендер таблицы
+  // Рендер таблицы и подсчет итогов
   let totalSum = 0;
   let totalWeightGrams = 0;
+  let totalItemsCount = 0;
 
   if (cart.length === 0) {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Корзина пуста</td></tr>`;
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const sum = p.price * item.qty;
       totalSum += sum;
       totalWeightGrams += parseWeight(p.weight) * item.qty;
+      totalItemsCount += item.qty;
       
       return `
         <tr>
@@ -49,13 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Выводим итоги
+  let formattedWeight = totalWeightGrams >= 1000 
+    ? `${(totalWeightGrams / 1000).toFixed(2)} кг` 
+    : `${totalWeightGrams} г`;
+
   if (totalPriceEl) totalPriceEl.textContent = `${totalSum} ₽`;
   if (totalPriceBottom) totalPriceBottom.textContent = `${totalSum} ₽`;
-  if (totalWeightEl) {
-    totalWeightEl.textContent = totalWeightGrams >= 1000 
-      ? `${(totalWeightGrams / 1000).toFixed(2)} кг` 
-      : `${totalWeightGrams} г`;
-  }
+  if (totalWeightEl) totalWeightEl.textContent = formattedWeight;
 
   // ============================================================
   // КАСТОМНЫЕ СЕЛЕКТЫ
@@ -124,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  const paymentDropdown = initCustomSelect('paymentDropdown', (value) => {
+  initCustomSelect('paymentDropdown', (value) => {
     if (value === 'bank' || value === 'sber') {
       paymentHint.textContent = 'Вы можете оплатить заказ в любом отделении Сбербанка. За услугу по переводу денег с Вас возьмут от 3 до 7% от стоимости заказа. Перечисление денег займет порядка 10 дней.';
     } else {
@@ -181,24 +183,48 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ============================================================
-  // ОТПРАВКА НА СЕРВЕР (ОБНОВЛЕНО)
+  // ОТПРАВКА НА СЕРВЕР
   // ============================================================
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
     if (cart.length === 0) {
-      alert('Корзина пуста!');
+      if (window.showToast) window.showToast('Корзина пуста!', 'error');
+      else alert('Корзина пуста!');
+      return;
+    }
+
+    // ПРОВЕРКА ОТ 5 ОБЕДОВ
+    if (totalItemsCount < 5) {
+      if (window.showToast) {
+        window.showToast(`Минимальный заказ — 5 обедов. У вас в корзине: ${totalItemsCount}.`, 'error');
+      } else {
+        alert(`Минимальный заказ — 5 обедов. У вас в корзине: ${totalItemsCount}.`);
+      }
       return;
     }
     
     if (!document.getElementById('cityInput').value) {
-      alert('Пожалуйста, выберите город!');
+      if (window.showToast) window.showToast('Пожалуйста, выберите город!', 'error');
+      else alert('Пожалуйста, выберите город!');
+      return;
+    }
+
+    const deliveryTime = document.getElementById('deliveryTimeInput').value;
+    if (!deliveryTime) {
+      if (window.showToast) window.showToast('Пожалуйста, выберите время доставки!', 'error');
+      else alert('Пожалуйста, выберите время доставки!');
       return;
     }
 
     const isJur = document.querySelector('.payer-btn.active').dataset.type === 'jur';
+    
     const name = isJur 
       ? document.querySelector('input[name="companyName"]').value 
       : document.querySelector('input[name="fullName"]').value;
+    const email = isJur 
+      ? document.querySelector('input[name="jurEmail"]').value 
+      : document.querySelector('input[name="email"]').value;
     const city = document.querySelector('#cityDropdown .selected-text').textContent;
     const phone = isJur
       ? document.querySelector('input[name="jurPhone"]').value
@@ -206,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const address = document.querySelector('input[name="address"]').value;
     const comment = document.querySelector('textarea[name="comment"]').value;
 
-    // Формируем объект заказа
+    // Формируем объект заказа (добавили email, deliveryTime, weight)
     const orderData = {
       number: 'ORD-' + Math.floor(Math.random() * 900000 + 100000),
       items: cart.map(item => {
@@ -219,7 +245,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
       }),
       total: totalSum,
+      weight: formattedWeight,
+      deliveryTime: deliveryTime,
       name: name || 'Покупатель',
+      email: email || '',
       phone: phone || '',
       city: city || 'Не указан',
       address: address || '',
@@ -232,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.disabled = true;
 
     try {
-      // Отправляем на сервер Cloudflare
       const response = await fetch('https://usnayed-api.aleksejmaculin1.workers.dev/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -241,7 +269,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!response.ok) throw new Error('Ошибка сервера');
 
-      alert('Заказ успешно оформлен! Спасибо!');
+      if (window.showToast) window.showToast('Заказ успешно оформлен! Спасибо!', 'success');
+      else alert('Заказ успешно оформлен! Спасибо!');
+
       localStorage.removeItem('nyxora:cart');
       
       // Очищаем сохраненные поля формы
@@ -250,25 +280,47 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.removeItem('checkout_saved_city');
       localStorage.removeItem('checkout_saved_payment');
 
-      window.location.href = 'index.html';
+      setTimeout(() => { window.location.href = 'index.html'; }, 1500);
     } catch (error) {
-      alert('Не удалось отправить заказ. Проверьте интернет и попробуйте снова.');
+      if (window.showToast) window.showToast('Не удалось отправить заказ. Проверьте интернет.', 'error');
+      else alert('Не удалось отправить заказ. Проверьте интернет.');
       submitBtn.innerHTML = originalText;
       submitBtn.disabled = false;
     }
   });
 
   // ============================================================
-  // Календарь
+  // УМНЫЙ КАЛЕНДАРЬ (Flatpickr)
   // ============================================================
   if (typeof flatpickr !== 'undefined') {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    // Если сейчас больше 13:30, заказы на сегодня уже не принимаются (переносим на завтра)
+    let minDate = "today";
+    if (currentHour > 13 || (currentHour === 13 && currentMinute > 30)) {
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      minDate = tomorrow;
+    }
+
     flatpickr("#deliveryTimeInput", {
       enableTime: true,
       dateFormat: "d.m.Y H:i",
       time_24hr: true,
-      minDate: "today",
+      minDate: minDate,
       minuteIncrement: 15,
       monthSelectorType: "static",
+      // Запрещаем выходные (0 - воскресенье, 6 - суббота)
+      disable: [
+        function(date) {
+          return (date.getDay() === 0 || date.getDay() === 6);
+        }
+      ],
+      // Ограничиваем время с 08:00 до 15:00
+      minTime: "08:00",
+      maxTime: "15:00",
       locale: {
         firstDayOfWeek: 1,
         weekdays: {
