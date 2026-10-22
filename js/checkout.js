@@ -201,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let name = '', email = '', phone = '';
+    let companyData = null;
 
     if (isJur) {
       name = document.querySelector('input[name="companyName"]').value;
@@ -211,6 +212,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.showToast) window.showToast('Пожалуйста, укажите название компании!', 'error');
         return;
       }
+
+      // Собираем полные данные для юрлица
+      companyData = {
+        legalAddress: document.querySelector('input[name="legalAddress"]')?.value || '—',
+        inn: document.querySelector('input[name="inn"]')?.value || '—',
+        kpp: document.querySelector('input[name="kpp"]')?.value || '—',
+        fax: document.querySelector('input[name="fax"]')?.value || '—',
+        contactPerson: document.querySelector('input[name="contactPerson"]')?.value || '—'
+      };
     } else {
       name = document.querySelector('input[name="fullName"]').value;
       email = document.querySelector('input[name="email"]').value;
@@ -248,7 +258,8 @@ document.addEventListener('DOMContentLoaded', () => {
       comment: comment || '',
       deliveryMethod: document.getElementById('deliveryMethodInput').value,
       payerType: isJur ? 'Юр. лицо' : 'Физ. лицо',
-      paymentMethod: document.getElementById('paymentInput').value
+      paymentMethod: document.getElementById('paymentInput').value,
+      companyData: companyData // Передаем реквизиты
     };
 
     const submitBtn = form.querySelector('button[type="submit"]');
