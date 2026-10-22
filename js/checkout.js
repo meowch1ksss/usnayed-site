@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const address = document.querySelector('input[name="address"]').value;
     const comment = document.querySelector('textarea[name="comment"]').value;
 
-    // Формируем объект заказа (добавили email, deliveryTime, weight)
+    // Формируем объект заказа (добавили email, deliveryTime, weight и новые поля)
     const orderData = {
       number: 'ORD-' + Math.floor(Math.random() * 900000 + 100000),
       items: cart.map(item => {
@@ -252,7 +252,12 @@ document.addEventListener('DOMContentLoaded', () => {
       phone: phone || '',
       city: city || 'Не указан',
       address: address || '',
-      comment: comment || ''
+      comment: comment || '',
+      
+      // --- НОВЫЕ ПОЛЯ ---
+      deliveryMethod: document.getElementById('deliveryMethodInput').value, // courier или pickup
+      payerType: isJur ? 'Юр. лицо' : 'Физ. лицо',
+      paymentMethod: document.getElementById('paymentInput').value // cash, sber, bank
     };
 
     const submitBtn = form.querySelector('button[type="submit"]');
