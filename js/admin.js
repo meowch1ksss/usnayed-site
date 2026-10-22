@@ -1,76 +1,73 @@
+// js/admin.js
+// Требует: js/config.js, js/store.js (подключены ДО этого файла).
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Проверка доступа
-  const currentUser = JSON.parse(localStorage.getItem('nyxora:user') || 'null');
-  
+  // ============================================================
+  // 1. ПРОВЕРКА ДОСТУПА (клиентская — для UX; реальная защита на воркере)
+  // ============================================================
+  const currentUser = Store.getUser();
+  const accessDenied = document.getElementById('accessDenied');
+  const adminPanel   = document.getElementById('adminPanel');
+
   if (!currentUser || currentUser.isAdmin !== true) {
-    // Нет доступа
-    document.getElementById('accessDenied').classList.remove('hidden');
-    document.getElementById('adminPanel').classList.add('hidden');
+    accessDenied?.classList.remove('hidden');
+    adminPanel?.classList.add('hidden');
     return;
   }
 
-  // Есть доступ
-  document.getElementById('accessDenied').classList.add('hidden');
-  document.getElementById('adminPanel').classList.remove('hidden');
+  accessDenied?.classList.add('hidden');
+  adminPanel?.classList.remove('hidden');
   document.getElementById('adminUserName').textContent = currentUser.username || 'Администратор';
 
   // ============================================================
-  // ФУНКЦИЯ КРАСИВЫХ УВЕДОМЛЕНИЙ (ТОСТОВ)
+  // ХЕЛПЕРЫ
   // ============================================================
-  function showAdminToast(message, type = 'success') {
-    let toastRegion = document.getElementById('admin-toast-region');
-    
-    if (!toastRegion) {
-      toastRegion = document.createElement('div');
-      toastRegion.id = 'admin-toast-region';
-      toastRegion.style.cssText = 'position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px;';
-      document.body.appendChild(toastRegion);
-    }
+  const escapeHTML = (s) => String(s ?? '').replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+  const escapeAttr = (s) => String(s ?? '').replace(/["'<>&]/g, c => (
+    { '"': '&quot;', "'": '&#39;', '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]
+  ));
 
-    const toast = document.createElement('div');
-    const icon = type === 'success' ? '✓' : '✕';
-    const bgColor = type === 'success' ? 'rgba(183, 255, 112, 0.15)' : 'rgba(255, 109, 120, 0.15)';
-    const borderColor = type === 'success' ? 'rgba(183, 255, 112, 0.3)' : 'rgba(255, 109, 120, 0.3)';
-    const iconColor = type === 'success' ? '#b7ff70' : '#ff6d78';
+  // Authorization для админ-запросов (воркер проверяет Bearer)
+  function adminHeaders(extra = {}) {
+    const token = sessionStorage.getItem('nyxora:adminToken');
+    return {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...extra,
+    };
+  }
 
-    toast.style.cssText = `
-      display: flex; align-items: center; gap: 12px; 
-      padding: 16px 20px; border-radius: 16px; 
-      background: rgba(30, 22, 45, 0.95); 
-      backdrop-filter: blur(10px);
-      border: 1px solid ${borderColor}; 
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      color: #f6f1ff; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600;
-      min-width: 250px; max-width: 350px;
-      animation: slideInRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-    `;
-
-    toast.innerHTML = `
-      <div style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; background: ${bgColor}; color: ${iconColor};">${icon}</div>
-      <div>${message}</div>
-    `;
-
-    if (!document.getElementById('toast-anim-style')) {
-      const style = document.createElement('style');
-      style.id = 'toast-anim-style';
-      style.innerHTML = `
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px) scale(0.9); } to { opacity: 1; transform: translateX(0) scale(1); } }
-        @keyframes slideOutRight { from { opacity: 1; transform: translateX(0) scale(1); } to { opacity: 0; transform: translateX(50px) scale(0.9); } }
-      `;
-      document.head.appendChild(style);
-    }
-
-    toastRegion.appendChild(toast);
-
-    setTimeout(() => {
-      toast.style.animation = 'slideOutRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards';
-      setTimeout(() => toast.remove(), 300);
-    }, 3500);
+  async function adminFetch(url, options = {}) {
+    const opts = {
+      ...options,
+      headers: { ...adminHeaders(), ...(options.headers || {}) },
+    };
+    return Store.apiFetch(url, opts);
   }
 
   // ============================================================
+  // ТОСТЫ (единый API — window.showToast из site.js, fallback ниже)
+  // ============================================================
+  function showAdminToast(message, type = 'success') {
+    if (typeof window.showToast === 'function') return window.showToast(message, type);
+    // fallback на случай, если site.js не подключён
+    let region = document.getElementById('admin-toast-region');
+    if (!region) {
+      region = document.createElement('div');
+      region.id = 'admin-toast-region';
+      region.className = 'toast-region';
+      document.body.appendChild(region);
+    }
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = `<span class="toast-icon">${type === 'success' ? '✓' : '!'}</span><span>${escapeHTML(message)}</span>`;
+    region.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 200); }, 3000);
+  }
 
-  // 2. Логика табов
+  // ============================================================
+  // 2. ТАБЫ
+  // ============================================================
   let activeTab = 'orders';
   const pageTitle = document.getElementById('adminPageTitle');
   const tabContent = document.getElementById('adminTabContent');
@@ -97,35 +94,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 3. ЗАКАЗЫ (ТЕПЕРЬ ЗАГРУЖАЮТСЯ ИЗ БАЗЫ ДАННЫХ)
+  // ============================================================
+  // 3. ЗАКАЗЫ
+  // ============================================================
   async function renderOrders() {
-    tabContent.innerHTML = '<div class="admin-empty">Загрузка заказов с сервера...</div>';
-    
+    tabContent.innerHTML = '<div class="admin-empty">Загрузка заказов...</div>';
+
     try {
-      const response = await fetch('https://usnayed-api.aleksejmaculin1.workers.dev/api/orders');
-      const orders = await response.json();
-      
-      if (!orders.length) {
+      const res = await adminFetch(APP_CONFIG.API.orders);
+      if (res.status === 401) {
+        tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Нет доступа к заказам. Войдите как администратор.</div>';
+        return;
+      }
+      if (!res.ok) throw new Error('server');
+      const orders = await res.json();
+
+      if (!Array.isArray(orders) || !orders.length) {
         tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>';
         return;
       }
 
       tabContent.innerHTML = orders.map(o => `
         <div class="admin-card" style="margin-bottom: 20px;">
-          <h3>Заказ ${o.number || '—'} — ${o.total || 0} ₽</h3>
-          <p>${new Date(o.date).toLocaleString('ru-RU')}</p>
-          <p>Клиент: <strong>${o.name || 'Не указан'}</strong></p>
-          <p>Телефон: ${o.phone || 'Не указан'} · Город: ${o.city || 'Не указан'}</p>
-          <p>Адрес: ${o.address || 'Не указан'}</p>
-          ${o.comment ? `<p style="color:#ffaa00;">Комментарий: ${o.comment}</p>` : ''}
-          
+          <h3>Заказ ${escapeHTML(o.number || '—')} — ${Number(o.total || 0)} ₽</h3>
+          <p>${o.date ? new Date(o.date).toLocaleString('ru-RU') : '—'}</p>
+          <p>Клиент: <strong>${escapeHTML(o.name || 'Не указан')}</strong></p>
+          <p>Телефон: ${escapeHTML(o.phone || 'Не указан')} · Город: ${escapeHTML(o.city || 'Не указан')}</p>
+          <p>Адрес: ${escapeHTML(o.address || 'Не указан')}</p>
+          ${o.comment ? `<p style="color:#ffaa00;">Комментарий: ${escapeHTML(o.comment)}</p>` : ''}
+
           <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(220,204,255,0.1);">
             <small style="color: #a49ab8; display: block; margin-bottom: 5px;">Состав заказа:</small>
             <ul style="list-style: none; padding: 0; margin: 0; color: #f6f1ff; font-size: 14px;">
               ${(o.items || []).map(i => `
                 <li style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                  <span>${i.name}</span>
-                  <span style="color:#a879ff;">${i.qty} шт. × ${i.price} ₽</span>
+                  <span>${escapeHTML(i.name || '—')}</span>
+                  <span style="color:#a879ff;">${Number(i.qty || 0)} шт. × ${Number(i.price || 0)} ₽</span>
                 </li>
               `).join('')}
             </ul>
@@ -133,78 +137,92 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `).join('');
     } catch (err) {
+      console.error(err);
       tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Ошибка загрузки заказов. Проверьте интернет.</div>';
     }
   }
 
-  // 4. ОТЗЫВЫ (Теперь через Cloudflare API)
+  // ============================================================
+  // 4. ОТЗЫВЫ
+  // ============================================================
   async function renderReviews() {
-    tabContent.innerHTML = '<div class="admin-empty">Загрузка отзывов с сервера...</div>';
-    
+    tabContent.innerHTML = '<div class="admin-empty">Загрузка отзывов...</div>';
+
     try {
-      const response = await fetch('https://usnayed-api.aleksejmaculin1.workers.dev/api/reviews?status=pending');
-      const pending = await response.json();
-      
-      if (!pending.length) {
+      const res = await adminFetch(`${APP_CONFIG.API.reviews}?status=pending`);
+      if (res.status === 401) {
+        tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Нет доступа к отзывам. Войдите как администратор.</div>';
+        return;
+      }
+      if (!res.ok) throw new Error('server');
+      const pending = await res.json();
+
+      if (!Array.isArray(pending) || !pending.length) {
         tabContent.innerHTML = '<div class="admin-empty">Нет отзывов на модерации.</div>';
         return;
       }
 
       tabContent.innerHTML = pending.map(r => `
         <div class="admin-card">
-          <h3>${r.name || 'Гость'}</h3>
-          <p>${r.text || ''}</p>
-          <small>${new Date(r.date).toLocaleString('ru-RU')}</small>
+          <h3>${escapeHTML(r.name || 'Гость')}</h3>
+          <p>${escapeHTML(r.text || '')}</p>
+          <small>${r.date ? new Date(r.date).toLocaleString('ru-RU') : '—'}</small>
           <div class="admin-actions">
-            <button class="admin-btn-success" onclick="approveReview('${r.id}')">✓ Одобрить</button>
-            <button class="admin-btn-danger" onclick="rejectReview('${r.id}')">✕ Отклонить</button>
+            <button class="admin-btn-success" data-review-action="approve" data-review-id="${escapeAttr(r.id)}">✓ Одобрить</button>
+            <button class="admin-btn-danger"  data-review-action="reject"  data-review-id="${escapeAttr(r.id)}">✕ Отклонить</button>
           </div>
         </div>
       `).join('');
     } catch (err) {
+      console.error(err);
       tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Ошибка загрузки отзывов. Проверьте интернет.</div>';
     }
   }
 
-  // Одобрить отзыв (PUT запрос на сервер)
-  window.approveReview = async (id) => {
-    try {
-      await fetch(`https://usnayed-api.aleksejmaculin1.workers.dev/api/reviews/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'approved' })
-      });
-      
-      renderReviews(); // Перерисовываем список
-      showAdminToast('Отзыв успешно опубликован!', 'success');
-    } catch (err) {
-      showAdminToast('Ошибка при публикации', 'error');
-    }
-  };
+  // Делегирование вместо inline onclick (XSS-фикс)
+  tabContent.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-review-action]');
+    if (!btn) return;
 
-  // Отклонить отзыв (PUT запрос на сервер)
-  window.rejectReview = async (id) => {
+    const id = btn.dataset.reviewId;
+    const action = btn.dataset.reviewAction;
+    const status = action === 'approve' ? 'approved' : 'rejected';
+
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = '...';
+
     try {
-      await fetch(`https://usnayed-api.aleksejmaculin1.workers.dev/api/reviews/${id}`, {
+      const res = await adminFetch(APP_CONFIG.API.review(id), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'rejected' })
+        body: JSON.stringify({ status }),
       });
-      
+      if (res.status === 401) { showAdminToast('Нет прав', 'error'); return; }
+      if (!res.ok) throw new Error('server');
+
+      showAdminToast(
+        action === 'approve' ? 'Отзыв опубликован' : 'Отзыв отклонён',
+        action === 'approve' ? 'success' : 'error'
+      );
       renderReviews();
-      showAdminToast('Отзыв отклонён и удалён.', 'error');
-    } catch (err) {
-      showAdminToast('Ошибка при удалении', 'error');
+    } catch {
+      showAdminToast('Ошибка при обработке отзыва', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
     }
-  };
+  });
 
+  // ============================================================
   // 5. ЗАГРУЗКА МЕНЮ
+  // ============================================================
   function renderMenuUpload() {
     tabContent.innerHTML = `
       <div class="admin-card">
         <h3>🤖 ИИ-загрузка меню</h3>
         <p>Загрузите файл (JSON, CSV, TXT, XLSX, DOCX, PNG, JPG) или вставьте текст. ИИ разберёт блюда, цены и категории.</p>
-        
+
         <div class="admin-dropzone" id="adminDropzone">
           <div class="admin-dropzone-icon">📎</div>
           <div class="admin-dropzone-text">Перетащите файл сюда или нажмите</div>
@@ -215,16 +233,16 @@ document.addEventListener('DOMContentLoaded', () => {
         <textarea class="admin-textarea" id="adminMenuText" placeholder="…или вставьте текст меню вручную. Формат: 'Название блюда — 250'"></textarea>
 
         <button class="admin-btn admin-btn-primary" id="adminProcessBtn" style="width:100%;">🚀 Обработать меню</button>
-        
+
         <div class="admin-status" id="adminStatus"></div>
       </div>
     `;
 
-    const dropzone = document.getElementById('adminDropzone');
+    const dropzone  = document.getElementById('adminDropzone');
     const fileInput = document.getElementById('adminFileInput');
-    const menuText = document.getElementById('adminMenuText');
+    const menuText  = document.getElementById('adminMenuText');
     const processBtn = document.getElementById('adminProcessBtn');
-    const status = document.getElementById('adminStatus');
+    const status    = document.getElementById('adminStatus');
 
     let pendingFiles = [];
 
@@ -274,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 price: Number(m[2]),
                 category: 'Обеды в офис',
                 day: 'понедельник',
-                description: 'Добавлено через админ-панель'
+                description: 'Добавлено через админ-панель',
               });
             }
           });
@@ -283,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!items.length) throw new Error('Не удалось распознать блюда. Формат: "Название — 250"');
 
         const existing = JSON.parse(localStorage.getItem('nyxora:menu') || '[]');
-        const updated = [...existing, ...items];
+        const updated  = [...existing, ...items];
         localStorage.setItem('nyxora:menu', JSON.stringify(updated));
 
         showStatus(`✓ Добавлено блюд: ${items.length}`, 'success');
@@ -298,12 +316,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. Кнопка выхода
+  // ============================================================
+  // 6. ВЫХОД
+  // ============================================================
   document.getElementById('adminLogoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('nyxora:user');
+    Store.clearUser();
+    sessionStorage.removeItem('nyxora:adminToken');
     window.location.reload();
   });
 
+  // ============================================================
   // Первый рендер
+  // ============================================================
   renderTab();
 });
