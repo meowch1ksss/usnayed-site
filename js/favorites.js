@@ -4,10 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   Store.updateBadges();
 
+  // ============================================================
+  // ОТРИСОВКА
+  // ============================================================
   function renderFavorites() {
     if (!grid) return;
+
     const favorites = Store.getFavorites();
-    
     if (favorites.length === 0) {
       grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #a49ab8; padding: 40px 0;">В избранном пока пусто.</p>`;
       return;
@@ -52,6 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
+  // ============================================================
+  // ОБНОВЛЕНИЕ КАРТОЧКИ
+  // ============================================================
   function updateCardUI(id, newQty) {
     const card = grid.querySelector(`[data-card-id="${id}"]`);
     if (!card) return;
@@ -75,38 +81,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ============================================================
+  // КЛИКИ
+  // ============================================================
   grid.addEventListener('click', (e) => {
+    // 1. Удаление из избранного
     const removeBtn = e.target.closest('.favorite-card-remove');
     if (removeBtn) {
       const id = String(removeBtn.dataset.id);
       const product = products.find(p => String(p.id) === id);
       const img = product ? product.image : null;
+      const name = product ? product.name : 'Товар';
       
       Store.toggleFavorite(id);
       renderFavorites();
       
-      if (window.showToast && product) {
-        window.showToast(`«${product.name}» удалён из избранного`, 'error', img);
+      if (window.showToast) {
+        window.showToast(`«${name}» удалён из избранного`, 'error', img);
       }
       return;
     }
 
-    // ... (в обработчике кнопок корзины)
-    if (btn.dataset.action === 'add' || btn.dataset.action === 'plus') {
-      Store.addToCart(id, +1);
-      if (window.showToast && product) window.showToast(`«${product.name}» добавлен в корзину`, 'success', img);
-    } else if (btn.dataset.action === 'minus') {
-      const currentQty = Store.getCartQty(id);
-      if (currentQty > 0) {
-        Store.addToCart(id, -1);
-        if (window.showToast && product) window.showToast(`«${product.name}» удалён из корзины`, 'error', img);
+    // 2. Работа с корзиной
+    const btn = e.target.closest('button');
+    if (btn && btn.dataset.action) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const card = btn.closest('.product-card');
+      if (!card) return;
+      const id = String(card.dataset.cardId);
+      if (!id) return;
+      
+      const product = products.find(p => String(p.id) === id);
+      const img = product ? product.image : null;
+      const name = product ? product.name : 'Товар';
+
+      if (btn.dataset.action === 'add' || btn.dataset.action === 'plus') {
+        Store.addToCart(id, +1);
+        if (window.showToast) window.showToast(`«${name}» добавлен в корзину`, 'success', img);
+      } else if (btn.dataset.action === 'minus') {
+        const currentQty = Store.getCartQty(id);
+        if (currentQty > 0) {
+          Store.addToCart(id, -1);
+          if (window.showToast) window.showToast(`«${name}» удалён из корзины`, 'error', img);
+        }
       }
-    }
 
       updateCardUI(id, Store.getCartQty(id));
     }
   });
 
+  // ============================================================
+  // РУЧНОЙ ВВОД КОЛИЧЕСТВА
+  // ============================================================
   grid.addEventListener('change', (e) => {
     if (e.target.classList.contains('qty-input')) {
       const id = e.target.dataset.id;
