@@ -13,8 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
   searchDropdown.className = 'search-dropdown hidden';
   searchForm.appendChild(searchDropdown);
 
-  searchInput.addEventListener('input', (e) => {
-    const query = e.target.value.trim().toLowerCase();
+  // Функция для перерисовки выпадающего списка (чтобы обновлять кнопки)
+  function updateDropdown() {
+    const query = searchInput.value.trim().toLowerCase();
     
     if (query.length < 2) {
       searchDropdown.classList.add('hidden');
@@ -28,18 +29,17 @@ document.addEventListener('DOMContentLoaded', () => {
     ).slice(0, 6);
 
     if (results.length === 0) {
-      searchDropdown.innerHTML = `<div class="search-empty">Ничего не найдено по запросу "${e.target.value}"</div>`;
+      searchDropdown.innerHTML = `<div class="search-empty">Ничего не найдено по запросу "${searchInput.value}"</div>`;
     } else {
       searchDropdown.innerHTML = results.map(item => {
         const sid = String(item.id);
         const isFav = Store.isFavorite(sid);
         const qty = Store.getCartQty(sid);
 
-        // Рендерим кнопку корзины (плюс/минус или добавить)
         const cartBtn = qty > 0 
           ? `<div class="search-qty">
                <button data-action="minus" data-id="${sid}">−</button>
-               <span>${qty}</span>
+               <input type="number" class="qty-input" data-action="input" data-id="${sid}" value="${qty}" min="1" max="99">
                <button data-action="plus" data-id="${sid}">+</button>
              </div>`
           : `<button class="search-add-btn" data-action="add" data-id="${sid}" title="В корзину">
@@ -73,14 +73,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     searchDropdown.classList.remove('hidden');
-  });
+  }
 
-  // Обработка кликов по кнопкам в поиске
+  // При вводе текста в поиск
+  searchInput.addEventListener('input', updateDropdown);
+
+  // Обработка кликов по кнопкам + / - / избранное
   searchDropdown.addEventListener('click', (e) => {
-    const btn = e.target.closest('button');
+    const btn = e.target.closest('button[data-action]');
     if (!btn) return;
 
-    e.preventDefault(); // Чтобы не переходило по ссылке при клике на кнопку
+    e.preventDefault(); 
     e.stopPropagation();
 
     const id = btn.dataset.id;
@@ -93,21 +96,42 @@ document.addEventListener('DOMContentLoaded', () => {
     } 
     else if (action === 'add' || action === 'plus') {
       Store.addToCart(id, +1);
-      // Перерисовываем строку поиска, чтобы обновить кнопку
-      searchInput.dispatchEvent(new Event('input'));
+      updateDropdown(); // Перерисовываем, чтобы обновить кнопку
     } 
     else if (action === 'minus') {
       Store.addToCart(id, -1);
-      searchInput.dispatchEvent(new Event('input'));
+      updateDropdown();
     }
   });
 
+  // Обработка ручного ввода количества (при нажатии Enter или клике в пустое место)
+  searchDropdown.addEventListener('change', (e) => {
+    if (e.target.classList.contains('qty-input')) {
+      const id = e.target.dataset.id;
+      let newQty = parseInt(e.target.value, 10);
+      
+      if (isNaN(newQty) || newQty < 1) newQty = 1;
+      if (newQty > 99) newQty = 99;
+
+      const cart = Store.getCart();
+      const item = cart.find(i => i.id === String(id));
+      
+      if (item) {
+        item.qty = newQty;
+        Store.saveCart(cart);
+        updateDropdown();
+      }
+    }
+  });
+
+  // Закрываем при клике вне
   document.addEventListener('click', (e) => {
     if (!searchForm.contains(e.target)) {
       searchDropdown.classList.add('hidden');
     }
   });
 
+  // Обработка Enter
   searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const q = searchInput.value.trim();
