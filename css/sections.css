@@ -421,3 +421,144 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   color: #a49ab8;
   font-size: 13px;
 }
+
+/* ============================================================
+ * Кнопки в живом поиске
+ * ============================================================ */
+.search-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.search-result-item:hover {
+  background: rgba(168, 121, 255, 0.1);
+}
+
+.search-result-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.search-result-link img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.search-result-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding-left: 10px;
+}
+
+/* Кнопка избранного */
+.search-fav-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #a49ab8;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.search-fav-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.search-fav-btn:hover {
+  background: rgba(255, 120, 200, 0.1);
+  border-color: rgba(255, 120, 200, 0.3);
+  color: #ff78c8;
+}
+
+.search-fav-btn.active {
+  color: #ff78c8;
+  background: rgba(255, 120, 200, 0.15);
+  border-color: rgba(255, 120, 200, 0.4);
+}
+
+.search-fav-btn.active svg {
+  fill: #ff78c8;
+}
+
+/* Кнопка добавления в корзину */
+.search-add-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(168, 121, 255, 0.1);
+  border: 1px solid rgba(168, 121, 255, 0.3);
+  border-radius: 8px;
+  color: #d6bdff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.search-add-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.search-add-btn:hover {
+  background: #a879ff;
+  color: #1a1027;
+}
+
+/* Счетчик плюс/минус */
+.search-qty {
+  display: flex;
+  align-items: center;
+  background: rgba(168, 121, 255, 0.1);
+  border: 1px solid rgba(168, 121, 255, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  height: 32px;
+}
+
+.search-qty button {
+  background: transparent;
+  border: none;
+  color: #f6f1ff;
+  width: 26px;
+  height: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-qty button:hover {
+  background: rgba(168, 121, 255, 0.3);
+}
+
+.search-qty span {
+  min-width: 20px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: #f6f1ff;
+}
