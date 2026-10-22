@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const totalWeightEl = document.getElementById('totalWeight');
   const totalPriceBottom = document.getElementById('totalPriceBottom');
 
-  // Загружаем корзину
   let cart = JSON.parse(localStorage.getItem('nyxora:cart') || '[]');
   const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
 
@@ -147,6 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
         fieldsPhys.classList.add('hidden');
         fieldsJur.classList.remove('hidden');
         
+        // Убираем required у полей физлица, добавляем юрлицу
+        document.querySelectorAll('#fieldsPhys input').forEach(i => i.removeAttribute('required'));
+        document.querySelectorAll('#fieldsJur input[name="companyName"], #fieldsJur input[name="jurEmail"]').forEach(i => i.setAttribute('required', 'true'));
+        
         paymentOptions.forEach(opt => {
           if (opt.dataset.value === 'bank') opt.style.display = 'flex';
           else opt.style.display = 'none';
@@ -161,6 +164,10 @@ document.addEventListener('DOMContentLoaded', () => {
         fieldsPhys.classList.remove('hidden');
         fieldsJur.classList.add('hidden');
         
+        // Убираем required у полей юрлица, добавляем физлицу
+        document.querySelectorAll('#fieldsJur input').forEach(i => i.removeAttribute('required'));
+        document.querySelectorAll('#fieldsPhys input[name="fullName"], #fieldsPhys input[name="email"], #fieldsPhys input[name="phone"]').forEach(i => i.setAttribute('required', 'true'));
+        
         paymentOptions.forEach(opt => opt.style.display = 'flex');
         
         paymentInput.value = 'cash';
@@ -174,16 +181,14 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const isJur = document.querySelector('.payer-btn.active').dataset.type === 'jur';
+    
+    // Проверки
     if (cart.length === 0) {
       if (window.showToast) window.showToast('Корзина пуста!', 'error');
       return;
     }
 
-    if (totalItemsCount < 1) {
-      if (window.showToast) window.showToast(`Добавьте хотя бы один товар в корзину.`, 'error');
-      return;
-    }
-    
     if (!document.getElementById('cityInput').value) {
       if (window.showToast) window.showToast('Пожалуйста, выберите город!', 'error');
       return;
@@ -195,19 +200,26 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const isJur = document.querySelector('.payer-btn.active').dataset.type === 'jur';
-    
     let name = '', email = '', phone = '';
 
-    // Безопасно собираем данные в зависимости от выбранного типа
     if (isJur) {
-      name = document.querySelector('input[name="companyName"]')?.value || 'Компания';
-      email = document.querySelector('input[name="jurEmail"]')?.value || '';
-      phone = document.querySelector('input[name="jurPhone"]')?.value || '';
+      name = document.querySelector('input[name="companyName"]').value;
+      email = document.querySelector('input[name="jurEmail"]').value;
+      phone = document.querySelector('input[name="jurPhone"]').value;
+
+      if (!name) {
+        if (window.showToast) window.showToast('Пожалуйста, укажите название компании!', 'error');
+        return;
+      }
     } else {
-      name = document.querySelector('input[name="fullName"]')?.value || 'Покупатель';
-      email = document.querySelector('input[name="email"]')?.value || '';
-      phone = document.querySelector('input[name="phone"]')?.value || '';
+      name = document.querySelector('input[name="fullName"]').value;
+      email = document.querySelector('input[name="email"]').value;
+      phone = document.querySelector('input[name="phone"]').value;
+
+      if (!name || !phone) {
+        if (window.showToast) window.showToast('Пожалуйста, заполните ФИО и телефон!', 'error');
+        return;
+      }
     }
 
     const city = document.querySelector('#cityDropdown .selected-text').textContent;
