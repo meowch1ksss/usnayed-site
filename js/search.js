@@ -1,32 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Скрипт поиска загружен!');
-  
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
-
-  if (!searchForm || !searchInput) {
-    console.error('Форма поиска не найдена на этой странице');
-    return;
-  }
+  if (!searchForm || !searchInput) return;
 
   const searchDropdown = document.createElement('div');
   searchDropdown.className = 'search-dropdown hidden';
   searchForm.appendChild(searchDropdown);
 
-  // Функция для перерисовки выпадающего списка (чтобы обновлять кнопки)
   function updateDropdown() {
     const query = searchInput.value.trim().toLowerCase();
-    
     if (query.length < 2) {
       searchDropdown.classList.add('hidden');
       return;
     }
 
     const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
-    const results = products.filter(p => 
-      p.name.toLowerCase().includes(query) || 
-      (p.description && p.description.toLowerCase().includes(query))
-    ).slice(0, 6);
+    const results = products.filter(p => p.name.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query))).slice(0, 6);
 
     if (results.length === 0) {
       searchDropdown.innerHTML = `<div class="search-empty">Ничего не найдено по запросу "${searchInput.value}"</div>`;
@@ -65,64 +54,54 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }).join('');
 
-      searchDropdown.innerHTML += `
-        <a href="menu.html?search=${encodeURIComponent(query)}" class="search-all-btn">
-          Показать все результаты →
-        </a>
-      `;
+      searchDropdown.innerHTML += `<a href="menu.html?search=${encodeURIComponent(query)}" class="search-all-btn">Показать все результаты →</a>`;
     }
-    
     searchDropdown.classList.remove('hidden');
   }
 
-  // При вводе текста в поиск
   searchInput.addEventListener('input', updateDropdown);
 
-  // Обработка кликов по кнопкам + / - / избранное
   searchDropdown.addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-action]');
     if (!btn) return;
-
     e.preventDefault(); 
     e.stopPropagation();
 
     const id = btn.dataset.id;
     const action = btn.dataset.action;
+    const product = window.LUNCH_DATA.products.find(p => String(p.id) === id);
 
     if (action === 'fav') {
       const isFav = Store.toggleFavorite(id);
       btn.classList.toggle('active', isFav);
-      const product = window.LUNCH_DATA.products.find(p => String(p.id) === id);
       if (window.showToast && product) {
-        window.showToast(
-          isFav ? 'Добавлено в избранное' : 'Удалено из избранного', 
-          isFav ? 'success' : 'error', 
-          product.image
-        );
+        window.showToast(isFav ? 'Добавлено в избранное' : 'Удалено из избранного', isFav ? 'success' : 'error', product.image);
       }
     } 
     else if (action === 'add' || action === 'plus') {
       Store.addToCart(id, +1);
-      const product = window.LUNCH_DATA.products.find(p => String(p.id) === id);
-      if (window.showToast && product) {
-        window.showToast('Добавлено в корзину', 'success', product.image);
-      }
+      if (window.showToast && product) window.showToast('Добавлено в корзину', 'success', product.image);
       updateDropdown();
     } 
+    else if (action === 'minus') {
+      const currentQty = Store.getCartQty(id);
+      if (currentQty > 0) {
+        Store.addToCart(id, -1);
+        if (window.showToast && product) window.showToast('Удалено из корзины', 'error', product.image);
+        updateDropdown();
+      }
+    }
   });
 
-  // Обработка ручного ввода количества (при нажатии Enter или клике в пустое место)
   searchDropdown.addEventListener('change', (e) => {
     if (e.target.classList.contains('qty-input')) {
       const id = e.target.dataset.id;
       let newQty = parseInt(e.target.value, 10);
-      
       if (isNaN(newQty) || newQty < 1) newQty = 1;
       if (newQty > 99) newQty = 99;
 
       const cart = Store.getCart();
       const item = cart.find(i => i.id === String(id));
-      
       if (item) {
         item.qty = newQty;
         Store.saveCart(cart);
@@ -131,14 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Закрываем при клике вне
   document.addEventListener('click', (e) => {
-    if (!searchForm.contains(e.target)) {
-      searchDropdown.classList.add('hidden');
-    }
+    if (!searchForm.contains(e.target)) searchDropdown.classList.add('hidden');
   });
 
-  // Обработка Enter
   searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const q = searchInput.value.trim();

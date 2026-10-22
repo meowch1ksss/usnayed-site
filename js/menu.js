@@ -1,20 +1,12 @@
-// js/menu.js
-// Требует: js/config.js, js/store.js (подключены ДО этого файла).
 document.addEventListener('DOMContentLoaded', () => {
   const menuGrid = document.getElementById('menuGrid');
   const titleEl  = document.getElementById('categoryTitle');
-
   const allProducts = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
 
   let currentCategory = localStorage.getItem('currentCategory') || 'Завтраки';
   let currentDay = 'понедельник';
-
-  // Бейджи в шапке — единая точка через Store
   Store.updateBadges();
 
-  // ============================================================
-  // ОТРИСОВКА МЕНЮ
-  // ============================================================
   function renderMenu(category, day) {
     if (!menuGrid) return;
     if (titleEl) titleEl.textContent = category;
@@ -22,30 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchCat = category.toLowerCase().trim();
     const cart      = Store.getCart();
     const favorites = Store.getFavorites();
-
-    // ПРОВЕРЯЕМ, ЕСТЬ ЛИ ПОИСКОВЫЙ ЗАПРОС В URL
     const urlParams = new URLSearchParams(window.location.search);
     const searchQuery = urlParams.get('search');
 
     let filtered = allProducts.filter(item => {
-      // Если есть поиск, фильтруем только по нему
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
-        return item.name.toLowerCase().includes(q) || 
-               (item.description && item.description.toLowerCase().includes(q));
+        return item.name.toLowerCase().includes(q) || (item.description && item.description.toLowerCase().includes(q));
       }
-
-      // Стандартная фильтрация по категориям и дням
       const itemCat = (item.category || '').toLowerCase().trim();
       const itemDay = (item.day || '').toLowerCase().trim();
       const dayMatch = !itemDay || itemDay === day.toLowerCase().trim();
       return itemCat === searchCat && dayMatch;
     });
 
-    // Если это поиск, меняем заголовок
     if (searchQuery) {
       if (titleEl) titleEl.textContent = `Поиск: "${searchQuery}"`;
-      // Прячем переключатели категорий, чтобы не сбивать с толку
       document.querySelector('.menu-controls-wrapper').style.display = 'none';
     }
 
@@ -75,11 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="product-image-wrap" data-product="${sid}" role="button" tabindex="0" aria-label="Подробнее: ${item.name}">
             <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/600x600/21182e/c8a9ff?text=Блюдо'">
           </div>
-
           <button class="favorite-button ${isFav ? 'active' : ''}" data-action="favorite" data-id="${sid}" aria-label="В избранное">
             <svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>
           </button>
-
           <div class="product-info" style="padding: 20px;">
             <div class="product-category">${item.category}</div>
             <div class="product-title" style="font-size: 15px; margin-bottom: 8px;">${item.name}</div>
@@ -89,9 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="product-price">${item.price} ₽</span>
                 <span class="old-price" style="margin-left: 8px;">${item.weight || ''}</span>
               </div>
-              <div class="card-action-container">
-                ${actionButton}
-              </div>
+              <div class="card-action-container">${actionButton}</div>
             </div>
           </div>
         </article>
@@ -99,17 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // ============================================================
-  // ОБНОВЛЕНИЕ ОДНОЙ КАРТОЧКИ
-  // ============================================================
   function updateCardUI(id, newQty, isFav) {
     const card = menuGrid.querySelector(`[data-card-id="${id}"]`);
     if (!card) return;
-
     const favBtn = card.querySelector('.favorite-button');
-    if (favBtn && isFav !== undefined) {
-      favBtn.classList.toggle('active', isFav);
-    }
+    if (favBtn && isFav !== undefined) favBtn.classList.toggle('active', isFav);
 
     const container = card.querySelector('.card-action-container');
     if (!container) return;
@@ -131,13 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ============================================================
-  // КЛИКИ ПО КНОПКАМ В КАРТОЧКАХ
-  // ============================================================
   menuGrid.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn || !btn.dataset.action) return;
-
     e.preventDefault();
     e.stopPropagation();
 
@@ -145,53 +115,40 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!card) return;
     const id = String(card.dataset.cardId);
     if (!id) return;
-
-    // Находим товар, чтобы взять его название и картинку для уведомления
     const product = allProducts.find(p => String(p.id) === id);
 
-    // Избранное
     if (btn.dataset.action === 'favorite') {
       const isFav = Store.toggleFavorite(id);
       updateCardUI(id, undefined, isFav);
-      
       if (window.showToast && product) {
-        window.showToast(
-          isFav ? 'Добавлено в избранное' : 'Удалено из избранного', 
-          isFav ? 'success' : 'error',
-          product.image // передаем картинку
-        );
+        window.showToast(isFav ? 'Добавлено в избранное' : 'Удалено из избранного', isFav ? 'success' : 'error', product.image);
       }
       return;
     }
 
-    // Корзина
     if (btn.dataset.action === 'add' || btn.dataset.action === 'plus') {
       Store.addToCart(id, +1);
-      if (window.showToast && product) {
-        window.showToast('Добавлено в корзину', 'success', product.image);
-      }
+      if (window.showToast && product) window.showToast('Добавлено в корзину', 'success', product.image);
     } else if (btn.dataset.action === 'minus') {
-      Store.addToCart(id, -1);
+      const currentQty = Store.getCartQty(id);
+      if (currentQty > 0) {
+        Store.addToCart(id, -1);
+        if (window.showToast && product) window.showToast('Удалено из корзины', 'error', product.image);
+      }
     }
 
-    const newQty = Store.getCartQty(id);
-    updateCardUI(id, newQty);
+    updateCardUI(id, Store.getCartQty(id));
   });
 
-  // ============================================================
-  // РУЧНОЙ ВВОД КОЛИЧЕСТВА
-  // ============================================================
   menuGrid.addEventListener('change', (e) => {
     if (e.target.classList.contains('qty-input')) {
       const id = e.target.dataset.id;
       let newQty = parseInt(e.target.value, 10);
-      
       if (isNaN(newQty) || newQty < 1) newQty = 1;
       if (newQty > 99) newQty = 99;
 
       const cart = Store.getCart();
       const item = cart.find(i => i.id === String(id));
-      
       if (item) {
         item.qty = newQty;
         Store.saveCart(cart);
@@ -200,9 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ============================================================
-  // КАТЕГОРИИ И ДНИ
-  // ============================================================
   document.querySelectorAll('#categorySwitcher .category-switch').forEach(btn => {
     const isActive = btn.dataset.category.toLowerCase() === currentCategory.toLowerCase();
     btn.classList.toggle('active', isActive);
@@ -213,24 +167,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('categorySwitcher')?.addEventListener('click', (e) => {
     const btn = e.target.closest('.category-switch');
     if (!btn) return;
-
     currentCategory = btn.dataset.category;
     localStorage.setItem('currentCategory', currentCategory);
-
     document.querySelectorAll('#categorySwitcher .category-switch').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-
     renderMenu(currentCategory, currentDay);
   });
 
   document.getElementById('categoryDayTabs')?.addEventListener('click', (e) => {
     const btn = e.target.closest('.day-tab');
     if (!btn) return;
-
     currentDay = btn.dataset.day;
     document.querySelectorAll('#categoryDayTabs .day-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-
     renderMenu(currentCategory, currentDay);
   });
 });
