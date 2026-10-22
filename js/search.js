@@ -74,19 +74,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (action === 'fav') {
       const isFav = Store.toggleFavorite(id);
-      if (window.showToast) {
-        window.showToast(isFav ? 'Добавлено в избранное' : 'Удалено из избранного', isFav ? 'success' : 'error', img);
+      if (window.showToast && product) {
+        const msg = isFav ? `«${product.name}» добавлен в избранное` : `«${product.name}» удалён из избранного`;
+        window.showToast(msg, isFav ? 'success' : 'error', img);
       }
     } 
     else if (action === 'add' || action === 'plus') {
       Store.addToCart(id, +1);
-      if (window.showToast) window.showToast('Добавлено в корзину', 'success', img);
+      if (window.showToast && product) {
+        window.showToast(`«${product.name}» добавлен в корзину`, 'success', img);
+      }
     } 
     else if (action === 'minus') {
       const currentQty = Store.getCartQty(id);
       if (currentQty > 0) {
         Store.addToCart(id, -1);
-        if (window.showToast) window.showToast('Удалено из корзины', 'error', img);
+        if (window.showToast && product) {
+          window.showToast(`«${product.name}» удалён из корзины`, 'error', img);
+        }
       }
     }
     

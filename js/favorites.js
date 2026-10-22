@@ -85,35 +85,23 @@ document.addEventListener('DOMContentLoaded', () => {
       Store.toggleFavorite(id);
       renderFavorites();
       
-      if (window.showToast) {
-        window.showToast('Удалено из избранного', 'error', img);
+      if (window.showToast && product) {
+        window.showToast(`«${product.name}» удалён из избранного`, 'error', img);
       }
       return;
     }
 
-    const btn = e.target.closest('button');
-    if (btn && btn.dataset.action) {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const card = btn.closest('.product-card');
-      if (!card) return;
-      const id = String(card.dataset.cardId);
-      if (!id) return;
-      
-      const product = products.find(p => String(p.id) === id);
-      const img = product ? product.image : null;
-
-      if (btn.dataset.action === 'add' || btn.dataset.action === 'plus') {
-        Store.addToCart(id, +1);
-        if (window.showToast) window.showToast('Добавлено в корзину', 'success', img);
-      } else if (btn.dataset.action === 'minus') {
-        const currentQty = Store.getCartQty(id);
-        if (currentQty > 0) {
-          Store.addToCart(id, -1);
-          if (window.showToast) window.showToast('Удалено из корзины', 'error', img);
-        }
+    // ... (в обработчике кнопок корзины)
+    if (btn.dataset.action === 'add' || btn.dataset.action === 'plus') {
+      Store.addToCart(id, +1);
+      if (window.showToast && product) window.showToast(`«${product.name}» добавлен в корзину`, 'success', img);
+    } else if (btn.dataset.action === 'minus') {
+      const currentQty = Store.getCartQty(id);
+      if (currentQty > 0) {
+        Store.addToCart(id, -1);
+        if (window.showToast && product) window.showToast(`«${product.name}» удалён из корзины`, 'error', img);
       }
+    }
 
       updateCardUI(id, Store.getCartQty(id));
     }

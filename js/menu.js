@@ -121,19 +121,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const isFav = Store.toggleFavorite(id);
       updateCardUI(id, undefined, isFav);
       if (window.showToast && product) {
-        window.showToast(isFav ? 'Добавлено в избранное' : 'Удалено из избранного', isFav ? 'success' : 'error', product.image);
+        const msg = isFav ? `«${product.name}» добавлен в избранное` : `«${product.name}» удалён из избранного`;
+        window.showToast(msg, isFav ? 'success' : 'error', product.image);
       }
       return;
     }
 
     if (btn.dataset.action === 'add' || btn.dataset.action === 'plus') {
       Store.addToCart(id, +1);
-      if (window.showToast && product) window.showToast('Добавлено в корзину', 'success', product.image);
+      if (window.showToast && product) {
+        window.showToast(`«${product.name}» добавлен в корзину`, 'success', product.image);
+      }
     } else if (btn.dataset.action === 'minus') {
       const currentQty = Store.getCartQty(id);
       if (currentQty > 0) {
         Store.addToCart(id, -1);
-        if (window.showToast && product) window.showToast('Удалено из корзины', 'error', product.image);
+        if (window.showToast && product) {
+          window.showToast(`«${product.name}» удалён из корзины`, 'error', product.image);
+        }
       }
     }
 

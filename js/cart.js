@@ -56,17 +56,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (action === 'plus') {
       Store.addToCart(id, +1);
-      if (window.showToast && product) window.showToast('Добавлено в корзину', 'success', product.image);
+      if (window.showToast && product) window.showToast(`«${product.name}» добавлен в корзину`, 'success', product.image);
       renderCart();
     }
     if (action === 'minus') {
       Store.addToCart(id, -1);
-      if (window.showToast && product) window.showToast('Удалено из корзины', 'error', product.image);
+      if (window.showToast && product) {
+        window.showToast(`«${product.name}» удалён из корзины`, 'error', product.image);
+      }
       renderCart();
     }
     if (action === 'remove') {
       Store.removeFromCart(id);
-      if (window.showToast && product) window.showToast('Товар удален', 'error', product.image);
+      if (window.showToast && product) {
+        window.showToast(`«${product.name}» удалён из корзины`, 'error', product.image);
+      }
       renderCart();
     }
   });
