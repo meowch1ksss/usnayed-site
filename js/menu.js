@@ -23,15 +23,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const cart      = Store.getCart();
     const favorites = Store.getFavorites();
 
-    const filtered = allProducts.filter(item => {
+    // ПРОВЕРЯЕМ, ЕСТЬ ЛИ ПОИСКОВЫЙ ЗАПРОС В URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('search');
+
+    let filtered = allProducts.filter(item => {
+      // Если есть поиск, фильтруем только по нему
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        return item.name.toLowerCase().includes(q) || 
+               (item.description && item.description.toLowerCase().includes(q));
+      }
+
+      // Стандартная фильтрация по категориям и дням
       const itemCat = (item.category || '').toLowerCase().trim();
       const itemDay = (item.day || '').toLowerCase().trim();
       const dayMatch = !itemDay || itemDay === day.toLowerCase().trim();
       return itemCat === searchCat && dayMatch;
     });
 
+    // Если это поиск, меняем заголовок
+    if (searchQuery) {
+      if (titleEl) titleEl.textContent = `Поиск: "${searchQuery}"`;
+      // Прячем переключатели категорий, чтобы не сбивать с толку
+      document.querySelector('.menu-controls-wrapper').style.display = 'none';
+    }
+
     if (filtered.length === 0) {
-      menuGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #a49ab8; padding: 40px 0;">На этот день пока нет блюд из этой категории.</p>`;
+      menuGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #a49ab8; padding: 40px 0;">По вашему запросу ничего не найдено.</p>`;
       return;
     }
 
