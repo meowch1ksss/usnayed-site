@@ -12,12 +12,14 @@
   <link rel="stylesheet" href="css/sections.css">
   <link rel="stylesheet" href="css/checkout.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  
+  <!-- Подключаем библиотеки и конфиги в правильном порядке -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="js/config.js" defer></script>
+  <script src="js/store.js" defer></script>
   <script src="js/site.js" defer></script>
   <script src="js/data.js" defer></script>
   <script src="js/checkout.js" defer></script>
-  <script src="js/config.js"></script>
-  <script src="js/store.js"></script>
 </head>
 <body>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
@@ -111,10 +113,10 @@
         </div>
       </div>
 
-      <!-- Блок Юрлица (скрыт по умолчанию через класс hidden) -->
+      <!-- Блок Юрлица (скрыт по умолчанию через класс hidden). ВАЖНО: убрали required у скрытых полей -->
       <div id="fieldsJur" class="hidden">
         <div class="form-group">
-          <label>Название компании *</label>
+          <label>Название компании</label>
           <input type="text" name="companyName" placeholder='ООО "Ромашка"'>
         </div>
         
@@ -140,7 +142,7 @@
             <input type="tel" name="jurPhone" placeholder="+7 (900) 000-00-00">
           </div>
           <div class="form-group">
-            <label>Email *</label>
+            <label>Email</label>
             <input type="email" name="jurEmail" placeholder="mail@example.com">
           </div>
         </div>
@@ -151,7 +153,7 @@
             <input type="tel" name="fax" placeholder="+7 (900) 000-00-00">
           </div>
           <div class="form-group">
-            <label>Контактное лицо *</label>
+            <label>Контактное лицо</label>
             <input type="text" name="contactPerson">
           </div>
         </div>

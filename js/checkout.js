@@ -15,13 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
   let cart = JSON.parse(localStorage.getItem('nyxora:cart') || '[]');
   const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
 
-  // Парсим вес (например, "250 г." -> 250)
   function parseWeight(w) {
     const num = parseFloat(String(w).replace(/[^\d.,]/g, '').replace(',', '.'));
     return isNaN(num) ? 0 : num;
   }
 
-  // Рендер таблицы и подсчет итогов
   let totalSum = 0;
   let totalWeightGrams = 0;
   let totalItemsCount = 0;
@@ -31,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     tbody.innerHTML = cart.map(item => {
       const p = products.find(x => String(x.id) === String(item.id));
-      
       if (!p) return `<tr><td colspan="4" style="color:#ff6d78;">Товар ID ${item.id} не найден</td></tr>`;
       
       const sum = p.price * item.qty;
@@ -50,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // Выводим итоги
   let formattedWeight = totalWeightGrams >= 1000 
     ? `${(totalWeightGrams / 1000).toFixed(2)} кг` 
     : `${totalWeightGrams} г`;
@@ -59,9 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (totalPriceBottom) totalPriceBottom.textContent = `${totalSum} ₽`;
   if (totalWeightEl) totalWeightEl.textContent = formattedWeight;
 
-  // ============================================================
-  // КАСТОМНЫЕ СЕЛЕКТЫ
-  // ============================================================
   function initCustomSelect(dropdownId, onChange) {
     const dropdown = document.getElementById(dropdownId);
     if (!dropdown) return null;
@@ -83,13 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
       option.addEventListener('click', () => {
         const value = option.dataset.value;
         const text = option.textContent;
-        
         input.value = value;
         selectedText.textContent = text;
-        
         options.forEach(o => o.classList.remove('selected'));
         option.classList.add('selected');
-        
         dropdown.classList.remove('open');
         if (onChange) onChange(value);
       });
@@ -140,9 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ============================================================
   // Переключатель Юр/Физ лицо
-  // ============================================================
   payerBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const type = btn.dataset.type;
@@ -182,57 +170,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ============================================================
   // ОТПРАВКА НА СЕРВЕР
-  // ============================================================
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     if (cart.length === 0) {
       if (window.showToast) window.showToast('Корзина пуста!', 'error');
-      else alert('Корзина пуста!');
       return;
     }
 
-    // ПРОВЕРКА МИНИМАЛЬНОГО ЗАКАЗА (ОТ 1 ТОВАРА)
     if (totalItemsCount < 1) {
-      if (window.showToast) {
-        window.showToast(`Добавьте хотя бы один товар в корзину.`, 'error');
-      } else {
-        alert(`Добавьте хотя бы один товар в корзину.`);
-      }
+      if (window.showToast) window.showToast(`Добавьте хотя бы один товар в корзину.`, 'error');
       return;
     }
     
     if (!document.getElementById('cityInput').value) {
       if (window.showToast) window.showToast('Пожалуйста, выберите город!', 'error');
-      else alert('Пожалуйста, выберите город!');
       return;
     }
 
     const deliveryTime = document.getElementById('deliveryTimeInput').value;
     if (!deliveryTime) {
       if (window.showToast) window.showToast('Пожалуйста, выберите время доставки!', 'error');
-      else alert('Пожалуйста, выберите время доставки!');
       return;
     }
 
     const isJur = document.querySelector('.payer-btn.active').dataset.type === 'jur';
     
-    const name = isJur 
-      ? document.querySelector('input[name="companyName"]').value 
-      : document.querySelector('input[name="fullName"]').value;
-    const email = isJur 
-      ? document.querySelector('input[name="jurEmail"]').value 
-      : document.querySelector('input[name="email"]').value;
+    let name = '', email = '', phone = '';
+
+    // Безопасно собираем данные в зависимости от выбранного типа
+    if (isJur) {
+      name = document.querySelector('input[name="companyName"]')?.value || 'Компания';
+      email = document.querySelector('input[name="jurEmail"]')?.value || '';
+      phone = document.querySelector('input[name="jurPhone"]')?.value || '';
+    } else {
+      name = document.querySelector('input[name="fullName"]')?.value || 'Покупатель';
+      email = document.querySelector('input[name="email"]')?.value || '';
+      phone = document.querySelector('input[name="phone"]')?.value || '';
+    }
+
     const city = document.querySelector('#cityDropdown .selected-text').textContent;
-    const phone = isJur
-      ? document.querySelector('input[name="jurPhone"]').value
-      : document.querySelector('input[name="phone"]').value;
     const address = document.querySelector('input[name="address"]').value;
     const comment = document.querySelector('textarea[name="comment"]').value;
 
-    // Формируем объект заказа (добавили email, deliveryTime, weight и новые поля)
     const orderData = {
       number: 'ORD-' + Math.floor(Math.random() * 900000 + 100000),
       items: cart.map(item => {
@@ -247,17 +228,15 @@ document.addEventListener('DOMContentLoaded', () => {
       total: totalSum,
       weight: formattedWeight,
       deliveryTime: deliveryTime,
-      name: name || 'Покупатель',
-      email: email || '',
-      phone: phone || '',
+      name: name,
+      email: email,
+      phone: phone,
       city: city || 'Не указан',
       address: address || '',
       comment: comment || '',
-      
-      // --- НОВЫЕ ПОЛЯ ---
-      deliveryMethod: document.getElementById('deliveryMethodInput').value, // courier или pickup
+      deliveryMethod: document.getElementById('deliveryMethodInput').value,
       payerType: isJur ? 'Юр. лицо' : 'Физ. лицо',
-      paymentMethod: document.getElementById('paymentInput').value // cash, sber, bank
+      paymentMethod: document.getElementById('paymentInput').value
     };
 
     const submitBtn = form.querySelector('button[type="submit"]');
@@ -275,11 +254,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!response.ok) throw new Error('Ошибка сервера');
 
       if (window.showToast) window.showToast('Заказ успешно оформлен! Спасибо!', 'success');
-      else alert('Заказ успешно оформлен! Спасибо!');
 
       localStorage.removeItem('nyxora:cart');
       
-      // Очищаем сохраненные поля формы
       const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
       inputs.forEach(input => localStorage.removeItem('checkout_saved_' + input.name));
       localStorage.removeItem('checkout_saved_city');
@@ -288,21 +265,17 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => { window.location.href = 'index.html'; }, 1500);
     } catch (error) {
       if (window.showToast) window.showToast('Не удалось отправить заказ. Проверьте интернет.', 'error');
-      else alert('Не удалось отправить заказ. Проверьте интернет.');
       submitBtn.innerHTML = originalText;
       submitBtn.disabled = false;
     }
   });
 
-  // ============================================================
-  // УМНЫЙ КАЛЕНДАРЬ (Flatpickr)
-  // ============================================================
+  // КАЛЕНДАРЬ
   if (typeof flatpickr !== 'undefined') {
     const now = new Date();
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
 
-    // Если сейчас больше 13:30, заказы на сегодня уже не принимаются (переносим на завтра)
     let minDate = "today";
     if (currentHour > 13 || (currentHour === 13 && currentMinute > 30)) {
       const tomorrow = new Date(now);
@@ -333,9 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ============================================================
   // АВТОСОХРАНЕНИЕ
-  // ============================================================
   const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
   
   inputs.forEach(input => {
@@ -369,9 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
     opt.addEventListener('click', () => localStorage.setItem('checkout_saved_payment', opt.dataset.value));
   });
 
-  // ============================================================
   // МОДАЛКА ОЧИСТКИ
-  // ============================================================
   const resetBtn = document.getElementById('resetFormBtn');
   const confirmOverlay = document.getElementById('confirmOverlay');
   const confirmCancel = document.getElementById('confirmCancel');
