@@ -146,16 +146,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = String(card.dataset.cardId);
     if (!id) return;
 
+    // Находим товар, чтобы взять его название и картинку для уведомления
+    const product = allProducts.find(p => String(p.id) === id);
+
     // Избранное
     if (btn.dataset.action === 'favorite') {
       const isFav = Store.toggleFavorite(id);
       updateCardUI(id, undefined, isFav);
+      
+      if (window.showToast && product) {
+        window.showToast(
+          isFav ? 'Добавлено в избранное' : 'Удалено из избранного', 
+          isFav ? 'success' : 'error',
+          product.image // передаем картинку
+        );
+      }
       return;
     }
 
     // Корзина
     if (btn.dataset.action === 'add' || btn.dataset.action === 'plus') {
       Store.addToCart(id, +1);
+      if (window.showToast && product) {
+        window.showToast('Добавлено в корзину', 'success', product.image);
+      }
     } else if (btn.dataset.action === 'minus') {
       Store.addToCart(id, -1);
     }

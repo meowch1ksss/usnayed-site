@@ -92,16 +92,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (action === 'fav') {
       const isFav = Store.toggleFavorite(id);
       btn.classList.toggle('active', isFav);
-      if (window.showToast) window.showToast(isFav ? 'Добавлено в избранное' : 'Удалено из избранного', 'success');
+      const product = window.LUNCH_DATA.products.find(p => String(p.id) === id);
+      if (window.showToast && product) {
+        window.showToast(
+          isFav ? 'Добавлено в избранное' : 'Удалено из избранного', 
+          isFav ? 'success' : 'error', 
+          product.image
+        );
+      }
     } 
     else if (action === 'add' || action === 'plus') {
       Store.addToCart(id, +1);
-      updateDropdown(); // Перерисовываем, чтобы обновить кнопку
-    } 
-    else if (action === 'minus') {
-      Store.addToCart(id, -1);
+      const product = window.LUNCH_DATA.products.find(p => String(p.id) === id);
+      if (window.showToast && product) {
+        window.showToast('Добавлено в корзину', 'success', product.image);
+      }
       updateDropdown();
-    }
+    } 
   });
 
   // Обработка ручного ввода количества (при нажатии Enter или клике в пустое место)

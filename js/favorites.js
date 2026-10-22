@@ -97,8 +97,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Удаление из избранного
     const removeBtn = e.target.closest('.favorite-card-remove');
     if (removeBtn) {
-      Store.toggleFavorite(removeBtn.dataset.id);
+      const id = String(removeBtn.dataset.id);
+      const product = products.find(p => String(p.id) === id);
+      
+      Store.toggleFavorite(id);
       renderFavorites();
+      
+      if (window.showToast && product) {
+        window.showToast('Удалено из избранного', 'error', product.image);
+      }
       return;
     }
 
@@ -112,9 +119,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!card) return;
       const id = String(card.dataset.cardId);
       if (!id) return;
+      
+      const product = products.find(p => String(p.id) === id);
 
       if (btn.dataset.action === 'add' || btn.dataset.action === 'plus') {
         Store.addToCart(id, +1);
+        if (window.showToast && product) {
+          window.showToast('Добавлено в корзину', 'success', product.image);
+        }
       } else if (btn.dataset.action === 'minus') {
         Store.addToCart(id, -1);
       }
