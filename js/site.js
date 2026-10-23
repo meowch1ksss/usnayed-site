@@ -307,12 +307,14 @@
   const addReviewFormWrapper = document.getElementById('addReviewFormWrapper');
   const addReviewForm      = document.getElementById('addReviewForm');
 
+  // Проверяем, есть ли вообще скрытые отзывы. Если нет — прячем кнопку
   if (showMoreBtn && hiddenReviews) {
-    showMoreBtn.addEventListener('click', () => {
-      hiddenReviews.style.display = 'block';
-      addReviewFormWrapper?.classList.remove('hidden');
+    const hiddenGrid = hiddenReviews.querySelector('.reviews-grid');
+    // Если внутри сетки нет ни одного отзыва (только пустые комментарии в HTML)
+    if (!hiddenGrid || hiddenGrid.children.length === 0) {
+      showMoreBtn.style.display = 'none';
       showMoreWrapper.style.display = 'none';
-    });
+    }
   }
 
   if (addReviewForm) {
