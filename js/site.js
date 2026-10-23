@@ -241,7 +241,6 @@
     toast.style.gap = '10px';
     toast.style.padding = '6px 12px 6px 6px';
     
-    // УСИЛЕННЫЙ ЭФФЕКТ СТЕКЛА
     toast.style.background = 'rgba(20, 15, 25, 0.7)'; 
     toast.style.backdropFilter = 'blur(20px)';
     toast.style.webkitBackdropFilter = 'blur(20px)';
@@ -307,14 +306,12 @@
   const addReviewFormWrapper = document.getElementById('addReviewFormWrapper');
   const addReviewForm      = document.getElementById('addReviewForm');
 
-  // Проверяем, есть ли вообще скрытые отзывы. Если нет — прячем кнопку
   if (showMoreBtn && hiddenReviews) {
-    const hiddenGrid = hiddenReviews.querySelector('.reviews-grid');
-    // Если внутри сетки нет ни одного отзыва (только пустые комментарии в HTML)
-    if (!hiddenGrid || hiddenGrid.children.length === 0) {
-      showMoreBtn.style.display = 'none';
+    showMoreBtn.addEventListener('click', () => {
+      hiddenReviews.style.display = 'block';
+      addReviewFormWrapper?.classList.remove('hidden');
       showMoreWrapper.style.display = 'none';
-    }
+    });
   }
 
   if (addReviewForm) {
@@ -368,6 +365,13 @@
         `;
         hiddenGrid.prepend(el);
       });
+
+      // === ПРОВЕРКА НАЛИЧИЯ СКРЫТЫХ ОТЗЫВОВ (ПОСЛЕ ЗАГРУЗКИ) ===
+      if (hiddenGrid.children.length === 0) {
+        if (showMoreBtn) showMoreBtn.style.display = 'none';
+        if (showMoreWrapper) showMoreWrapper.style.display = 'none';
+      }
+
     } catch (err) {
       console.error('Ошибка загрузки отзывов', err);
     }
