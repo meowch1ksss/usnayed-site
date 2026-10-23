@@ -1,0 +1,8 @@
+{
+  "name": "usnayed-site",
+  "version": "1.0.0",
+  "description": "Food delivery site",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
