@@ -1,2 +1,4 @@
 [build]
+  command = "echo 'Build skipped'"
+  publish = "."
   functions = "netlify/functions"
