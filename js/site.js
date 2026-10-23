@@ -308,9 +308,19 @@
 
   if (showMoreBtn && hiddenReviews) {
     showMoreBtn.addEventListener('click', () => {
-      hiddenReviews.style.display = 'block';
-      addReviewFormWrapper?.classList.remove('hidden');
-      showMoreWrapper.style.display = 'none';
+      const isOpen = hiddenReviews.style.display === 'block';
+      
+      if (isOpen) {
+        // Сворачиваем
+        hiddenReviews.style.display = 'none';
+        addReviewFormWrapper?.classList.add('hidden');
+        showMoreBtn.innerHTML = 'Показать все отзывы ↓';
+      } else {
+        // Разворачиваем
+        hiddenReviews.style.display = 'block';
+        addReviewFormWrapper?.classList.remove('hidden');
+        showMoreBtn.innerHTML = 'Свернуть отзывы ↑';
+      }
     });
   }
 
