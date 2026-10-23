@@ -1,9 +1,9 @@
 window.APP_CONFIG = {
-  API_BASE: '',
+  API_BASE: 'https://usnayed-api.aleksejmaculin1.workers.dev',
   API: {
-    orders: '/.netlify/functions/api/api/orders',
-    reviews: '/.netlify/functions/api/api/reviews',
-    review: (id) => `/.netlify/functions/api/api/reviews/${encodeURIComponent(id)}`,
+    orders: 'https://usnayed-api.aleksejmaculin1.workers.dev/api/orders',
+    reviews: 'https://usnayed-api.aleksejmaculin1.workers.dev/api/reviews',
+    review: (id) => `https://usnayed-api.aleksejmaculin1.workers.dev/api/reviews/${encodeURIComponent(id)}`,
   },
   FETCH_TIMEOUT: 10000,
   MIN_LUNCHES: 1,
