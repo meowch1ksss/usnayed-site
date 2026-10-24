@@ -123,6 +123,43 @@
     initPageFade();
   });
 
+  // === ПЛАВАЮЩАЯ КОРЗИНА ===
+  function updateFloatingCart() {
+    const cart = Store.getCart();
+    const floatingCart = document.getElementById('floatingCart');
+    if (!floatingCart) return;
+
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    
+    if (count === 0) {
+      floatingCart.classList.remove('visible');
+      return;
+    }
+
+    // Считаем сумму
+    const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
+    const totalSum = cart.reduce((sum, item) => {
+      const p = products.find(x => String(x.id) === String(item.id));
+      return sum + (p ? p.price * item.qty : 0);
+    }, 0);
+
+    document.getElementById('floatingCartSum').textContent = `${totalSum} ₽`;
+    document.getElementById('floatingCartCount').textContent = `${count} ${count === 1 ? 'товар' : count < 5 ? 'товара' : 'товаров'}`;
+    
+    floatingCart.classList.add('visible');
+  }
+
+  // Обновляем при загрузке
+  updateFloatingCart();
+
+  // Перехватываем сохранение корзины, чтобы обновлять панель
+  const originalSaveCart = Store.saveCart;
+  Store.saveCart = function(cart) {
+    const result = originalSaveCart(cart);
+    updateFloatingCart();
+    return result;
+  };
+
   /* ============================================================
    * Полноэкранное меню категорий (если есть на странице)
    * ============================================================ */
@@ -321,6 +358,16 @@
   const showMoreWrapper    = document.getElementById('showMoreWrapper');
   const addReviewFormWrapper = document.getElementById('addReviewFormWrapper');
   const addReviewForm      = document.getElementById('addReviewForm');
+
+  // Проверяем, если перешли по ссылке из профиля
+  if (window.location.hash === '#reviews' && hiddenReviews) {
+    setTimeout(() => {
+      hiddenReviews.style.display = 'block';
+      addReviewFormWrapper?.classList.remove('hidden');
+      showMoreWrapper.style.display = 'none';
+      document.getElementById('reviews').scrollIntoView({ behavior: 'smooth' });
+    }, 300);
+  }
 
   if (showMoreBtn && hiddenReviews) {
     showMoreBtn.addEventListener('click', () => {

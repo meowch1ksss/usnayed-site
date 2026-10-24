@@ -3867,3 +3867,88 @@ body.page-leaving {
   /* Задержка для visibility, чтобы анимация прозрачности успела пройти */
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s !important;
 }
+
+/* ============================================================
+ * Плавающая корзина
+ * ============================================================ */
+.floating-cart {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(150%); /* Спрятана внизу */
+  width: calc(100% - 40px);
+  max-width: 600px;
+  background: rgba(30, 22, 45, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(168, 121, 255, 0.4);
+  border-radius: 20px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.floating-cart.visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+.floating-cart-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.floating-cart-icon {
+  font-size: 24px;
+  background: rgba(168, 121, 255, 0.2);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+}
+
+.floating-cart-info strong {
+  display: block;
+  font-size: 18px;
+  color: #f6f1ff;
+}
+
+.floating-cart-info span {
+  font-size: 12px;
+  color: #a49ab8;
+}
+
+.floating-cart-btn {
+  background: #a879ff;
+  color: #100b1c;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.floating-cart-btn:hover {
+  background: #c6a6ff;
+}
+
+/* На мобилках делаем панель чуть меньше */
+@media (max-width: 600px) {
+  .floating-cart {
+    bottom: 80px; /* Отступ от мобильного меню */
+    width: calc(100% - 20px);
+    padding: 10px 12px;
+  }
+  .floating-cart-btn {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  .floating-cart-info strong { font-size: 16px; }
+}

@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="order-number" style="font-size: 20px; font-weight: 800; color: #f6f1ff;">Заказ ${order.number}</div>
               <div class="order-date" style="font-size: 13px; color: #a49ab8; margin-top: 5px;">${date}</div>
             </div>
-            <div class="order-status" style="background: rgba(183, 255, 112, 0.1); color: #b7ff70; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700;">${order.status || 'Принят'}</div>
           </div>
           
           <!-- Жестко задаем display: block, чтобы товары шли строго друг под другом -->
