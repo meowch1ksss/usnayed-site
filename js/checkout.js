@@ -236,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const address = document.querySelector('input[name="address"]').value;
     const comment = document.querySelector('textarea[name="comment"]').value;
 
+    // Формируем объект заказа
     const orderData = {
       number: 'ORD-' + Math.floor(Math.random() * 900000 + 100000),
       items: cart.map(item => {
@@ -249,13 +250,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }),
       total: totalSum,
       weight: formattedWeight,
-      deliveryTime: deliveryTime,
-      name: name,
-      email: email,
-      phone: phone,
+      deliveryTime: deliveryTime, // Берем из инпута даты
+      name: name || 'Покупатель',
+      email: email || '',
+      phone: phone || '',
       city: city || 'Не указан',
       address: address || '',
       comment: comment || '',
+      
+      // --- ВОТ ЭТИ СТРОКИ ДОЛЖНЫ БЫТЬ ОБЯЗАТЕЛЬНО ---
       deliveryMethod: document.getElementById('deliveryMethodInput').value,
       payerType: isJur ? 'Юр. лицо' : 'Физ. лицо',
       paymentMethod: document.getElementById('paymentInput').value,
