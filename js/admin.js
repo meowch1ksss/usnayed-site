@@ -371,7 +371,8 @@ window.printOrder = function(orderNumber) {
   const order = orders.find(o => o.number === orderNumber);
   if (!order) return;
 
-  const printWindow = window.open('', '', 'width=700,height=800');
+  // Открываем окно без лишних панелей браузера (чтобы убрать дату сверху)
+  const printWindow = window.open('', '_blank', 'width=700,height=800');
   const allProducts = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
 
   let itemsHtml = (order.items || []).map(i => {
@@ -387,19 +388,33 @@ window.printOrder = function(orderNumber) {
   `}).join('');
 
   let detailsHtml = '';
-  if (order.payerType && order.payerType.includes('Юр')) {
+  const isJur = (order.payerType || order.payer_type || '').includes('Юр');
+  
+  if (isJur) {
     let c = {};
-    try { c = JSON.parse(order.companyData || order.company_data); } catch(e){}
+    // Пытаемся распарсить данные компании
+    try { 
+      const rawData = order.companyData || order.company_data; 
+      c = typeof rawData === 'string' ? JSON.parse(rawData) : rawData || {};
+    } catch(e) { console.error('Ошибка парсинга', e); }
+
     detailsHtml = `
       <div><strong>Тип:</strong> Юридическое лицо</div>
       <div><strong>Компания:</strong> ${order.name || '—'}</div>
-      <div><strong>ИНН:</strong> ${c.inn || '—'} / <strong>КПП:</strong> ${c.kpp || '—'}</div>
-      <div><strong>Юр. адрес:</strong> ${c.legalAddress || '—'}</div>
+      <div><strong>Контактное лицо:</strong> ${c.contactPerson || '—'}</div>
+      <div><strong>Телефон:</strong> ${order.phone || '—'}</div>
+      <div><strong>Факс:</strong> ${c.fax || '—'}</div>
+      <div><strong>Юридический адрес:</strong> ${c.legalAddress || '—'}</div>
+      <div><strong>ИНН:</strong> ${c.inn || '—'}</div>
+      <div><strong>КПП:</strong> ${c.kpp || '—'}</div>
+      <div><strong>Email:</strong> ${order.email || '—'}</div>
     `;
   } else {
     detailsHtml = `
       <div><strong>Тип:</strong> Физическое лицо</div>
-      <div><strong>Клиент:</strong> ${order.name || '—'}</div>
+      <div><strong>ФИО:</strong> ${order.name || '—'}</div>
+      <div><strong>Телефон:</strong> ${order.phone || '—'}</div>
+      <div><strong>Email:</strong> ${order.email || '—'}</div>
     `;
   }
 
@@ -408,6 +423,7 @@ window.printOrder = function(orderNumber) {
   const deliveryMethodStr = order.deliveryMethod === 'pickup' ? 'Самовывоз' : 'Курьером';
   const orderDate = new Date(order.date).toLocaleString('ru-RU');
 
+  // Формируем HTML чека
   printWindow.document.write(`
     <html>
       <head>
@@ -432,9 +448,8 @@ window.printOrder = function(orderNumber) {
         
         <div class="info-block">
           ${detailsHtml}
-          <div><strong>Телефон:</strong> ${order.phone || '—'}</div>
           <div><strong>Адрес доставки:</strong> г. ${order.city || '—'}, ${order.address || '—'}</div>
-          <div><strong>Желаемое время доставки:</strong> ${deliveryTimeStr}</div>
+          <div><strong>Время доставки:</strong> ${deliveryTimeStr}</div>
           <div><strong>Тип доставки:</strong> ${deliveryMethodStr}</div>
           <div><strong>Вид оплаты:</strong> ${paymentStr}</div>
           ${order.comment ? `<div><strong>Комментарий:</strong> ${order.comment}</div>` : ''}
@@ -466,8 +481,10 @@ window.printOrder = function(orderNumber) {
   `);
 
   printWindow.document.close();
-  printWindow.focus();
+  
+  // Ждем загрузки стилей и вызываем печать
   setTimeout(() => {
+    printWindow.focus();
     printWindow.print();
     printWindow.close();
   }, 500);
