@@ -632,3 +632,24 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   /* Задержка для visibility, чтобы анимация прозрачности успела пройти */
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s !important;
 }
+
+/* Базовые точки */
+.mail-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  /* Добавляем плавный переход для ховера (если захочешь сделать еще ярче) */
+  transition: box-shadow 0.3s ease;
+}
+
+/* Свечение для каждой почты (тот же цвет, но с прозрачностью) */
+.gmail   { background: #ea4335; box-shadow: 0 0 8px rgba(234, 67, 53, 0.8); }
+.outlook { background: #0078d4; box-shadow: 0 0 8px rgba(0, 120, 212, 0.8); }
+.yahoo   { background: #6001d2; box-shadow: 0 0 8px rgba(96, 1, 210, 0.8); }
+.icloud  { background: #3693f3; box-shadow: 0 0 8px rgba(54, 147, 243, 0.8); }
+.proton  { background: #6d4aff; box-shadow: 0 0 8px rgba(109, 74, 255, 0.8); }
+.zoho    { background: #e42527; box-shadow: 0 0 8px rgba(228, 37, 39, 0.8); }
+.yandex  { background: #fc3f1d; box-shadow: 0 0 8px rgba(252, 63, 29, 0.8); }
+.mailru  { background: #005ff9; box-shadow: 0 0 8px rgba(0, 95, 249, 0.8); }
+.rambler { background: #315efb; box-shadow: 0 0 8px rgba(49, 94, 251, 0.8); }
