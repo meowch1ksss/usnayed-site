@@ -3846,3 +3846,24 @@ body.page-leaving {
 .faq-answer {
   height: auto !important;
 }
+
+/* ============================================================
+ * Плавный Email Picker
+ * ============================================================ */
+.email-provider-list {
+  /* Начальные стили для анимации */
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  visibility: visible;
+}
+
+/* Класс, который мы добавляем в JS для скрытия */
+.email-list-hidden {
+  opacity: 0 !important;
+  transform: translateY(10px) !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  /* Задержка для visibility, чтобы анимация прозрачности успела пройти */
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s !important;
+}

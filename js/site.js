@@ -47,30 +47,44 @@
   }
 
   /* ============================================================
-   * Email picker
+   * Email picker (Плавное открытие)
    * ============================================================ */
   function initEmailPicker() {
     const trigger = $el('.email-picker-trigger');
     const list    = $el('.email-provider-list');
     if (!trigger || !list) return;
 
-    trigger.addEventListener('click', () => {
-      const open = trigger.getAttribute('aria-expanded') !== 'true';
-      trigger.setAttribute('aria-expanded', String(open));
-      list.hidden = !open;
-    });
+    // Убираем атрибут hidden, если он есть в HTML, и заменяем на класс
+    list.removeAttribute('hidden');
+    list.classList.add('email-list-hidden');
 
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.email-picker')) {
+    trigger.addEventListener('click', () => {
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      
+      if (isOpen) {
+        // Закрываем
         trigger.setAttribute('aria-expanded', 'false');
-        list.hidden = true;
+        list.classList.add('email-list-hidden');
+      } else {
+        // Открываем
+        trigger.setAttribute('aria-expanded', 'true');
+        list.classList.remove('email-list-hidden');
       }
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !list.hidden) {
+    // Закрываем при клике вне
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.email-picker')) {
         trigger.setAttribute('aria-expanded', 'false');
-        list.hidden = true;
+        list.classList.add('email-list-hidden');
+      }
+    });
+
+    // Закрываем по Esc
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !list.classList.contains('email-list-hidden')) {
+        trigger.setAttribute('aria-expanded', 'false');
+        list.classList.add('email-list-hidden');
         trigger.focus();
       }
     });
