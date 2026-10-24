@@ -644,7 +644,7 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
 }
 
 /* Свечение для каждой почты (тот же цвет, но с прозрачностью) */
-.gmail   { background: #ea4335; box-shadow: 0 0 8px rgba(234, 67, 53, 0.8); }
+.gmail   { background: #ea4335; box-shadow: 0 0 12px rgba(234, 67, 53, 0.8); }
 .outlook { background: #0078d4; box-shadow: 0 0 8px rgba(0, 120, 212, 0.8); }
 .yahoo   { background: #6001d2; box-shadow: 0 0 8px rgba(96, 1, 210, 0.8); }
 .icloud  { background: #3693f3; box-shadow: 0 0 8px rgba(54, 147, 243, 0.8); }
@@ -653,3 +653,9 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
 .yandex  { background: #fc3f1d; box-shadow: 0 0 8px rgba(252, 63, 29, 0.8); }
 .mailru  { background: #005ff9; box-shadow: 0 0 8px rgba(0, 95, 249, 0.8); }
 .rambler { background: #315efb; box-shadow: 0 0 8px rgba(49, 94, 251, 0.8); }
+
+.email-provider-list a:hover .mail-dot {
+  /* Увеличиваем радиус и интенсивность свечения при наведении */
+  box-shadow: 0 0 12px currentColor, 0 0 4px currentColor;
+  transform: scale(1.1);
+}
