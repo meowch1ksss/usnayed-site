@@ -89,10 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const orders = await res.json();
+      window.ordersData = orders; // Сохраняем для функции печати
+
       if (!orders.length) { tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>'; return; }
 
       tabContent.innerHTML = orders.map(o => {
-        // Проверяем, что payerType содержит "Юр" (для надежности)
         const isJur = (o.payerType || o.payer_type || '').includes('Юр');
         
         let deliveryText = 'Курьером';
@@ -100,14 +101,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let paymentText = 'Наличные';
         if (isJur) {
-          // Для юрлиц всегда банковский перевод (даже если в базе ошибка)
           paymentText = 'Банковский перевод';
         } else {
           if (o.paymentMethod === 'sber') paymentText = 'Сбербанк (перевод)';
           if (o.paymentMethod === 'bank') paymentText = 'Банковский перевод';
         }
 
-        // Парсим companyData (оно может прийти как строка JSON или как объект)
         let cData = {};
         try {
           if (o.companyData) cData = typeof o.companyData === 'string' ? JSON.parse(o.companyData) : o.companyData;
@@ -177,6 +176,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     `).join('')}
                   </ul>
                 </div>
+
+                <div style="margin-top: 20px; text-align: right;">
+                  <button class="admin-btn admin-btn-primary" onclick="printOrder('${escapeAttr(o.number)}')" style="font-size: 13px; padding: 8px 16px;">
+                    🖨 Распечатать чек
+                  </button>
+                </div>
+
               </div>
             </div>
           </div>
@@ -356,3 +362,97 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderTab();
 });
+
+// ============================================================
+// ФУНКЦИЯ ПЕЧАТИ ЧЕКА/НАКЛАДНОЙ
+// ============================================================
+window.printOrder = function(orderNumber) {
+  const orders = window.ordersData || [];
+  const order = orders.find(o => o.number === orderNumber);
+  if (!order) return;
+
+  const printWindow = window.open('', '', 'width=600,height=800');
+  
+  let itemsHtml = (order.items || []).map(i => `
+    <tr>
+      <td style="padding: 10px 8px; border-bottom: 1px solid #ccc;">${i.name}</td>
+      <td style="padding: 10px 8px; border-bottom: 1px solid #ccc; text-align: center;">${i.qty} шт.</td>
+      <td style="padding: 10px 8px; border-bottom: 1px solid #ccc; text-align: right;">${i.price * i.qty} ₽</td>
+    </tr>
+  `).join('');
+
+  let detailsHtml = '';
+  if (order.payerType && order.payerType.includes('Юр')) {
+    let c = {};
+    try { c = JSON.parse(order.companyData); } catch(e){}
+    detailsHtml = `
+      <div><strong>Компания:</strong> ${order.name || '—'}</div>
+      <div><strong>ИНН:</strong> ${c.inn || '—'} / <strong>КПП:</strong> ${c.kpp || '—'}</div>
+      <div><strong>Юр. адрес:</strong> ${c.legalAddress || '—'}</div>
+    `;
+  } else {
+    detailsHtml = `<div><strong>Клиент:</strong> ${order.name || '—'}</div>`;
+  }
+
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Чек ${order.number}</title>
+        <style>
+          body { font-family: 'Arial', sans-serif; padding: 30px; color: #000; max-width: 600px; margin: 0 auto; }
+          h1 { font-size: 22px; text-align: center; margin-bottom: 5px; text-transform: uppercase; }
+          .date { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; }
+          .info-block { margin-bottom: 20px; font-size: 14px; line-height: 1.6; }
+          .info-block div { margin-bottom: 4px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+          th { text-align: left; padding: 8px; border-bottom: 2px solid #000; font-weight: bold; }
+          th:nth-child(2) { text-align: center; }
+          th:nth-child(3) { text-align: right; }
+          .total-row { font-size: 18px; font-weight: bold; text-align: right; padding-top: 20px; }
+          .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #777; border-top: 1px dashed #ccc; padding-top: 10px; }
+        </style>
+      </head>
+      <body>
+        <h1>Накладная на заказ</h1>
+        <div class="date">Заказ №${order.number} от ${new Date(order.date).toLocaleString('ru-RU')}</div>
+        
+        <div class="info-block">
+          <div><strong>Телефон:</strong> ${order.phone || '—'}</div>
+          <div><strong>Адрес доставки:</strong> г. ${order.city || '—'}, ${order.address || '—'}</div>
+          <div><strong>Время доставки:</strong> ${order.deliveryTime || '—'}</div>
+          <div><strong>Тип доставки:</strong> ${order.deliveryMethod === 'pickup' ? 'Самовывоз' : 'Курьером'}</div>
+          ${detailsHtml}
+          ${order.comment ? `<div><strong>Комментарий:</strong> ${order.comment}</div>` : ''}
+        </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Наименование</th>
+              <th>Кол-во</th>
+              <th>Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+        </table>
+        
+        <div class="total-row">
+          Итого к оплате: ${order.total} ₽
+        </div>
+        
+        <div class="footer">
+          Спасибо за заказ! Ждем вас снова.
+        </div>
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => {
+    printWindow.print();
+    printWindow.close();
+  }, 500);
+};

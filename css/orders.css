@@ -105,3 +105,29 @@
   background: rgba(255, 109, 120, 0.2);
   transform: translateY(-2px);
 }
+
+/* Стили для кастомной модалки очистки */
+.confirm-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(10, 8, 16, 0.8); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 20px;
+}
+.confirm-overlay.open { opacity: 1; visibility: visible; }
+.confirm-modal {
+  background: linear-gradient(145deg, rgba(34, 24, 52, 0.95), rgba(20, 14, 31, 0.95));
+  border: 1px solid rgba(168, 121, 255, 0.3); border-radius: 24px; padding: 32px;
+  max-width: 400px; width: 100%; text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6); transform: translateY(20px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.confirm-overlay.open .confirm-modal { transform: translateY(0) scale(1); }
+.confirm-icon { font-size: 48px; margin-bottom: 16px; display: inline-block; filter: drop-shadow(0 0 15px rgba(255, 109, 120, 0.4)); }
+.confirm-modal h2 { color: #f6f1ff; font-family: 'Space Grotesk', sans-serif; font-size: 24px; margin: 0 0 12px; }
+.confirm-modal p { color: #a49ab8; font-size: 14px; line-height: 1.5; margin: 0 0 24px; }
+.confirm-actions { display: flex; gap: 12px; }
+.confirm-btn { flex: 1; padding: 14px; border-radius: 12px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; border: none; }
+.confirm-cancel { background: rgba(255, 255, 255, 0.05); color: #a49ab8; border: 1px solid rgba(255, 255, 255, 0.1); }
+.confirm-cancel:hover { background: rgba(255, 255, 255, 0.1); color: #f6f1ff; }
+.confirm-delete { background: linear-gradient(135deg, #ff6d78, #e53935); color: #fff; box-shadow: 0 4px 15px rgba(255, 109, 120, 0.3); }
+.confirm-delete:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 109, 120, 0.5); }
