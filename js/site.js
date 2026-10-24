@@ -17,28 +17,30 @@
       const answer = item.querySelector('.faq-answer');
       if (!btn || !answer) return;
 
+      // Переносим контент внутрь обертки для анимации
+      if (!answer.querySelector('.faq-answer-inner')) {
+        const content = answer.innerHTML;
+        answer.innerHTML = `<div class="faq-answer-inner">${content}</div>`;
+      }
+
       btn.addEventListener('click', () => {
         const isOpen = item.classList.contains('is-open');
 
+        // Закрываем все остальные
         items.forEach((other) => {
           if (other !== item && other.classList.contains('is-open')) {
             other.classList.remove('is-open');
-            other.querySelector('.faq-answer').style.height = '0px';
             other.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
           }
         });
 
+        // Переключаем текущий
         if (isOpen) {
           item.classList.remove('is-open');
-          answer.style.height = '0px';
           btn.setAttribute('aria-expanded', 'false');
         } else {
           item.classList.add('is-open');
-          answer.style.height = answer.scrollHeight + 'px';
           btn.setAttribute('aria-expanded', 'true');
-          setTimeout(() => {
-            if (item.classList.contains('is-open')) answer.style.height = 'auto';
-          }, 300);
         }
       });
     });

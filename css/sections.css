@@ -589,3 +589,25 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   background: rgba(168, 121, 255, 0.15);
   border-radius: 4px;
 }
+
+/* ============================================================
+ * Плавный FAQ (Grid-анимация)
+ * ============================================================ */
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.faq-item.is-open .faq-answer {
+  grid-template-rows: 1fr;
+}
+
+.faq-answer-inner {
+  overflow: hidden;
+}
+
+/* Убираем старые стили высоты, если они мешают */
+.faq-answer {
+  height: auto !important;
+}
