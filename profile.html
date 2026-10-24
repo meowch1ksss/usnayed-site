@@ -198,11 +198,20 @@
           </a>
         </div>
 
-        <!-- Новая кнопка отзыва -->
-        <div style="margin-bottom: 20px;">
-          <a href="index.html#reviews" class="button button-primary" style="width: 100%; display: block; text-align: center; background: rgba(168, 121, 255, 0.15); color: #c6a6ff; border: 1px solid rgba(168, 121, 255, 0.3);">
-            ✍️ Оставить отзыв
-          </a>
+        <!-- Кнопка и форма отзыва в ЛК -->
+        <div style="margin-bottom: 20px; margin-top: 10px;">
+          <button id="toggleReviewBtn" class="button button-primary" style="width: 100%; display: flex; justify-content: center; align-items: center; background: rgba(168, 121, 255, 0.15); color: #c6a6ff; border: 1px solid rgba(168, 121, 255, 0.3); padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.2s;">
+            Оставить отзыв
+          </button>
+
+          <!-- Скрытая форма -->
+          <div id="profileReviewFormWrapper" class="profile-review-wrapper">
+            <form id="profileReviewForm" style="display: flex; flex-direction: column; gap: 15px; padding-top: 15px;">
+              <input type="text" id="profRevName" placeholder="Ваше имя" required style="width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(220,204,255,0.1); border-radius: 12px; color: #fff; outline: none;">
+              <textarea id="profRevText" placeholder="Ваш отзыв..." rows="4" required style="width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(220,204,255,0.1); border-radius: 12px; color: #fff; outline: none; resize: vertical;"></textarea>
+              <button type="submit" class="button button-primary" style="width: 100%;">Отправить отзыв</button>
+            </form>
+          </div>
         </div>
 
         <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; margin-top: 20px;">

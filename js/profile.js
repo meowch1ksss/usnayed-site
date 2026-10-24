@@ -346,9 +346,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-    /* ============================================================
-   * ЖИВОЙ ПОИСК (Выпадающая подсказка)
-   * ============================================================ */
+  //============================================================
+  //ЖИВОЙ ПОИСК (Выпадающая подсказка)
+  //============================================================
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
 
@@ -419,6 +419,64 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const q = searchInput.value.trim();
       if (q) location.href = `menu.html?search=${encodeURIComponent(q)}`;
+    });
+  }
+
+  // === ОТПРАВКА ОТЗЫВА ИЗ ЛК ===
+  const toggleReviewBtn = document.getElementById('toggleReviewBtn');
+  const profileReviewFormWrapper = document.getElementById('profileReviewFormWrapper');
+  const profileReviewForm = document.getElementById('profileReviewForm');
+
+  if (toggleReviewBtn && profileReviewFormWrapper) {
+    toggleReviewBtn.addEventListener('click', () => {
+      profileReviewFormWrapper.classList.toggle('open');
+      if (profileReviewFormWrapper.classList.contains('open')) {
+        // Меняем текст кнопки, когда форма открыта
+        toggleReviewBtn.textContent = 'Свернуть форму';
+        toggleReviewBtn.style.background = 'rgba(255, 255, 255, 0.05)';
+        toggleReviewBtn.style.color = '#a49ab8';
+      } else {
+        toggleReviewBtn.textContent = 'Оставить отзыв';
+        toggleReviewBtn.style.background = 'rgba(168, 121, 255, 0.15)';
+        toggleReviewBtn.style.color = '#c6a6ff';
+      }
+    });
+  }
+
+  if (profileReviewForm) {
+    profileReviewForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('profRevName').value.trim();
+      const text = document.getElementById('profRevText').value.trim();
+      if (!name || !text) return;
+
+      const submitBtn = profileReviewForm.querySelector('button[type="submit"]');
+      const original = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Отправка...';
+
+      try {
+        // Отправляем на твой воркер
+        const res = await Store.apiFetch(APP_CONFIG.API.reviews, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, text }),
+        });
+        if (!res.ok) throw new Error('server');
+
+        profileReviewForm.reset();
+        profileReviewFormWrapper.classList.remove('open');
+        toggleReviewBtn.textContent = 'Оставить отзыв';
+        toggleReviewBtn.style.background = 'rgba(168, 121, 255, 0.15)';
+        toggleReviewBtn.style.color = '#c6a6ff';
+        
+        showToast('Спасибо! Ваш отзыв отправлен на проверку.', 'success');
+      } catch {
+        showToast('Не удалось отправить отзыв. Попробуйте позже.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = original;
+      }
     });
   }
 

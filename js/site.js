@@ -125,10 +125,10 @@
 
   // === ПЛАВАЮЩАЯ КОРЗИНА ===
   function updateFloatingCart() {
-    const cart = Store.getCart();
     const floatingCart = document.getElementById('floatingCart');
-    if (!floatingCart) return;
+    if (!floatingCart) return; // На главной этого блока нет, код просто пропустится
 
+    const cart = Store.getCart();
     const count = cart.reduce((sum, item) => sum + item.qty, 0);
     
     if (count === 0) {
@@ -136,7 +136,6 @@
       return;
     }
 
-    // Считаем сумму
     const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
     const totalSum = cart.reduce((sum, item) => {
       const p = products.find(x => String(x.id) === String(item.id));
@@ -149,7 +148,6 @@
     floatingCart.classList.add('visible');
   }
 
-  // Обновляем при загрузке
   updateFloatingCart();
 
   // Перехватываем сохранение корзины, чтобы обновлять панель
