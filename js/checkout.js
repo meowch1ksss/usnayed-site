@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // --- ВОТ ЭТИ СТРОКИ ДОЛЖНЫ БЫТЬ ОБЯЗАТЕЛЬНО ---
       deliveryMethod: document.getElementById('deliveryMethodInput').value,
       payerType: isJur ? 'Юр. лицо' : 'Физ. лицо',
-      paymentMethod: document.getElementById('paymentInput').value,
+      paymentMethod: isJur ? 'bank' : document.getElementById('paymentInput').value,
       companyData: companyData // Передаем реквизиты
     };
 

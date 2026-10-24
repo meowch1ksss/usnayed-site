@@ -99,8 +99,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (o.deliveryMethod === 'pickup') deliveryText = 'Самовывоз';
 
         let paymentText = 'Наличные';
-        if (o.paymentMethod === 'sber') paymentText = 'Сбербанк (перевод)';
-        if (o.paymentMethod === 'bank') paymentText = 'Банковский перевод';
+        if (isJur) {
+          // Для юрлиц всегда банковский перевод (даже если в базе ошибка)
+          paymentText = 'Банковский перевод';
+        } else {
+          if (o.paymentMethod === 'sber') paymentText = 'Сбербанк (перевод)';
+          if (o.paymentMethod === 'bank') paymentText = 'Банковский перевод';
+        }
 
         // Парсим companyData (оно может прийти как строка JSON или как объект)
         let cData = {};
