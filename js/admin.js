@@ -106,7 +106,58 @@ document.addEventListener('DOMContentLoaded', () => {
       const orders = await res.json();
       if (!orders.length) { tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>'; return; }
 
-      tabContent.innerHTML = orders.map(o => `
+      tabContent.innerHTML = orders.map(o => {
+        // Расшифровываем данные
+        const isJur = o.payerType === 'Юр. лицо';
+        
+        let deliveryText = 'Курьером';
+        if (o.deliveryMethod === 'pickup') deliveryText = 'Самовывоз';
+
+        let paymentText = 'Наличные';
+        if (o.paymentMethod === 'sber') paymentText = 'Сбербанк (перевод)';
+        if (o.paymentMethod === 'bank') paymentText = 'Банковский перевод';
+
+        // Разбираем companyData, если оно есть (оно хранится строкой JSON)
+        let cData = {};
+        try {
+          if (o.companyData) cData = typeof o.companyData === 'string' ? JSON.parse(o.companyData) : o.companyData;
+        } catch (e) { console.error('Ошибка парсинга companyData', e); }
+
+        // Собираем список деталей в зависимости от типа лица
+        let detailsHtml = '';
+        
+        if (isJur) {
+          detailsHtml = `
+            <li><strong>Желаемое время доставки:</strong> ${escapeHTML(o.deliveryTime || '—')}</li>
+            <li><strong>Компания:</strong> ${escapeHTML(o.name || '—')}</li>
+            <li><strong>Юридический адрес:</strong> ${escapeHTML(cData.legalAddress || '—')}</li>
+            <li><strong>ИНН:</strong> ${escapeHTML(cData.inn || '—')}</li>
+            <li><strong>КПП:</strong> ${escapeHTML(cData.kpp || '—')}</li>
+            <li><strong>Телефон:</strong> ${escapeHTML(o.phone || '—')}</li>
+            <li><strong>Email:</strong> ${escapeHTML(o.email || '—')}</li>
+            <li><strong>Факс:</strong> ${escapeHTML(cData.fax || '—')}</li>
+            <li><strong>Контактное лицо:</strong> ${escapeHTML(cData.contactPerson || '—')}</li>
+            <li><strong>Адрес доставки:</strong> ${escapeHTML(o.address || '—')}</li>
+            <li><strong>Город:</strong> ${escapeHTML(o.city || '—')}</li>
+            <li><strong>Комментарий:</strong> ${escapeHTML(o.comment || '—')}</li>
+            <li><strong>Тип доставки:</strong> ${deliveryText}</li>
+            <li><strong>Оплата:</strong> ${paymentText}</li>
+          `;
+        } else {
+          detailsHtml = `
+            <li><strong>Желаемое время доставки:</strong> ${escapeHTML(o.deliveryTime || '—')}</li>
+            <li><strong>ФИО:</strong> ${escapeHTML(o.name || '—')}</li>
+            <li><strong>Email:</strong> ${escapeHTML(o.email || '—')}</li>
+            <li><strong>Телефон:</strong> ${escapeHTML(o.phone || '—')}</li>
+            <li><strong>Адрес доставки:</strong> ${escapeHTML(o.address || '—')}</li>
+            <li><strong>Город:</strong> ${escapeHTML(o.city || '—')}</li>
+            <li><strong>Комментарий:</strong> ${escapeHTML(o.comment || '—')}</li>
+            <li><strong>Тип доставки:</strong> ${deliveryText}</li>
+            <li><strong>Оплата:</strong> ${paymentText}</li>
+          `;
+        }
+
+        return `
         <div class="admin-order-card">
           <!-- Шапка заказа (всегда видна) -->
           <div class="admin-order-header" onclick="this.parentElement.classList.toggle('open')">
@@ -121,30 +172,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- Детали заказа (скрыты по умолчанию) -->
           <div class="admin-order-details">
-            <div class="admin-order-info">
-              <p>Клиент: <strong>${escapeHTML(o.name || 'Не указан')}</strong></p>
-              <p>Телефон: ${escapeHTML(o.phone || 'Не указан')} · Город: ${escapeHTML(o.city || 'Не указан')}</p>
-              <p>Адрес: ${escapeHTML(o.address || 'Не указан')}</p>
-              ${o.comment ? `<p style="color:#ffaa00;">Комментарий: ${escapeHTML(o.comment)}</p>` : ''}
-              ${o.deliveryTime ? `<p>Время доставки: ${escapeHTML(o.deliveryTime)}</p>` : ''}
-              ${o.payerType ? `<p>Тип клиента: ${escapeHTML(o.payerType)}</p>` : ''}
-              ${o.paymentMethod ? `<p>Оплата: ${escapeHTML(o.paymentMethod)}</p>` : ''}
-            </div>
-
-            <div class="admin-order-items">
-              <small style="color: #a49ab8; display: block; margin-bottom: 8px;">Состав заказа:</small>
-              <ul style="list-style: none; padding: 0; margin: 0; color: #f6f1ff; font-size: 14px;">
-                ${(o.items || []).map(i => `
-                  <li style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 6px;">
-                    <span>${escapeHTML(i.name || '—')}</span>
-                    <span style="color:#a879ff;">${Number(i.qty || 0)} шт. × ${Number(i.price || 0)} ₽</span>
-                  </li>
-                `).join('')}
+            <div class="admin-order-info" style="padding-top: 15px; padding-bottom: 15px;">
+              
+              <!-- Список данных клиента -->
+              <ul class="admin-details-list" style="list-style: none; padding: 0; margin: 0 0 20px 0; color: #b5a9c6; font-size: 14px; line-height: 1.8;">
+                ${detailsHtml}
               </ul>
+
+              <!-- Разделитель -->
+              <hr style="border: none; border-top: 1px dashed rgba(220, 204, 255, 0.2); margin: 20px 0;">
+
+              <!-- Состав заказа -->
+              <div class="admin-order-items">
+                <small style="color: #a49ab8; display: block; margin-bottom: 8px;">Состав заказа:</small>
+                <ul style="list-style: none; padding: 0; margin: 0; color: #f6f1ff; font-size: 14px;">
+                  ${(o.items || []).map(i => `
+                    <li style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 6px;">
+                      <span>${escapeHTML(i.name || '—')}</span>
+                      <span style="color:#a879ff;">${Number(i.qty || 0)} шт. × ${Number(i.price || 0)} ₽</span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+
             </div>
           </div>
         </div>
-      `).join('');
+        `;
+      }).join('');
     } catch (err) {
       console.error(err);
       tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Ошибка загрузки заказов.</div>';
