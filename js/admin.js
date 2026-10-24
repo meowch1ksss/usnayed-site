@@ -371,57 +371,72 @@ window.printOrder = function(orderNumber) {
   const order = orders.find(o => o.number === orderNumber);
   if (!order) return;
 
-  const printWindow = window.open('', '', 'width=600,height=800');
-  
-  let itemsHtml = (order.items || []).map(i => `
+  const printWindow = window.open('', '', 'width=700,height=800');
+  const allProducts = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
+
+  let itemsHtml = (order.items || []).map(i => {
+    const prod = allProducts.find(p => String(p.id) === String(i.id));
+    const weight = prod ? prod.weight : '—';
+    return `
     <tr>
       <td style="padding: 10px 8px; border-bottom: 1px solid #ccc;">${i.name}</td>
+      <td style="padding: 10px 8px; border-bottom: 1px solid #ccc; text-align: center;">${weight}</td>
       <td style="padding: 10px 8px; border-bottom: 1px solid #ccc; text-align: center;">${i.qty} шт.</td>
       <td style="padding: 10px 8px; border-bottom: 1px solid #ccc; text-align: right;">${i.price * i.qty} ₽</td>
     </tr>
-  `).join('');
+  `}).join('');
 
   let detailsHtml = '';
   if (order.payerType && order.payerType.includes('Юр')) {
     let c = {};
-    try { c = JSON.parse(order.companyData); } catch(e){}
+    try { c = JSON.parse(order.companyData || order.company_data); } catch(e){}
     detailsHtml = `
+      <div><strong>Тип:</strong> Юридическое лицо</div>
       <div><strong>Компания:</strong> ${order.name || '—'}</div>
       <div><strong>ИНН:</strong> ${c.inn || '—'} / <strong>КПП:</strong> ${c.kpp || '—'}</div>
       <div><strong>Юр. адрес:</strong> ${c.legalAddress || '—'}</div>
     `;
   } else {
-    detailsHtml = `<div><strong>Клиент:</strong> ${order.name || '—'}</div>`;
+    detailsHtml = `
+      <div><strong>Тип:</strong> Физическое лицо</div>
+      <div><strong>Клиент:</strong> ${order.name || '—'}</div>
+    `;
   }
+
+  const deliveryTimeStr = order.deliveryTime || order.delivery_time || '—';
+  const paymentStr = order.paymentMethod === 'bank' ? 'Банковский перевод' : (order.paymentMethod === 'sber' ? 'Сбербанк (перевод)' : 'Наличные');
+  const deliveryMethodStr = order.deliveryMethod === 'pickup' ? 'Самовывоз' : 'Курьером';
+  const orderDate = new Date(order.date).toLocaleString('ru-RU');
 
   printWindow.document.write(`
     <html>
       <head>
         <title>Чек ${order.number}</title>
         <style>
-          body { font-family: 'Arial', sans-serif; padding: 30px; color: #000; max-width: 600px; margin: 0 auto; }
-          h1 { font-size: 22px; text-align: center; margin-bottom: 5px; text-transform: uppercase; }
-          .date { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; }
-          .info-block { margin-bottom: 20px; font-size: 14px; line-height: 1.6; }
+          body { font-family: 'Arial', sans-serif; padding: 30px; color: #000; max-width: 700px; margin: 0 auto; }
+          h1 { font-size: 22px; text-align: center; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;}
+          .subtitle { text-align: center; font-size: 14px; color: #555; margin-bottom: 25px; }
+          .info-block { margin-bottom: 25px; font-size: 14px; line-height: 1.6; }
           .info-block div { margin-bottom: 4px; }
           table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
           th { text-align: left; padding: 8px; border-bottom: 2px solid #000; font-weight: bold; }
-          th:nth-child(2) { text-align: center; }
-          th:nth-child(3) { text-align: right; }
+          th:nth-child(2), th:nth-child(3) { text-align: center; }
+          th:nth-child(4) { text-align: right; }
           .total-row { font-size: 18px; font-weight: bold; text-align: right; padding-top: 20px; }
-          .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #777; border-top: 1px dashed #ccc; padding-top: 10px; }
+          .footer { margin-top: 40px; text-align: center; font-size: 14px; font-weight: bold; border-top: 1px dashed #ccc; padding-top: 15px; }
         </style>
       </head>
       <body>
         <h1>Накладная на заказ</h1>
-        <div class="date">Заказ №${order.number} от ${new Date(order.date).toLocaleString('ru-RU')}</div>
+        <div class="subtitle">Заказ №${order.number} от ${orderDate}</div>
         
         <div class="info-block">
+          ${detailsHtml}
           <div><strong>Телефон:</strong> ${order.phone || '—'}</div>
           <div><strong>Адрес доставки:</strong> г. ${order.city || '—'}, ${order.address || '—'}</div>
-          <div><strong>Время доставки:</strong> ${order.deliveryTime || '—'}</div>
-          <div><strong>Тип доставки:</strong> ${order.deliveryMethod === 'pickup' ? 'Самовывоз' : 'Курьером'}</div>
-          ${detailsHtml}
+          <div><strong>Желаемое время доставки:</strong> ${deliveryTimeStr}</div>
+          <div><strong>Тип доставки:</strong> ${deliveryMethodStr}</div>
+          <div><strong>Вид оплаты:</strong> ${paymentStr}</div>
           ${order.comment ? `<div><strong>Комментарий:</strong> ${order.comment}</div>` : ''}
         </div>
         
@@ -429,6 +444,7 @@ window.printOrder = function(orderNumber) {
           <thead>
             <tr>
               <th>Наименование</th>
+              <th>Порция</th>
               <th>Кол-во</th>
               <th>Сумма</th>
             </tr>
@@ -443,7 +459,7 @@ window.printOrder = function(orderNumber) {
         </div>
         
         <div class="footer">
-          Спасибо за заказ! Ждем вас снова.
+          Спасибо большое за заказ! Ждём вас снова.
         </div>
       </body>
     </html>

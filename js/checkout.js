@@ -250,19 +250,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }),
       total: totalSum,
       weight: formattedWeight,
-      deliveryTime: deliveryTime, // Берем из инпута даты
+      deliveryTime: deliveryTime,
       name: name || 'Покупатель',
       email: email || '',
       phone: phone || '',
       city: city || 'Не указан',
       address: address || '',
       comment: comment || '',
-      
-      // --- ВОТ ЭТИ СТРОКИ ДОЛЖНЫ БЫТЬ ОБЯЗАТЕЛЬНО ---
       deliveryMethod: document.getElementById('deliveryMethodInput').value,
       payerType: isJur ? 'Юр. лицо' : 'Физ. лицо',
       paymentMethod: isJur ? 'bank' : document.getElementById('paymentInput').value,
-      companyData: companyData // Передаем реквизиты
+      companyData: companyData,
+      
+      // --- ДОБАВЛЯЕМ EMAIL ПОЛЬЗОВАТЕЛЯ ---
+      userEmail: (function() {
+        const u = Store.getUser();
+        return u ? u.email : email; 
+      })()
     };
 
     const submitBtn = form.querySelector('button[type="submit"]');
