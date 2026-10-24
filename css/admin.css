@@ -353,3 +353,96 @@ body {
   .admin-user-info { flex-direction: row; align-items: center; justify-content: space-between; }
   .admin-logout-btn { margin-top: 0; width: auto; }
 }
+
+/* ============================================================
+ * Сворачиваемые карточки заказов
+ * ============================================================ */
+.admin-order-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.admin-order-card:hover {
+  border-color: rgba(168, 121, 255, 0.3);
+}
+
+.admin-order-card.open {
+  border-color: rgba(168, 121, 255, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Шапка (по ней кликаем) */
+.admin-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.admin-order-title h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  color: #f6f1ff;
+}
+
+.admin-order-date {
+  font-size: 12px;
+  color: #a49ab8;
+}
+
+.admin-order-price {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #a879ff;
+}
+
+.admin-order-price .arrow {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+  color: #a49ab8;
+}
+
+/* Поворот стрелочки при открытии */
+.admin-order-card.open .admin-order-price .arrow {
+  transform: rotate(180deg);
+}
+
+/* Детали заказа (анимация) */
+.admin-order-details {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+
+.admin-order-card.open .admin-order-details {
+  grid-template-rows: 1fr;
+}
+
+.admin-order-details > div {
+  overflow: hidden;
+}
+
+.admin-order-info {
+  padding: 0 20px;
+}
+
+.admin-order-info p {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #b5a9c6;
+}
+
+.admin-order-items {
+  padding: 20px;
+  border-top: 1px solid rgba(220, 204, 255, 0.1);
+  margin-top: 10px;
+}
