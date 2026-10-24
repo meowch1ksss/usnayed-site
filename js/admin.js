@@ -1,9 +1,5 @@
 // js/admin.js
-// Требует: js/config.js, js/store.js (подключены ДО этого файла).
 document.addEventListener('DOMContentLoaded', () => {
-  // ============================================================
-  // 1. ПРОВЕРКА ДОСТУПА (клиентская — для UX; реальная защита на воркере)
-  // ============================================================
   const currentUser = Store.getUser();
   const accessDenied = document.getElementById('accessDenied');
   const adminPanel   = document.getElementById('adminPanel');
@@ -18,9 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
   adminPanel?.classList.remove('hidden');
   document.getElementById('adminUserName').textContent = currentUser.username || 'Администратор';
 
-  // ============================================================
-  // ХЕЛПЕРЫ
-  // ============================================================
   const escapeHTML = (s) => String(s ?? '').replace(/[&<>"']/g, c => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
   ));
@@ -28,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { '"': '&quot;', "'": '&#39;', '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]
   ));
 
-  // Authorization для админ-запросов (воркер проверяет Bearer)
   function adminHeaders(extra = {}) {
     const token = sessionStorage.getItem('nyxora:adminToken');
     return {
@@ -45,12 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return Store.apiFetch(url, opts);
   }
 
-  // ============================================================
-  // ТОСТЫ (единый API — window.showToast из site.js, fallback ниже)
-  // ============================================================
   function showAdminToast(message, type = 'success') {
     if (typeof window.showToast === 'function') return window.showToast(message, type);
-    // fallback на случай, если site.js не подключён
     let region = document.getElementById('admin-toast-region');
     if (!region) {
       region = document.createElement('div');
@@ -65,9 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 200); }, 3000);
   }
 
-  // ============================================================
-  // 2. ТАБЫ
-  // ============================================================
   let activeTab = 'orders';
   const pageTitle = document.getElementById('adminPageTitle');
   const tabContent = document.getElementById('adminTabContent');
@@ -107,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!orders.length) { tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>'; return; }
 
       tabContent.innerHTML = orders.map(o => {
-        // Расшифровываем данные
         const isJur = o.payerType === 'Юр. лицо';
         
         let deliveryText = 'Курьером';
@@ -117,13 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (o.paymentMethod === 'sber') paymentText = 'Сбербанк (перевод)';
         if (o.paymentMethod === 'bank') paymentText = 'Банковский перевод';
 
-        // Разбираем companyData, если оно есть (оно хранится строкой JSON)
         let cData = {};
         try {
           if (o.companyData) cData = typeof o.companyData === 'string' ? JSON.parse(o.companyData) : o.companyData;
         } catch (e) { console.error('Ошибка парсинга companyData', e); }
 
-        // Собираем список деталей в зависимости от типа лица
         let detailsHtml = '';
         
         if (isJur) {
@@ -159,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return `
         <div class="admin-order-card">
-          <!-- Шапка заказа (всегда видна) -->
           <div class="admin-order-header" onclick="this.parentElement.classList.toggle('open')">
             <div class="admin-order-title">
               <h3>Заказ ${escapeHTML(o.number || '—')}</h3>
@@ -170,31 +151,26 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- Детали заказа (скрыты по умолчанию) -->
           <div class="admin-order-details">
-            <div class="admin-order-info" style="padding-top: 15px; padding-bottom: 15px;">
-              
-              <!-- Список данных клиента -->
-              <ul class="admin-details-list" style="list-style: none; padding: 0; margin: 0 0 20px 0; color: #b5a9c6; font-size: 14px; line-height: 1.8;">
-                ${detailsHtml}
-              </ul>
-
-              <!-- Разделитель -->
-              <hr style="border: none; border-top: 1px dashed rgba(220, 204, 255, 0.2); margin: 20px 0;">
-
-              <!-- Состав заказа -->
-              <div class="admin-order-items">
-                <small style="color: #a49ab8; display: block; margin-bottom: 8px;">Состав заказа:</small>
-                <ul style="list-style: none; padding: 0; margin: 0; color: #f6f1ff; font-size: 14px;">
-                  ${(o.items || []).map(i => `
-                    <li style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 6px;">
-                      <span>${escapeHTML(i.name || '—')}</span>
-                      <span style="color:#a879ff;">${Number(i.qty || 0)} шт. × ${Number(i.price || 0)} ₽</span>
-                    </li>
-                  `).join('')}
+            <!-- ВОТ ЭТА ОБЕРТКА ДЛЯ ПЛАВНОЙ АНИМАЦИИ -->
+            <div class="admin-order-details-inner">
+              <div class="admin-order-info">
+                <ul class="admin-details-list" style="list-style: none; padding: 0; margin: 0 0 20px 0; color: #b5a9c6; font-size: 14px; line-height: 1.8;">
+                  ${detailsHtml}
                 </ul>
+                <hr style="border: none; border-top: 1px dashed rgba(220, 204, 255, 0.2); margin: 20px 0;">
+                <div class="admin-order-items">
+                  <small style="color: #a49ab8; display: block; margin-bottom: 8px;">Состав заказа:</small>
+                  <ul style="list-style: none; padding: 0; margin: 0; color: #f6f1ff; font-size: 14px;">
+                    ${(o.items || []).map(i => `
+                      <li style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 6px;">
+                        <span>${escapeHTML(i.name || '—')}</span>
+                        <span style="color:#a879ff;">${Number(i.qty || 0)} шт. × ${Number(i.price || 0)} ₽</span>
+                      </li>
+                    `).join('')}
+                  </ul>
+                </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -206,12 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ============================================================
   // 4. ОТЗЫВЫ
-  // ============================================================
   async function renderReviews() {
     tabContent.innerHTML = '<div class="admin-empty">Загрузка отзывов...</div>';
-
     try {
       const res = await adminFetch(`${APP_CONFIG.API.reviews}?status=pending`);
       if (res.status === 401) {
@@ -243,7 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Делегирование вместо inline onclick (XSS-фикс)
   tabContent.addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-review-action]');
     if (!btn) return;
@@ -265,10 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (res.status === 401) { showAdminToast('Нет прав', 'error'); return; }
       if (!res.ok) throw new Error('server');
 
-      showAdminToast(
-        action === 'approve' ? 'Отзыв опубликован' : 'Отзыв отклонён',
-        action === 'approve' ? 'success' : 'error'
-      );
+      showAdminToast(action === 'approve' ? 'Отзыв опубликован' : 'Отзыв отклонён', action === 'approve' ? 'success' : 'error');
       renderReviews();
     } catch {
       showAdminToast('Ошибка при обработке отзыва', 'error');
@@ -278,26 +247,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ============================================================
   // 5. ЗАГРУЗКА МЕНЮ
-  // ============================================================
   function renderMenuUpload() {
     tabContent.innerHTML = `
       <div class="admin-card">
         <h3>🤖 ИИ-загрузка меню</h3>
         <p>Загрузите файл (JSON, CSV, TXT, XLSX, DOCX, PNG, JPG) или вставьте текст. ИИ разберёт блюда, цены и категории.</p>
-
         <div class="admin-dropzone" id="adminDropzone">
           <div class="admin-dropzone-icon">📎</div>
           <div class="admin-dropzone-text">Перетащите файл сюда или нажмите</div>
           <div class="admin-dropzone-hint">JSON · CSV · TXT · XLSX · DOCX · PNG · JPG</div>
           <input type="file" id="adminFileInput" accept=".json,.csv,.txt,.xlsx,.xls,.docx,.doc,.png,.jpg,.jpeg,.webp" hidden>
         </div>
-
         <textarea class="admin-textarea" id="adminMenuText" placeholder="…или вставьте текст меню вручную. Формат: 'Название блюда — 250'"></textarea>
-
         <button class="admin-btn admin-btn-primary" id="adminProcessBtn" style="width:100%;">🚀 Обработать меню</button>
-
         <div class="admin-status" id="adminStatus"></div>
       </div>
     `;
@@ -344,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         let items = [];
-
         if (text) {
           const lines = text.split('\n').filter(l => l.trim());
           lines.forEach(line => {
@@ -363,7 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!items.length) throw new Error('Не удалось распознать блюда. Формат: "Название — 250"');
-
         const existing = JSON.parse(localStorage.getItem('nyxora:menu') || '[]');
         const updated  = [...existing, ...items];
         localStorage.setItem('nyxora:menu', JSON.stringify(updated));
@@ -380,17 +341,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ============================================================
-  // 6. ВЫХОД
-  // ============================================================
   document.getElementById('adminLogoutBtn').addEventListener('click', () => {
     Store.clearUser();
     sessionStorage.removeItem('nyxora:adminToken');
     window.location.reload();
   });
 
-  // ============================================================
-  // Первый рендер
-  // ============================================================
   renderTab();
 });

@@ -70,7 +70,7 @@ body {
 }
 
 /* ============================================================
- * МАКЕТ АДМИНКИ (Исправлено: сайдбар больше не плавает)
+ * МАКЕТ АДМИНКИ
  * ============================================================ */
 .admin-screen {
   max-width: var(--content);
@@ -89,7 +89,7 @@ body {
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 24px;
-  align-items: start; /* Жестко привязывает сайдбар к верху */
+  align-items: start;
 }
 
 /* Сайдбар */
@@ -100,7 +100,6 @@ body {
   display: flex;
   flex-direction: column;
   padding: 24px;
-  /* Убрали sticky, теперь он просто стоит на месте */
   position: static; 
 }
 
@@ -338,24 +337,8 @@ body {
   border: 1px solid rgba(255, 109, 120, 0.3);
 }
 
-/* Адаптив */
-@media (max-width: 900px) {
-  .admin-layout { grid-template-columns: 1fr; }
-  .admin-sidebar {
-    position: static;
-  }
-}
-
-@media (max-width: 760px) {
-  .admin-screen, #adminPanel { padding: 20px 18px; }
-  .admin-nav { flex-direction: row; overflow-x: auto; }
-  .admin-brand { margin-bottom: 16px; }
-  .admin-user-info { flex-direction: row; align-items: center; justify-content: space-between; }
-  .admin-logout-btn { margin-top: 0; width: auto; }
-}
-
 /* ============================================================
- * Сворачиваемые карточки заказов
+ * СВОРАЧИВАЕМЫЕ КАРТОЧКИ ЗАКАЗОВ (ИСПРАВЛЕНО)
  * ============================================================ */
 .admin-order-card {
   background: rgba(255, 255, 255, 0.03);
@@ -375,7 +358,6 @@ body {
   background: rgba(255, 255, 255, 0.05);
 }
 
-/* Шапка (по ней кликаем) */
 .admin-order-header {
   display: flex;
   justify-content: space-between;
@@ -411,28 +393,27 @@ body {
   color: #a49ab8;
 }
 
-/* Поворот стрелочки при открытии */
 .admin-order-card.open .admin-order-price .arrow {
   transform: rotate(180deg);
 }
 
-/* Детали заказа (анимация) */
+/* НОВАЯ АНИМАЦИЯ */
 .admin-order-details {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.3s ease;
+  transition: grid-template-rows 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .admin-order-card.open .admin-order-details {
   grid-template-rows: 1fr;
 }
 
-.admin-order-details > div {
+.admin-order-details-inner {
   overflow: hidden;
 }
 
 .admin-order-info {
-  padding: 0 20px;
+  padding: 15px 20px 20px 20px;
 }
 
 .admin-order-info p {
@@ -442,7 +423,20 @@ body {
 }
 
 .admin-order-items {
-  padding: 20px;
+  padding-top: 15px;
   border-top: 1px solid rgba(220, 204, 255, 0.1);
   margin-top: 10px;
+}
+
+/* Адаптив */
+@media (max-width: 900px) {
+  .admin-layout { grid-template-columns: 1fr; }
+  .admin-sidebar { position: static; }
+}
+@media (max-width: 760px) {
+  .admin-screen, #adminPanel { padding: 20px 18px; }
+  .admin-nav { flex-direction: row; overflow-x: auto; }
+  .admin-brand { margin-bottom: 16px; }
+  .admin-user-info { flex-direction: row; align-items: center; justify-content: space-between; }
+  .admin-logout-btn { margin-top: 0; width: auto; }
 }
