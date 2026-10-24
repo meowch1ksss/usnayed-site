@@ -92,7 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!orders.length) { tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>'; return; }
 
       tabContent.innerHTML = orders.map(o => {
-        const isJur = o.payerType === 'Юр. лицо';
+        // Проверяем, что payerType содержит "Юр" (для надежности)
+        const isJur = (o.payerType || o.payer_type || '').includes('Юр');
         
         let deliveryText = 'Курьером';
         if (o.deliveryMethod === 'pickup') deliveryText = 'Самовывоз';
@@ -101,16 +102,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (o.paymentMethod === 'sber') paymentText = 'Сбербанк (перевод)';
         if (o.paymentMethod === 'bank') paymentText = 'Банковский перевод';
 
+        // Парсим companyData (оно может прийти как строка JSON или как объект)
         let cData = {};
         try {
           if (o.companyData) cData = typeof o.companyData === 'string' ? JSON.parse(o.companyData) : o.companyData;
+          else if (o.company_data) cData = typeof o.company_data === 'string' ? JSON.parse(o.company_data) : o.company_data;
         } catch (e) { console.error('Ошибка парсинга companyData', e); }
 
         let detailsHtml = '';
         
         if (isJur) {
           detailsHtml = `
-            <li><strong>Желаемое время доставки:</strong> ${escapeHTML(o.deliveryTime || '—')}</li>
+            <li><strong>Желаемое время доставки:</strong> ${escapeHTML(o.deliveryTime || o.delivery_time || '—')}</li>
             <li><strong>Компания:</strong> ${escapeHTML(o.name || '—')}</li>
             <li><strong>Юридический адрес:</strong> ${escapeHTML(cData.legalAddress || '—')}</li>
             <li><strong>ИНН:</strong> ${escapeHTML(cData.inn || '—')}</li>
@@ -127,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
         } else {
           detailsHtml = `
-            <li><strong>Желаемое время доставки:</strong> ${escapeHTML(o.deliveryTime || '—')}</li>
+            <li><strong>Желаемое время доставки:</strong> ${escapeHTML(o.deliveryTime || o.delivery_time || '—')}</li>
             <li><strong>ФИО:</strong> ${escapeHTML(o.name || '—')}</li>
             <li><strong>Email:</strong> ${escapeHTML(o.email || '—')}</li>
             <li><strong>Телефон:</strong> ${escapeHTML(o.phone || '—')}</li>
@@ -152,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <div class="admin-order-details">
-            <!-- ВОТ ЭТА ОБЕРТКА ДЛЯ ПЛАВНОЙ АНИМАЦИИ -->
             <div class="admin-order-details-inner">
               <div class="admin-order-info">
                 <ul class="admin-details-list" style="list-style: none; padding: 0; margin: 0 0 20px 0; color: #b5a9c6; font-size: 14px; line-height: 1.8;">
