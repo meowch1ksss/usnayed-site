@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: authProvider,
           options: {
-            redirectTo: window.location.origin + '/profile.html'
+            redirectTo: 'https://usnayed-site.pages.dev/profile.html'
           }
         });
         
