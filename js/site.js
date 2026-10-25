@@ -17,7 +17,6 @@
       const answer = item.querySelector('.faq-answer');
       if (!btn || !answer) return;
 
-      // Переносим контент внутрь обертки для анимации
       if (!answer.querySelector('.faq-answer-inner')) {
         const content = answer.innerHTML;
         answer.innerHTML = `<div class="faq-answer-inner">${content}</div>`;
@@ -26,7 +25,6 @@
       btn.addEventListener('click', () => {
         const isOpen = item.classList.contains('is-open');
 
-        // Закрываем все остальные
         items.forEach((other) => {
           if (other !== item && other.classList.contains('is-open')) {
             other.classList.remove('is-open');
@@ -34,7 +32,6 @@
           }
         });
 
-        // Переключаем текущий
         if (isOpen) {
           item.classList.remove('is-open');
           btn.setAttribute('aria-expanded', 'false');
@@ -54,7 +51,6 @@
     const list    = $el('.email-provider-list');
     if (!trigger || !list) return;
 
-    // Убираем атрибут hidden, если он есть в HTML, и заменяем на класс
     list.removeAttribute('hidden');
     list.classList.add('email-list-hidden');
 
@@ -62,17 +58,14 @@
       const isOpen = trigger.getAttribute('aria-expanded') === 'true';
       
       if (isOpen) {
-        // Закрываем
         trigger.setAttribute('aria-expanded', 'false');
         list.classList.add('email-list-hidden');
       } else {
-        // Открываем
         trigger.setAttribute('aria-expanded', 'true');
         list.classList.remove('email-list-hidden');
       }
     });
 
-    // Закрываем при клике вне
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.email-picker')) {
         trigger.setAttribute('aria-expanded', 'false');
@@ -80,7 +73,6 @@
       }
     });
 
-    // Закрываем по Esc
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !list.classList.contains('email-list-hidden')) {
         trigger.setAttribute('aria-expanded', 'false');
@@ -114,16 +106,7 @@
   }
 
   /* ============================================================
-   * Init
-   * ============================================================ */
-  document.addEventListener('DOMContentLoaded', () => {
-    Store.updateBadges();
-    initFaq();
-    initEmailPicker();
-    initPageFade();
-
-    /* ============================================================
-   * Параллакс эффект для главного экрана
+   * Параллакс эффект для главного экрана (Вращение)
    * ============================================================ */
   function initParallax() {
     const scene = document.getElementById('scene');
@@ -147,160 +130,33 @@
 
     function animate() {
       layers.forEach(layer => {
-        const depth = parseFloat(layer.getAttribute('data-depth'));
-        const moveX = mouseX * depth * 60; // Сила движения
-        const moveY = mouseY * depth * 40;
+        const depth = parseFloat(layer.getAttribute('data-depth')) || 0.2;
+        
+        // Движение и вращение
+        const moveX = mouseX * depth * 80; 
+        const moveY = mouseY * depth * 80;
+        const rotate = mouseX * depth * 45; // Резкое вращение
 
-        layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+        layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0) rotate(${rotate}deg)`;
       });
       requestAnimationFrame(animate);
     }
     animate();
   }
 
-  initParallax();
-  });
-
-  // === ПЛАВАЮЩАЯ КОРЗИНА ===
-  function updateFloatingCart() {
-    const floatingCart = document.getElementById('floatingCart');
-    if (!floatingCart) return; // На главной этого блока нет, код просто пропустится
-
-    const cart = Store.getCart();
-    const count = cart.reduce((sum, item) => sum + item.qty, 0);
-    
-    if (count === 0) {
-      floatingCart.classList.remove('visible');
-      return;
-    }
-
-    const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
-    const totalSum = cart.reduce((sum, item) => {
-      const p = products.find(x => String(x.id) === String(item.id));
-      return sum + (p ? p.price * item.qty : 0);
-    }, 0);
-
-    document.getElementById('floatingCartSum').textContent = `${totalSum} ₽`;
-    document.getElementById('floatingCartCount').textContent = `${count} ${count === 1 ? 'товар' : count < 5 ? 'товара' : 'товаров'}`;
-    
-    floatingCart.classList.add('visible');
-  }
-
-  updateFloatingCart();
-
-  // Перехватываем сохранение корзины, чтобы обновлять панель
-  const originalSaveCart = Store.saveCart;
-  Store.saveCart = function(cart) {
-    const result = originalSaveCart(cart);
-    updateFloatingCart();
-    return result;
-  };
-
   /* ============================================================
-   * Полноэкранное меню категорий (если есть на странице)
+   * Init (Запуск при загрузке)
    * ============================================================ */
-  const categoryOverlay   = document.getElementById('categoryOverlay');
-  const categoryModalMenu = document.getElementById('categoryModalMenu');
-  const categoryTitle     = document.getElementById('categoryModalTitle');
-
-  const demoMenu = [
-    { id: 1, name: 'Сырники со сгущёнкой', price: 190, weight: '220 г', category: 'завтраки', day: 'понедельник' },
-    { id: 2, name: 'Омлет с ветчиной',     price: 170, weight: '200 г', category: 'завтраки', day: 'понедельник' },
-    { id: 3, name: 'Борщ с говядиной',     price: 220, weight: '350 мл', category: 'обеды в офис', day: 'понедельник' },
-    { id: 4, name: 'Котлета по-киевски',   price: 290, weight: '180 г', category: 'обеды в офис', day: 'понедельник' },
-    { id: 5, name: 'Комплекс «Домашний»',  price: 420, weight: '820 г', category: 'комплексные обеды', day: 'вторник' },
-    { id: 6, name: 'Фуршет на 10 персон',   price: 8900, weight: '≈ 4 кг', category: 'банкеты и фуршеты', day: 'среда' },
-  ];
-
-  let currentCategory = 'завтраки';
-  let currentDay = 'понедельник';
-
-  function renderCategoryMenu() {
-    if (!categoryModalMenu) return;
-
-    const items = demoMenu.filter(i => i.category === currentCategory && i.day === currentDay);
-
-    if (!items.length) {
-      categoryModalMenu.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#a49ab8;padding:40px;">На этот день пока нет блюд.</p>`;
-      return;
-    }
-
-    categoryModalMenu.innerHTML = items.map(item => `
-      <article class="product-card" style="display:flex; flex-direction:column; justify-content:space-between;">
-        <div class="product-info" style="padding:20px;">
-          <div class="product-category" style="margin-bottom:8px;">${item.category}</div>
-          <div class="product-title" style="font-size:16px; min-height:auto; margin-bottom:10px;">${item.name}</div>
-          <div class="product-bottom">
-            <div class="price-block">
-              <span class="product-price">${item.price} ₽</span>
-              <span class="old-price" style="margin-left:8px; font-size:11px;">${item.weight}</span>
-            </div>
-            <button class="add-cart" data-add-cart="${item.id}">+</button>
-          </div>
-        </div>
-      </article>
-    `).join('');
-  }
-
-  function openCategoryModal(category) {
-    currentCategory = category;
-    currentDay = 'понедельник';
-
-    document.querySelectorAll('#categorySwitcher .category-switch').forEach(b => {
-      b.classList.toggle('active', b.dataset.category === category);
-    });
-    document.querySelectorAll('#categoryDayTabs .day-tab').forEach(b => {
-      b.classList.toggle('active', b.dataset.day === 'понедельник');
-    });
-
-    const activeBtn = document.querySelector(`#categorySwitcher .category-switch[data-category="${category}"]`);
-    if (categoryTitle && activeBtn) categoryTitle.textContent = activeBtn.textContent;
-
-    renderCategoryMenu();
-    categoryOverlay?.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeCategoryModal() {
-    categoryOverlay?.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  document.getElementById('categoryBackBtn')?.addEventListener('click', closeCategoryModal);
-  document.getElementById('categoryCloseBtn')?.addEventListener('click', closeCategoryModal);
-
-  document.querySelectorAll('.category-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-      e.preventDefault();
-      openCategoryModal(card.dataset.category);
-    });
-  });
-
-  document.getElementById('categorySwitcher')?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.category-switch');
-    if (!btn) return;
-    openCategoryModal(btn.dataset.category);
-  });
-
-  document.getElementById('categoryDayTabs')?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.day-tab');
-    if (!btn) return;
-    document.querySelectorAll('#categoryDayTabs .day-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentDay = btn.dataset.day;
-    renderCategoryMenu();
-  });
-
-  categoryModalMenu?.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-add-cart]');
-    if (!btn) return;
-    e.preventDefault();
-    btn.textContent = '✓';
-    setTimeout(() => { btn.textContent = '+'; }, 1200);
+  document.addEventListener('DOMContentLoaded', () => {
+    Store.updateBadges();
+    initFaq();
+    initEmailPicker();
+    initPageFade();
+    initParallax(); // Запускаем параллакс
   });
 
   /* ============================================================
-   * Уведомления (Плотная стопка, текст не обрезается)
+   * Уведомления (Плотная стопка)
    * ============================================================ */
   function showToast(message, type = 'success', imageUrl = null) {
     let region = document.getElementById('toast-region');
@@ -311,25 +167,22 @@
       document.body.appendChild(region);
     }
 
-    // Контейнер: привязываем к низу по центру
     region.style.position = 'fixed';
     region.style.bottom = '20px';
     region.style.left = '50%';
     region.style.transform = 'translateX(-50%)';
     region.style.zIndex = '9999';
     region.style.width = '100%';
-    region.style.maxWidth = '380px'; // Ограничитель, чтобы не растягивалось на весь экран
-    region.style.height = '100px'; // Высота контейнера (чтобы стопка не летела вверх)
+    region.style.maxWidth = '380px';
+    region.style.height = '100px';
     region.style.pointerEvents = 'none';
 
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
     
-    // Абсолютное позиционирование для наложения
     toast.style.position = 'absolute';
     toast.style.bottom = '0';
     toast.style.left = '50%';
-    // Начальное состояние: чуть ниже и прозрачное
     toast.style.transform = 'translateX(-50%) translateY(20px) scale(0.9)'; 
     toast.style.width = 'max-content';
     toast.style.maxWidth = '100%';
@@ -370,48 +223,39 @@
     
     region.appendChild(toast);
 
-    // Функция для перерасчета стопки (эффект карт)
     function updateStack() {
-      // Получаем все уведомления и переворачиваем (новое будет первым)
       const toasts = Array.from(region.querySelectorAll('.yandex-toast')).reverse();
       
       toasts.forEach((t, index) => {
         if (index === 0) {
-          // Новое (самое переднее)
           t.style.transform = 'translateX(-50%) translateY(0) scale(1)';
           t.style.opacity = '1';
           t.style.zIndex = '10';
           t.style.pointerEvents = 'auto';
         } else if (index === 1) {
-          // Второе (уходит назад и вверх, чуть уменьшается)
           t.style.transform = 'translateX(-50%) translateY(-12px) scale(0.96)';
           t.style.opacity = '0.8';
           t.style.zIndex = '9';
           t.style.pointerEvents = 'none';
         } else if (index === 2) {
-          // Третье (еще дальше назад)
           t.style.transform = 'translateX(-50%) translateY(-24px) scale(0.92)';
           t.style.opacity = '0.5';
           t.style.zIndex = '8';
           t.style.pointerEvents = 'none';
         } else {
-          // Все, что глубже 3-го, удаляем (оно уже за экраном)
           t.remove();
         }
       });
     }
 
-    // Появление
     setTimeout(updateStack, 10);
 
-    // Кнопка закрытия
     toast.querySelector('.toast-close').addEventListener('click', (e) => {
       e.stopPropagation();
       toast.remove();
       updateStack(); 
     });
 
-    // Автоскрытие через 4 секунды
     setTimeout(() => {
       if (toast.parentNode) {
         toast.remove();
@@ -422,7 +266,7 @@
   window.showToast = showToast;
 
   /* ============================================================
-   * Отзывы: показать все / отправить / загрузить одобренные
+   * Отзывы
    * ============================================================ */
   const showMoreBtn        = document.getElementById('showMoreReviewsBtn');
   const hiddenReviews      = document.getElementById('hiddenReviews');
@@ -430,7 +274,6 @@
   const addReviewFormWrapper = document.getElementById('addReviewFormWrapper');
   const addReviewForm      = document.getElementById('addReviewForm');
 
-  // Проверяем, если перешли по ссылке из профиля
   if (window.location.hash === '#reviews' && hiddenReviews) {
     setTimeout(() => {
       hiddenReviews.style.display = 'block';
@@ -445,12 +288,10 @@
       const isOpen = hiddenReviews.style.display === 'block';
       
       if (isOpen) {
-        // Сворачиваем
         hiddenReviews.style.display = 'none';
         addReviewFormWrapper?.classList.add('hidden');
         showMoreBtn.innerHTML = 'Показать все отзывы ↓';
       } else {
-        // Разворачиваем
         hiddenReviews.style.display = 'block';
         addReviewFormWrapper?.classList.remove('hidden');
         showMoreBtn.innerHTML = 'Свернуть отзывы ↑';
@@ -510,7 +351,6 @@
         hiddenGrid.prepend(el);
       });
 
-      // === ПРОВЕРКА НАЛИЧИЯ СКРЫТЫХ ОТЗЫВОВ (ПОСЛЕ ЗАГРУЗКИ) ===
       if (hiddenGrid.children.length === 0) {
         if (showMoreBtn) showMoreBtn.style.display = 'none';
         if (showMoreWrapper) showMoreWrapper.style.display = 'none';
