@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // ВСТАВЬ СВОИ КЛЮЧИ SUPABASE ЗДЕСЬ
   const SUPABASE_URL = 'https://jaotffxttfwkzueivmru.supabase.co/rest/v1/'; 
-  const SUPABASE_ANON_KEY = 'sb_publishable_WhjwO7fhYAB4W8IQAAiYrg_AraRcEgs';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imphb3RmZnh0dGZ3a3p1ZWl2bXJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4OTQ1NTksImV4cCI6MjEwODQ3MDU1OX0.mtCVYVqHL8jY6k5uAI5wX7a9YDMocGjjjc7CQRmoEQY';
 
   let supabase = null;
   if (window.supabase) {
