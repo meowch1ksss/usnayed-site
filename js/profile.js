@@ -323,7 +323,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let supabase = null;
   if (window.supabase) {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      },
+      global: {
+        headers: {
+          // ЖЕСТКО ПЕРЕДАЕМ КЛЮЧ (поможет, если библиотека его теряет)
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        }
+      }
+    });
   }
 
   document.querySelectorAll('.social-btn').forEach(btn => {
