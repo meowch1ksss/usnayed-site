@@ -360,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Мапим названия кнопок на провайдеров Supabase
       let authProvider = provider;
       if (provider === 'gmail') authProvider = 'google';
-      if (provider === 'yandex') authProvider = 'yandex';
+      if (provider === 'mailru') authProvider = 'vk';
       
       try {
         const { data, error } = await supabase.auth.signInWithOAuth({
