@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const userEmailEl = document.getElementById('userEmail');
   const userAvatarEl = document.getElementById('userAvatar');
 
-  // Элементы редактирования
   const editProfileBtn = document.getElementById('editProfileBtn');
   const editProfileForm = document.getElementById('editProfileForm');
   const cancelEditBtn = document.getElementById('cancelEditBtn');
@@ -277,9 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentUser = { ...adminUser, username: 'admin', isAdmin: true };
       localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
 
-      // ============================================================
-      // ВСТАВЬ СВОЙ НОВЫЙ ТОКЕН СЮДА (вместо ТВОЙ_НОВЫЙ_ТОКЕН_СЮДА)
-      // ============================================================
+      // ВСТАВЬ СВОЙ НОВЫЙ ТОКЕН СЮДА
       sessionStorage.setItem('nyxora:adminToken', '119d332b8282d04c0f1743b8e28396dd0247f20c4abb285b77e13eddef121d32');
 
       showToast('Вход администратора выполнен', 'success');
@@ -311,118 +308,95 @@ document.addEventListener('DOMContentLoaded', () => {
   logoutBtn?.addEventListener('click', () => {
     currentUser = null;
     localStorage.removeItem('nyxora:user');
-    sessionStorage.removeItem('nyxora:adminToken'); // Удаляем токен при выходе
+    sessionStorage.removeItem('nyxora:adminToken');
     showToast('Вы вышли из аккаунта', 'success');
     updateUI();
   });
 
   // ============================================================
-  // 8. СОЦСЕТИ (ДЕМО)
+  // 8. СОЦСЕТИ (РЕАЛЬНЫЙ OAUTH ЧЕРЕЗ SUPABASE)
   // ============================================================
+  
+  // ВСТАВЬ СВОИ КЛЮЧИ SUPABASE ЗДЕСЬ
+  const SUPABASE_URL = 'https://jaotffxttfwkzueivmru.supabase.co/rest/v1/'; 
+  const SUPABASE_ANON_KEY = 'sb_publishable_WhjwO7fhYAB4W8IQAAiYrg_AraRcEgs';
+
+  let supabase = null;
+  if (window.supabase) {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+
   document.querySelectorAll('.social-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const provider = btn.dataset.provider;
-      const providerName = btn.textContent.trim();
-
-      const email = `user_${provider}@example.com`;
-      const firstName = `Пользователь`;
-      const lastName = providerName;
-      const login = `user_${provider}`;
-
-      let users = JSON.parse(localStorage.getItem('nyxora:users') || '[]');
-      let user = users.find(u => u.email === email);
-
-      if (!user) {
-        user = { firstName, lastName, login, email, password: 'social_demo', isAdmin: false };
-        users.push(user);
-        localStorage.setItem('nyxora:users', JSON.stringify(users));
+    btn.addEventListener('click', async () => {
+      if (!supabase) {
+        showToast('Ошибка: Библиотека Supabase не загружена.', 'error');
+        return;
       }
 
-      currentUser = { ...user, username: user.login };
-      localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
-
-      showToast(`Вход через ${providerName} выполнен`, 'success');
-      updateUI();
+      const provider = btn.dataset.provider;
+      // Мапим названия кнопок на провайдеров Supabase
+      let authProvider = provider;
+      if (provider === 'gmail') authProvider = 'google';
+      if (provider === 'yandex') authProvider = 'yandex';
+      
+      try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: authProvider,
+          options: {
+            redirectTo: window.location.origin + '/profile.html'
+          }
+        });
+        
+        if (error) throw error;
+      } catch (err) {
+        showToast(`Ошибка входа: ${err.message}`, 'error');
+      }
     });
   });
 
-  //============================================================
-  //ЖИВОЙ ПОИСК (Выпадающая подсказка)
-  //============================================================
-  const searchForm = document.getElementById('search-form');
-  const searchInput = document.getElementById('search-input');
+  // Проверяем, вернулся ли пользователь после входа
+  async function checkSocialSession() {
+    if (!supabase) return;
 
-  if (searchForm && searchInput) {
-    // Создаем выпадающий список результатов
-    const searchDropdown = document.createElement('div');
-    searchDropdown.className = 'search-dropdown hidden';
-    searchForm.appendChild(searchDropdown);
-
-    // Функция очистки поиска
-    function clearSearch() {
-      searchDropdown.innerHTML = '';
-      searchDropdown.classList.add('hidden');
-    }
-
-    // Слушаем ввод текста
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.trim().toLowerCase();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session && session.user) {
+      const user = session.user;
+      const email = user.email;
+      const name = user.user_metadata.full_name || user.user_metadata.name || 'Пользователь';
       
-      if (query.length < 2) {
-        clearSearch();
-        return;
+      let users = JSON.parse(localStorage.getItem('nyxora:users') || '[]');
+      let localUser = users.find(u => u.email === email);
+
+      if (!localUser) {
+        const nameParts = name.split(' ');
+        localUser = {
+          firstName: nameParts[0] || 'Пользователь',
+          lastName: nameParts[1] || '',
+          login: email.split('@')[0],
+          email: email,
+          password: 'social_auth',
+          isAdmin: false
+        };
+        users.push(localUser);
+        localStorage.setItem('nyxora:users', JSON.stringify(users));
       }
 
-      // Ищем по всем блюдам
-      const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
-      const results = products.filter(p => 
-        p.name.toLowerCase().includes(query) || 
-        (p.description && p.description.toLowerCase().includes(query))
-      ).slice(0, 6); // Показываем максимум 6 результатов
-
-      if (results.length === 0) {
-        searchDropdown.innerHTML = `<div class="search-empty">Ничего не найдено по запросу "${e.target.value}"</div>`;
-        searchDropdown.classList.remove('hidden');
-        return;
+      currentUser = { ...localUser, username: localUser.login };
+      localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
+      
+      showToast('Вы успешно вошли через соцсеть!', 'success');
+      updateUI();
+      
+      // Очищаем URL от хэшей Supabase
+      if (window.location.hash) {
+        window.history.replaceState(null, null, window.location.pathname);
       }
-
-      // Рендерим результаты
-      searchDropdown.innerHTML = results.map(item => `
-        <a href="menu.html?search=${encodeURIComponent(query)}" class="search-result-item">
-          <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/100x100/21182e/c8a9ff?text=Фото'">
-          <div class="search-result-info">
-            <div class="search-result-name">${item.name}</div>
-            <div class="search-result-price">${item.price} ₽ <span>· ${item.weight || ''}</span></div>
-          </div>
-        </a>
-      `).join('');
-
-      // Добавляем кнопку "Показать все"
-      searchDropdown.innerHTML += `
-        <a href="menu.html?search=${encodeURIComponent(query)}" class="search-all-btn">
-          Показать все результаты →
-        </a>
-      `;
-
-      searchDropdown.classList.remove('hidden');
-    });
-
-    // Закрываем поиск при клике вне него
-    document.addEventListener('click', (e) => {
-      if (!searchForm.contains(e.target)) {
-        clearSearch();
-      }
-    });
-
-    // Обработка нажатия Enter (переход на страницу меню)
-    searchForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const q = searchInput.value.trim();
-      if (q) location.href = `menu.html?search=${encodeURIComponent(q)}`;
-    });
+    }
   }
 
-  // === ОТПРАВКА ОТЗЫВА ИЗ ЛК ===
+  // ============================================================
+  // 9. ОТПРАВКА ОТЗЫВА ИЗ ЛК
+  // ============================================================
   const toggleReviewBtn = document.getElementById('toggleReviewBtn');
   const profileReviewFormWrapper = document.getElementById('profileReviewFormWrapper');
   const profileReviewForm = document.getElementById('profileReviewForm');
@@ -431,7 +405,6 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleReviewBtn.addEventListener('click', () => {
       profileReviewFormWrapper.classList.toggle('open');
       if (profileReviewFormWrapper.classList.contains('open')) {
-        // Меняем текст кнопки, когда форма открыта
         toggleReviewBtn.textContent = 'Свернуть форму';
         toggleReviewBtn.style.background = 'rgba(255, 255, 255, 0.05)';
         toggleReviewBtn.style.color = '#a49ab8';
@@ -456,7 +429,6 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.textContent = 'Отправка...';
 
       try {
-        // Отправляем на твой воркер
         const res = await Store.apiFetch(APP_CONFIG.API.reviews, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -481,5 +453,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Инициализация
+  checkSocialSession(); // Проверяем, не вернулся ли пользователь из Гугла
   updateUI();
 });
