@@ -273,31 +273,28 @@
       document.body.appendChild(region);
     }
 
-    // Контейнер: фиксирован строго по центру снизу
+    // Контейнер: привязываем к низу по центру
     region.style.position = 'fixed';
     region.style.bottom = '20px';
     region.style.left = '50%';
     region.style.transform = 'translateX(-50%)';
     region.style.zIndex = '9999';
-    region.style.display = 'flex';
-    region.style.flexDirection = 'column';
-    region.style.alignItems = 'center';
-    region.style.gap = '4px'; // Минимальный отступ между карточками, чтобы не было дыры
+    region.style.width = '100%';
+    region.style.maxWidth = '380px'; // Ограничитель, чтобы не растягивалось на весь экран
+    region.style.height = '100px'; // Высота контейнера (чтобы стопка не летела вверх)
     region.style.pointerEvents = 'none';
-
-    // Лимит: не более 3 уведомлений
-    const currentToasts = region.querySelectorAll('.yandex-toast');
-    if (currentToasts.length >= 3) {
-      currentToasts[0].remove();
-    }
 
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
     
-    // Стили карточки
-    toast.style.position = 'relative';
-    toast.style.width = 'max-content'; 
-    toast.style.maxWidth = '90vw';
+    // Абсолютное позиционирование для наложения
+    toast.style.position = 'absolute';
+    toast.style.bottom = '0';
+    toast.style.left = '50%';
+    // Начальное состояние: чуть ниже и прозрачное
+    toast.style.transform = 'translateX(-50%) translateY(20px) scale(0.9)'; 
+    toast.style.width = 'max-content';
+    toast.style.maxWidth = '100%';
     toast.style.display = 'flex';
     toast.style.alignItems = 'center';
     toast.style.gap = '10px';
@@ -308,17 +305,14 @@
     toast.style.webkitBackdropFilter = 'blur(20px)';
     toast.style.border = '1px solid rgba(255, 255, 255, 0.15)';
     toast.style.borderRadius = '12px';
-    toast.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.4)'; // Чуть уменьшили тень
+    toast.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.5)';
     toast.style.color = '#ffffff';
     toast.style.fontSize = '13px';
     toast.style.fontWeight = '500';
     toast.style.fontFamily = 'Manrope, sans-serif';
     toast.style.pointerEvents = 'auto';
-    toast.style.transition = 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    
-    // Начальное состояние (чуть ниже)
+    toast.style.transition = 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
     toast.style.opacity = '0';
-    toast.style.transform = 'translateY(10px) scale(0.98)';
     
     let iconHtml = '';
     if (imageUrl) {
@@ -338,26 +332,52 @@
     
     region.appendChild(toast);
 
-    // Плавное появление
-    setTimeout(() => {
-      toast.style.opacity = '1';
-      toast.style.transform = 'translateY(0) scale(1)';
-    }, 10);
+    // Функция для перерасчета стопки (эффект карт)
+    function updateStack() {
+      // Получаем все уведомления и переворачиваем (новое будет первым)
+      const toasts = Array.from(region.querySelectorAll('.yandex-toast')).reverse();
+      
+      toasts.forEach((t, index) => {
+        if (index === 0) {
+          // Новое (самое переднее)
+          t.style.transform = 'translateX(-50%) translateY(0) scale(1)';
+          t.style.opacity = '1';
+          t.style.zIndex = '10';
+          t.style.pointerEvents = 'auto';
+        } else if (index === 1) {
+          // Второе (уходит назад и вверх, чуть уменьшается)
+          t.style.transform = 'translateX(-50%) translateY(-12px) scale(0.96)';
+          t.style.opacity = '0.8';
+          t.style.zIndex = '9';
+          t.style.pointerEvents = 'none';
+        } else if (index === 2) {
+          // Третье (еще дальше назад)
+          t.style.transform = 'translateX(-50%) translateY(-24px) scale(0.92)';
+          t.style.opacity = '0.5';
+          t.style.zIndex = '8';
+          t.style.pointerEvents = 'none';
+        } else {
+          // Все, что глубже 3-го, удаляем (оно уже за экраном)
+          t.remove();
+        }
+      });
+    }
+
+    // Появление
+    setTimeout(updateStack, 10);
 
     // Кнопка закрытия
     toast.querySelector('.toast-close').addEventListener('click', (e) => {
       e.stopPropagation();
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px) scale(0.9)';
-      setTimeout(() => toast.remove(), 300);
+      toast.remove();
+      updateStack(); 
     });
 
     // Автоскрытие через 4 секунды
     setTimeout(() => {
       if (toast.parentNode) {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(10px) scale(0.9)';
-        setTimeout(() => toast.remove(), 300);
+        toast.remove();
+        updateStack();
       }
     }, 4000);
   }
