@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Кнопка перехода на сайт ЖЖ
         openIdBtn.addEventListener('click', () => {
-          window.open('https://www.livejournal.com/openid/server.bml?openid.identity=https://ext-7027391.livejournal.com', '_blank');
+          window.open('https://www.livejournal.com/login.bml', '_blank');
         });
 
         // Кнопка входа
