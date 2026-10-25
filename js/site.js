@@ -148,7 +148,7 @@
     function animate() {
       layers.forEach(layer => {
         const depth = parseFloat(layer.getAttribute('data-depth'));
-        const moveX = mouseX * depth * 40; // Сила движения
+        const moveX = mouseX * depth * 60; // Сила движения
         const moveY = mouseY * depth * 40;
 
         layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
