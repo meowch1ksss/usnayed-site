@@ -63,19 +63,17 @@
       <p class="section-subtitle">✦ ваши прошлые покупки ✦</p>
     </div>
 
-    <div id="ordersList" class="orders-list"></div>
-    
-    <!-- Кнопка очистки -->
-    <div style="text-align: center; margin-top: 40px; display: none;" id="clearOrdersWrapper">
-      <button id="clearOrdersBtn" class="button">
-        🗑️ Очистить историю заказов
+    <!-- Кнопка очистки (ТОЛЬКО СВЕРХУ) -->
+    <div style="text-align: right; margin-bottom: 15px;" id="clearOrdersWrapper">
+      <button id="clearOrdersBtn" class="button" style="background: rgba(255, 109, 120, 0.1); border: 1px solid rgba(255, 109, 120, 0.3); color: #ff6d78; padding: 10px 20px; font-size: 13px;">
+        🗑️ Очистить историю
       </button>
     </div>
 
-    <!-- Блок ДОСТАВКА И ОПЛАТА -->
+    <div id="ordersList" class="orders-list"></div>
+
+    <!-- Блок ДОСТАВКА И ОПЛАТА (оставили без изменений, он идет ниже) -->
     <div class="delivery-custom-section">
-      
-      <!-- Верхняя цветная плашка с шагами -->
       <div class="delivery-steps-banner">
         <div class="delivery-step-item">
           <div class="delivery-step-icon"><img src="images/deliver-item.png" alt="Выберите блюда"></div>
@@ -85,7 +83,6 @@
             <div class="step-dots"><span></span><span></span><span></span></div>
           </div>
         </div>
-
         <div class="delivery-step-item">
           <div class="delivery-step-icon"><img src="images/deliver-item-1.png" alt="Оформите заказ"></div>
           <div class="delivery-step-text">
@@ -94,7 +91,6 @@
             <div class="step-dots"><span></span><span></span><span></span></div>
           </div>
         </div>
-
         <div class="delivery-step-item">
           <div class="delivery-step-icon"><img src="images/deliver-item-2.png" alt="Успейте заказать"></div>
           <div class="delivery-step-text">
@@ -104,8 +100,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Средняя строка с текстом -->
       <div class="delivery-info-text">
         <p>Вся информация о меню и доставке содержится на сайте.</p>
         <p>Принимаем заказы ежедневно до 13:30 для следующего дня или до 8:30 для текущего.</p>
@@ -113,13 +107,10 @@
         <p>Доставим ваш заказ при покупке от пяти комплексных обедов.</p>
         <p>Предварительные заказы принимаются за 3 дня по согласованному меню.</p>
       </div>
-
-      <!-- Нижний блок с условиями -->
       <div class="delivery-bottom-banner">
         <div class="delivery-bottom-left">
           <h3>Бесплатная доставка<br>по районам при<br>заказе от:</h3>
           <div class="delivery-pin">
-            <!-- Иконка пина на SVG -->
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
           </div>
         </div>

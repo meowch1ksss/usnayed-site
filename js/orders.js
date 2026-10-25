@@ -4,11 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const clearWrapper = document.getElementById('clearOrdersWrapper');
   
   const currentUser = Store.getUser();
-  const clearOrdersWrapper = document.getElementById('clearOrdersWrapper');
 
   // 1. Если не авторизован — показываем заглушку
   if (!currentUser) {
-    if (clearOrdersWrapper) clearOrdersWrapper.style.display = 'none';
+    if (clearWrapper) clearWrapper.style.display = 'none';
     if (list) {
       list.innerHTML = `
         <div class="empty-cart" style="max-width: 600px; margin: 0 auto;">
@@ -21,11 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // 2. Загрузка заказов с сервера
+  // 2. Загрузка заказов
   async function loadOrders() {
     if (!list) return;
     list.innerHTML = '<p style="text-align: center; color: #a49ab8; padding: 40px 0;">Загрузка истории...</p>';
-    if (clearOrdersWrapper) clearOrdersWrapper.style.display = 'none';
+    if (clearWrapper) clearWrapper.style.display = 'none';
 
     try {
       const res = await Store.apiFetch(`${APP_CONFIG.API.orders}?email=${encodeURIComponent(currentUser.email)}`);
@@ -37,14 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      if (clearOrdersWrapper) clearOrdersWrapper.style.display = 'block';
+      if (clearWrapper) clearWrapper.style.display = 'block';
 
       list.innerHTML = orders.map(order => {
         const date = new Date(order.date).toLocaleString('ru-RU', { 
           day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' 
         });
         
-        // Собираем товары
         const itemsHtml = order.items.map(i => `
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed rgba(220, 204, 255, 0.1);">
             <div style="flex: 1; padding-right: 15px;">
@@ -78,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   ${itemsHtml}
                 </div>
                 
-                <!-- Футер с именем и кнопкой -->
                 <div class="user-order-footer">
                   <div class="user-order-client">
                     <strong>${order.name || 'Покупатель'}</strong> · ${order.city || 'Город не указан'}
@@ -99,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 3. Очистка истории (сверху)
+  // 3. Очистка
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
       const confirmOverlay = document.getElementById('confirmOverlay');
@@ -109,14 +106,14 @@ document.addEventListener('DOMContentLoaded', () => {
           localStorage.removeItem('nyxora:orders');
           if (list) list.innerHTML = `<p style="text-align: center; color: #a49ab8; padding: 40px 0;">История очищена.</p>`;
           confirmOverlay.classList.remove('open');
-          if (clearOrdersWrapper) clearOrdersWrapper.style.display = 'none';
+          if (clearWrapper) clearWrapper.style.display = 'none';
         };
         document.getElementById('confirmCancel').onclick = () => confirmOverlay.classList.remove('open');
       }
     });
   }
 
-  // Функция для кнопки "Повторить"
+  // 4. Повторить заказ
   window.repeatOrder = function(order) {
     if (!order || !order.items) return;
     const newCart = order.items.map(i => ({ id: i.id, qty: i.qty }));
