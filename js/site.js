@@ -121,6 +121,44 @@
     initFaq();
     initEmailPicker();
     initPageFade();
+
+    /* ============================================================
+   * Параллакс эффект для главного экрана
+   * ============================================================ */
+  function initParallax() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+
+    const layers = Array.from(scene.querySelectorAll('[data-depth]'));
+    let mouseX = 0;
+    let mouseY = 0;
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX - w / 2) / (w / 2);
+      mouseY = (e.clientY - h / 2) / (h / 2);
+    });
+
+    window.addEventListener('resize', () => {
+      w = window.innerWidth;
+      h = window.innerHeight;
+    });
+
+    function animate() {
+      layers.forEach(layer => {
+        const depth = parseFloat(layer.getAttribute('data-depth'));
+        const moveX = mouseX * depth * 40; // Сила движения
+        const moveY = mouseY * depth * 40;
+
+        layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+
+  initParallax();
   });
 
   // === ПЛАВАЮЩАЯ КОРЗИНА ===
