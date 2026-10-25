@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let cart = JSON.parse(localStorage.getItem('nyxora:cart') || '[]');
   const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
+  const currentUser = Store.getUser(); // Получаем текущего пользователя
 
   function parseWeight(w) {
     const num = parseFloat(String(w).replace(/[^\d.,]/g, '').replace(',', '.'));
@@ -53,6 +54,21 @@ document.addEventListener('DOMContentLoaded', () => {
   if (totalPriceEl) totalPriceEl.textContent = `${totalSum} ₽`;
   if (totalPriceBottom) totalPriceBottom.textContent = `${totalSum} ₽`;
   if (totalWeightEl) totalWeightEl.textContent = formattedWeight;
+
+  // ============================================================
+  // АВТОЗАПОЛНЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
+  // ============================================================
+  if (currentUser) {
+    const nameInput = document.querySelector('input[name="fullName"]');
+    const emailInput = document.querySelector('input[name="email"]');
+    
+    if (nameInput && !nameInput.value) {
+      nameInput.value = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim();
+    }
+    if (emailInput && !emailInput.value) {
+      emailInput.value = currentUser.email || '';
+    }
+  }
 
   function initCustomSelect(dropdownId, onChange) {
     const dropdown = document.getElementById(dropdownId);
@@ -146,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
         fieldsPhys.classList.add('hidden');
         fieldsJur.classList.remove('hidden');
         
-        // Убираем required у полей физлица, добавляем юрлицу
         document.querySelectorAll('#fieldsPhys input').forEach(i => i.removeAttribute('required'));
         document.querySelectorAll('#fieldsJur input[name="companyName"], #fieldsJur input[name="jurEmail"]').forEach(i => i.setAttribute('required', 'true'));
         
@@ -164,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
         fieldsPhys.classList.remove('hidden');
         fieldsJur.classList.add('hidden');
         
-        // Убираем required у полей юрлица, добавляем физлицу
         document.querySelectorAll('#fieldsJur input').forEach(i => i.removeAttribute('required'));
         document.querySelectorAll('#fieldsPhys input[name="fullName"], #fieldsPhys input[name="email"], #fieldsPhys input[name="phone"]').forEach(i => i.setAttribute('required', 'true'));
         
@@ -183,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isJur = document.querySelector('.payer-btn.active').dataset.type === 'jur';
     
-    // Проверки
     if (cart.length === 0) {
       if (window.showToast) window.showToast('Корзина пуста!', 'error');
       return;
@@ -213,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Собираем полные данные для юрлица
       companyData = {
         legalAddress: document.querySelector('input[name="legalAddress"]')?.value || '—',
         inn: document.querySelector('input[name="inn"]')?.value || '—',
@@ -236,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const address = document.querySelector('input[name="address"]').value;
     const comment = document.querySelector('textarea[name="comment"]').value;
 
-    // Формируем объект заказа
     const orderData = {
       number: 'ORD-' + Math.floor(Math.random() * 900000 + 100000),
       items: cart.map(item => {
@@ -262,11 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
       paymentMethod: isJur ? 'bank' : document.getElementById('paymentInput').value,
       companyData: companyData,
       
-      // --- ДОБАВЛЯЕМ EMAIL ПОЛЬЗОВАТЕЛЯ ---
-      userEmail: (function() {
-        const u = Store.getUser();
-        return u ? u.email : email; 
-      })()
+      // Берем email из профиля, если он есть
+      userEmail: currentUser ? currentUser.email : email
     };
 
     const submitBtn = form.querySelector('button[type="submit"]');
