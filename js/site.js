@@ -262,7 +262,7 @@
   });
 
   /* ============================================================
-   * Уведомления в стиле Яндекс Музыки (снизу, с размытием)
+   * Уведомления в стиле Яндекс Музыки (снизу, с ограничением)
    * ============================================================ */
   function showToast(message, type = 'success', imageUrl = null) {
     let region = document.getElementById('toast-region');
@@ -281,8 +281,18 @@
     region.style.display = 'flex';
     region.style.flexDirection = 'column';
     region.style.alignItems = 'center';
-    region.style.gap = '12px';
+    region.style.gap = '8px'; // Чуть уменьшили отступ между ними
     region.style.pointerEvents = 'none';
+
+    // ОГРАНИЧЕНИЕ: Максимум 3 уведомления на экране
+    const currentToasts = region.querySelectorAll('.yandex-toast');
+    if (currentToasts.length >= 3) {
+      // Удаляем самое первое (старое)
+      const oldest = currentToasts[0];
+      oldest.style.opacity = '0';
+      oldest.style.transform = 'translateY(20px) scale(0.9)';
+      setTimeout(() => oldest.remove(), 300);
+    }
 
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
@@ -292,7 +302,7 @@
     toast.style.gap = '10px';
     toast.style.padding = '6px 12px 6px 6px';
     
-    toast.style.background = 'rgba(20, 15, 25, 0.7)'; 
+    toast.style.background = 'rgba(20, 15, 25, 0.8)'; 
     toast.style.backdropFilter = 'blur(20px)';
     toast.style.webkitBackdropFilter = 'blur(20px)';
     
@@ -305,8 +315,10 @@
     toast.style.fontFamily = 'Manrope, sans-serif';
     toast.style.maxWidth = '90vw';
     toast.style.pointerEvents = 'auto';
+    
+    // Начальное состояние для анимации выезда
     toast.style.opacity = '0';
-    toast.style.transform = 'translateY(20px)';
+    toast.style.transform = 'translateY(20px) scale(0.95)';
     toast.style.transition = 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
     
     let iconHtml = '';
@@ -327,21 +339,24 @@
     
     region.appendChild(toast);
 
+    // Плавное появление
     setTimeout(() => {
       toast.style.opacity = '1';
-      toast.style.transform = 'translateY(0)';
+      toast.style.transform = 'translateY(0) scale(1)';
     }, 10);
 
+    // Кнопка закрытия
     toast.querySelector('.toast-close').addEventListener('click', () => {
       toast.style.opacity = '0';
-      toast.style.transform = 'translateY(20px)';
+      toast.style.transform = 'translateY(20px) scale(0.9)';
       setTimeout(() => toast.remove(), 300);
     });
 
+    // Автоскрытие через 4 секунды
     setTimeout(() => {
       if (toast.parentNode) {
         toast.style.opacity = '0';
-        toast.style.transform = 'translateY(20px)';
+        toast.style.transform = 'translateY(20px) scale(0.9)';
         setTimeout(() => toast.remove(), 300);
       }
     }, 4000);
