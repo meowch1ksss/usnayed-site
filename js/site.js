@@ -262,7 +262,7 @@
   });
 
   /* ============================================================
-   * Уведомления в стиле Яндекс Музыки (снизу, с ограничением)
+   * Уведомления в стиле "Стопка карт" (Новое поверх, старые уходят назад)
    * ============================================================ */
   function showToast(message, type = 'success', imageUrl = null) {
     let region = document.getElementById('toast-region');
@@ -273,39 +273,32 @@
       document.body.appendChild(region);
     }
 
+    // Настройки контейнера (фиксирован снизу по центру)
     region.style.position = 'fixed';
     region.style.bottom = '20px';
     region.style.left = '50%';
     region.style.transform = 'translateX(-50%)';
     region.style.zIndex = '9999';
-    region.style.display = 'flex';
-    region.style.flexDirection = 'column';
-    region.style.alignItems = 'center';
-    region.style.gap = '8px'; // Чуть уменьшили отступ между ними
+    region.style.width = '100%';
+    region.style.maxWidth = '380px';
+    region.style.height = '100px'; // Высота контейнера, чтобы уведомления не летели вверх
     region.style.pointerEvents = 'none';
-
-    // ОГРАНИЧЕНИЕ: Максимум 3 уведомления на экране
-    const currentToasts = region.querySelectorAll('.yandex-toast');
-    if (currentToasts.length >= 3) {
-      // Удаляем самое первое (старое)
-      const oldest = currentToasts[0];
-      oldest.style.opacity = '0';
-      oldest.style.transform = 'translateY(20px) scale(0.9)';
-      setTimeout(() => oldest.remove(), 300);
-    }
 
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
     
+    // Стили для самого уведомления (абсолютное позиционирование)
+    toast.style.position = 'absolute';
+    toast.style.bottom = '0';
+    toast.style.left = '0';
+    toast.style.width = '100%';
     toast.style.display = 'flex';
     toast.style.alignItems = 'center';
     toast.style.gap = '10px';
     toast.style.padding = '6px 12px 6px 6px';
-    
-    toast.style.background = 'rgba(20, 15, 25, 0.8)'; 
+    toast.style.background = 'rgba(20, 15, 25, 0.9)'; 
     toast.style.backdropFilter = 'blur(20px)';
     toast.style.webkitBackdropFilter = 'blur(20px)';
-    
     toast.style.border = '1px solid rgba(255, 255, 255, 0.15)';
     toast.style.borderRadius = '12px';
     toast.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.5)';
@@ -313,13 +306,12 @@
     toast.style.fontSize = '13px';
     toast.style.fontWeight = '500';
     toast.style.fontFamily = 'Manrope, sans-serif';
-    toast.style.maxWidth = '90vw';
     toast.style.pointerEvents = 'auto';
+    toast.style.transition = 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
     
-    // Начальное состояние для анимации выезда
+    // Начальное состояние для анимации выезда снизу
     toast.style.opacity = '0';
-    toast.style.transform = 'translateY(20px) scale(0.95)';
-    toast.style.transition = 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    toast.style.transform = 'translateY(30px) scale(0.9)';
     
     let iconHtml = '';
     if (imageUrl) {
@@ -333,31 +325,63 @@
 
     toast.innerHTML = `
       ${iconHtml}
-      <div style="line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${message}</div>
-      <button class="toast-close" style="background: transparent; border: none; color: #888; font-size: 16px; cursor: pointer; padding: 4px; margin-left: 8px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; flex-shrink: 0;">✕</button>
+      <div style="line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">${message}</div>
+      <button class="toast-close" style="background: transparent; border: none; color: #888; font-size: 16px; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; flex-shrink: 0;">✕</button>
     `;
     
     region.appendChild(toast);
 
-    // Плавное появление
-    setTimeout(() => {
-      toast.style.opacity = '1';
-      toast.style.transform = 'translateY(0) scale(1)';
-    }, 10);
+    // Функция для перерасчета позиций (эффект стопки)
+    function updateStack() {
+      // Берем все уведомления. Так как мы добавляем в конец HTML, 
+      // последний элемент - самый новый.
+      const toasts = Array.from(region.querySelectorAll('.yandex-toast'));
+      
+      // Переворачиваем массив, чтобы новые были первыми
+      const reversedToasts = toasts.reverse();
+      
+      reversedToasts.forEach((t, index) => {
+        if (index === 0) {
+          // Самое новое - выезжает на передний план
+          t.style.transform = 'translateY(0) scale(1)';
+          t.style.opacity = '1';
+          t.style.zIndex = '10';
+          t.style.pointerEvents = 'auto';
+        } else if (index === 1) {
+          // Второе - чуть назад
+          t.style.transform = 'translateY(-15px) scale(0.95)';
+          t.style.opacity = '0.8';
+          t.style.zIndex = '9';
+          t.style.pointerEvents = 'none';
+        } else if (index === 2) {
+          // Третье - еще дальше
+          t.style.transform = 'translateY(-30px) scale(0.9)';
+          t.style.opacity = '0.5';
+          t.style.zIndex = '8';
+          t.style.pointerEvents = 'none';
+        } else {
+          // Все, что глубже 3-го, удаляем (оно ушло за экран)
+          t.remove();
+        }
+      });
+    }
+
+    // Появление
+    setTimeout(updateStack, 10);
 
     // Кнопка закрытия
-    toast.querySelector('.toast-close').addEventListener('click', () => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(20px) scale(0.9)';
-      setTimeout(() => toast.remove(), 300);
+    toast.querySelector('.toast-close').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toast.remove();
+      updateStack();
     });
 
     // Автоскрытие через 4 секунды
     setTimeout(() => {
       if (toast.parentNode) {
         toast.style.opacity = '0';
-        toast.style.transform = 'translateY(20px) scale(0.9)';
-        setTimeout(() => toast.remove(), 300);
+        toast.remove();
+        updateStack();
       }
     }, 4000);
   }
