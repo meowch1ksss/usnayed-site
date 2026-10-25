@@ -73,8 +73,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 <strong>${order.name || 'Покупатель'}</strong> · ${order.city || 'Город не указан'}
               </div>
               <div style="display: flex; align-items: center; gap: 15px;">
-                <button onclick='repeatOrder(${JSON.stringify(order).replace(/'/g, "&#39;")})' class="button button-quiet" style="padding: 8px 16px; font-size: 13px; border: 1px solid rgba(168, 121, 255, 0.3); color: #c6a6ff;">
-                  🔄 Повторить
+                <button onclick='repeatOrder(${JSON.stringify(order).replace(/'/g, "&#39;")})' class="button button-quiet" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 13px; border: 1px solid rgba(168, 121, 255, 0.3); color: #c6a6ff;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 1l4 4-4 4"></path>
+                    <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                    <path d="M7 23l-4-4 4-4"></path>
+                    <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                  </svg>
+                  Повторить
                 </button>
                 <div class="order-total" style="font-size: 24px; font-weight: 800; color: #a879ff;">${order.total} ₽</div>
               </div>
