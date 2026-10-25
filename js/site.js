@@ -273,31 +273,35 @@
       document.body.appendChild(region);
     }
 
-    // Контейнер жестко по центру снизу
+    // Контейнер: фиксирован строго по центру снизу
     region.style.position = 'fixed';
     region.style.bottom = '20px';
     region.style.left = '50%';
     region.style.transform = 'translateX(-50%)';
     region.style.zIndex = '9999';
-    region.style.width = '100%';
-    region.style.maxWidth = '380px'; // Ограничитель ширины
-    region.style.height = '150px';
+    region.style.display = 'flex';
+    region.style.flexDirection = 'column';
+    region.style.alignItems = 'center'; // Центрируем содержимое
+    region.style.gap = '10px';
     region.style.pointerEvents = 'none';
+
+    // Лимит: не более 3 уведомлений
+    const currentToasts = region.querySelectorAll('.yandex-toast');
+    if (currentToasts.length >= 3) {
+      currentToasts[0].remove();
+    }
 
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
     
-    // Карточка внутри растягивается по ширине контейнера, но центрируется
-    toast.style.position = 'absolute';
-    toast.style.bottom = '0';
-    toast.style.left = '50%';
-    toast.style.transform = 'translateX(-50%) translateY(20px) scale(0.9)'; // Центрируем при помощи X
-    toast.style.width = 'max-content';
-    toast.style.maxWidth = '100%';
+    // Стили: ширина по содержимому, текст переносится
+    toast.style.position = 'relative';
+    toast.style.width = 'max-content'; 
+    toast.style.maxWidth = '90vw'; // Чтобы не вылезало за экран
     toast.style.display = 'flex';
     toast.style.alignItems = 'center';
     toast.style.gap = '10px';
-    toast.style.padding = '6px 12px 6px 6px';
+    toast.style.padding = '10px 14px';
     
     toast.style.background = 'rgba(20, 15, 25, 0.95)'; 
     toast.style.backdropFilter = 'blur(20px)';
@@ -310,8 +314,7 @@
     toast.style.fontWeight = '500';
     toast.style.fontFamily = 'Manrope, sans-serif';
     toast.style.pointerEvents = 'auto';
-    toast.style.transition = 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    toast.style.opacity = '0';
+    toast.style.transition = 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
     
     // Начальное состояние для анимации выезда снизу
     toast.style.opacity = '0';
