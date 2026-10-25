@@ -138,7 +138,7 @@
 .user-order-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(220, 204, 255, 0.1);
-  border-radius: 16px;
+  border-radius: 2px;
   margin-bottom: 2px; /* Сделали отступ минимальным */
   overflow: hidden;
   transition: border-color 0.2s;
