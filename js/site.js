@@ -273,25 +273,25 @@
       document.body.appendChild(region);
     }
 
-    // Контейнер: фиксирован снизу по центру, с жесткой высотой для стопки
+    // Контейнер жестко по центру снизу
     region.style.position = 'fixed';
     region.style.bottom = '20px';
     region.style.left = '50%';
     region.style.transform = 'translateX(-50%)';
     region.style.zIndex = '9999';
     region.style.width = '100%';
-    region.style.maxWidth = '450px';
-    region.style.height = '150px'; // Высота, чтобы уведомления было куда складывать
+    region.style.maxWidth = '380px'; // Ограничитель ширины
+    region.style.height = '150px';
     region.style.pointerEvents = 'none';
 
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
     
-    // Абсолютное позиционирование для стопки
+    // Карточка внутри растягивается по ширине контейнера, но центрируется
     toast.style.position = 'absolute';
     toast.style.bottom = '0';
     toast.style.left = '50%';
-    toast.style.transform = 'translateX(-50%) translateY(20px) scale(0.9)';
+    toast.style.transform = 'translateX(-50%) translateY(20px) scale(0.9)'; // Центрируем при помощи X
     toast.style.width = 'max-content';
     toast.style.maxWidth = '100%';
     toast.style.display = 'flex';

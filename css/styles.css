@@ -3993,3 +3993,8 @@ body.page-leaving {
   .floating-cart-btn { padding: 10px 14px; font-size: 13px; }
   .floating-cart-info strong { font-size: 16px; }
 }
+
+/* Убираем плавающую корзину везде */
+.floating-cart {
+  display: none !important;
+}
