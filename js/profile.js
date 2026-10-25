@@ -305,10 +305,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================================
   // 7. ВЫХОД
   // ============================================================
-  logoutBtn?.addEventListener('click', () => {
+  logoutBtn?.addEventListener('click', async () => {
     currentUser = null;
     localStorage.removeItem('nyxora:user');
     sessionStorage.removeItem('nyxora:adminToken');
+    
+    // ВАЖНО: Говорим Supabase, чтобы он тоже разлогинил сессию
+    if (supabase) {
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        console.error('Ошибка выхода из Supabase', e);
+      }
+    }
+    
     showToast('Вы вышли из аккаунта', 'success');
     updateUI();
   });
@@ -397,7 +407,11 @@ document.addEventListener('DOMContentLoaded', () => {
       currentUser = { ...localUser, username: localUser.login };
       localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
       
-      showToast('Вы успешно вошли через соцсеть!', 'success');
+      // Показываем уведомление ТОЛЬКО если в URL есть хэш от Supabase (значит, это реальный вход)
+      if (window.location.hash.includes('access_token')) {
+        showToast('Вы успешно вошли через соцсеть!', 'success');
+      }
+      
       updateUI();
       
       // Очищаем URL от хэшей Supabase
