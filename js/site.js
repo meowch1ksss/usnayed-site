@@ -262,7 +262,7 @@
   });
 
   /* ============================================================
-   * Уведомления в стиле "Стопка карт" (Новое поверх, старые уходят назад)
+   * Уведомления (Плотная стопка, текст не обрезается)
    * ============================================================ */
   function showToast(message, type = 'success', imageUrl = null) {
     let region = document.getElementById('toast-region');
@@ -281,8 +281,8 @@
     region.style.zIndex = '9999';
     region.style.display = 'flex';
     region.style.flexDirection = 'column';
-    region.style.alignItems = 'center'; // Центрируем содержимое
-    region.style.gap = '10px';
+    region.style.alignItems = 'center';
+    region.style.gap = '4px'; // Минимальный отступ между карточками, чтобы не было дыры
     region.style.pointerEvents = 'none';
 
     // Лимит: не более 3 уведомлений
@@ -294,10 +294,10 @@
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
     
-    // Стили: ширина по содержимому, текст переносится
+    // Стили карточки
     toast.style.position = 'relative';
     toast.style.width = 'max-content'; 
-    toast.style.maxWidth = '90vw'; // Чтобы не вылезало за экран
+    toast.style.maxWidth = '90vw';
     toast.style.display = 'flex';
     toast.style.alignItems = 'center';
     toast.style.gap = '10px';
@@ -308,7 +308,7 @@
     toast.style.webkitBackdropFilter = 'blur(20px)';
     toast.style.border = '1px solid rgba(255, 255, 255, 0.15)';
     toast.style.borderRadius = '12px';
-    toast.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.5)';
+    toast.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.4)'; // Чуть уменьшили тень
     toast.style.color = '#ffffff';
     toast.style.fontSize = '13px';
     toast.style.fontWeight = '500';
@@ -316,9 +316,9 @@
     toast.style.pointerEvents = 'auto';
     toast.style.transition = 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
     
-    // Начальное состояние для анимации выезда снизу
+    // Начальное состояние (чуть ниже)
     toast.style.opacity = '0';
-    toast.style.transform = 'translateY(30px) scale(0.9)';
+    toast.style.transform = 'translateY(10px) scale(0.98)';
     
     let iconHtml = '';
     if (imageUrl) {
@@ -332,63 +332,32 @@
 
     toast.innerHTML = `
       ${iconHtml}
-      <div style="line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">${message}</div>
+      <div style="line-height: 1.4; flex: 1; white-space: normal; word-wrap: break-word;">${message}</div>
       <button class="toast-close" style="background: transparent; border: none; color: #888; font-size: 16px; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; flex-shrink: 0;">✕</button>
     `;
     
     region.appendChild(toast);
 
-    // Функция для перерасчета позиций (эффект стопки)
-    function updateStack() {
-      // Берем все уведомления. Так как мы добавляем в конец HTML, 
-      // последний элемент - самый новый.
-      const toasts = Array.from(region.querySelectorAll('.yandex-toast'));
-      
-      // Переворачиваем массив, чтобы новые были первыми
-      const reversedToasts = toasts.reverse();
-      
-      reversedToasts.forEach((t, index) => {
-        if (index === 0) {
-          // Самое новое - выезжает на передний план
-          t.style.transform = 'translateY(0) scale(1)';
-          t.style.opacity = '1';
-          t.style.zIndex = '10';
-          t.style.pointerEvents = 'auto';
-        } else if (index === 1) {
-          // Второе - чуть назад
-          t.style.transform = 'translateY(-15px) scale(0.95)';
-          t.style.opacity = '0.8';
-          t.style.zIndex = '9';
-          t.style.pointerEvents = 'none';
-        } else if (index === 2) {
-          // Третье - еще дальше
-          t.style.transform = 'translateY(-30px) scale(0.9)';
-          t.style.opacity = '0.5';
-          t.style.zIndex = '8';
-          t.style.pointerEvents = 'none';
-        } else {
-          // Все, что глубже 3-го, удаляем (оно ушло за экран)
-          t.remove();
-        }
-      });
-    }
-
-    // Появление
-    setTimeout(updateStack, 10);
+    // Плавное появление
+    setTimeout(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0) scale(1)';
+    }, 10);
 
     // Кнопка закрытия
     toast.querySelector('.toast-close').addEventListener('click', (e) => {
       e.stopPropagation();
-      toast.remove();
-      updateStack();
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(10px) scale(0.9)';
+      setTimeout(() => toast.remove(), 300);
     });
 
     // Автоскрытие через 4 секунды
     setTimeout(() => {
       if (toast.parentNode) {
         toast.style.opacity = '0';
-        toast.remove();
-        updateStack();
+        toast.style.transform = 'translateY(10px) scale(0.9)';
+        setTimeout(() => toast.remove(), 300);
       }
     }, 4000);
   }
