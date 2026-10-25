@@ -10,11 +10,15 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/sections.css">
   <link rel="stylesheet" href="css/profile.css">
-  <script src="js/site.js" defer></script>
-  <script src="js/profile.js" defer></script>
+  
+  <!-- 1. Сначала подключаем саму библиотеку Supabase (без defer) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- 2. Потом наши скрипты -->
   <script src="js/config.js"></script>
   <script src="js/store.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/site.js" defer></script>
+  <script src="js/profile.js" defer></script>
 </head>
 <body>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
