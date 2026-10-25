@@ -338,149 +338,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.social-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
-      const provider = btn.dataset.provider;
-
-      // --- 1. Google (Реальный вход) ---
-      if (provider === 'gmail') {
-        if (!supabase) {
-          showToast('Ошибка: Библиотека Supabase не загружена.', 'error');
-          return;
-        }
-        try {
-          const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: 'https://usnayed-site.pages.dev/profile.html' }
-          });
-          if (error) throw error;
-        } catch (err) {
-          showToast(`Ошибка входа: ${err.message}`, 'error');
-        }
+      if (!supabase) {
+        showToast('Ошибка: Библиотека Supabase не загружена.', 'error');
         return;
       }
 
-      // --- 2. LiveJournal (Через OpenID) ---
-      if (provider === 'livejournal') {
-        const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,8,16,0.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
-        
-        overlay.innerHTML = `
-          <div style="background:linear-gradient(145deg,rgba(34,24,52,0.95),rgba(20,14,31,0.95));border:1px solid rgba(168,121,255,0.3);border-radius:24px;padding:32px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.6);">
-            <h2 style="color:#f6f1ff;margin-bottom:12px;font-family:'Space Grotesk',sans-serif;">Вход через LiveJournal</h2>
-            <p style="color:#a49ab8;font-size:14px;margin-bottom:15px;">Введите ваш OpenID (ник) или Email:</p>
-            
-            <input type="text" id="ljInput" placeholder="ext-7027391 или mail@example.com" style="width:100%;padding:14px;background:rgba(0,0,0,0.3);border:1px solid rgba(220,204,255,0.1);border-radius:12px;color:#fff;outline:none;margin-bottom:15px;font-family:'Manrope',sans-serif;">
-            
-            <div style="margin-bottom:15px;">
-              <button id="ljOpenIdBtn" style="background:none;border:none;color:#c6a6ff;font-size:13px;text-decoration:underline;cursor:pointer;">
-                Перейти на страницу подтверждения ЖЖ
-              </button>
-            </div>
-
-            <div style="display:flex;gap:10px;">
-              <button id="ljCancelBtn" style="flex:1;padding:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#a49ab8;font-weight:700;cursor:pointer;">Отмена</button>
-              <button id="ljLoginBtn" style="flex:1;padding:14px;background:#a879ff;border:none;border-radius:12px;color:#100b1c;font-weight:700;cursor:pointer;">Войти</button>
-            </div>
-          </div>
-        `;
-        
-        document.body.appendChild(overlay);
-
-        const ljInput = overlay.querySelector('#ljInput');
-        const openIdBtn = overlay.querySelector('#ljOpenIdBtn');
-        const cancelBtn = overlay.querySelector('#ljCancelBtn');
-        const loginBtn = overlay.querySelector('#ljLoginBtn');
-
-        const closeModal = () => overlay.remove();
-        cancelBtn.addEventListener('click', closeModal);
-        overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
-
-        // Кнопка перехода на сайт ЖЖ
-        openIdBtn.addEventListener('click', () => {
-          window.open('https://www.livejournal.com/login.bml', '_blank');
+      try {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: 'https://usnayed-site.pages.dev/profile.html' }
         });
-
-        // Кнопка входа
-        loginBtn.addEventListener('click', () => {
-          const val = ljInput.value.trim();
-          if (!val) {
-            if (window.showToast) window.showToast('Введите ваш ник или email', 'error');
-            return;
-          }
-
-          // Формируем email (если ввели ник, добавляем @livejournal.com)
-          const email = val.includes('@') ? val : `${val}@livejournal.com`;
-          const login = val.includes('@') ? val.split('@')[0] : val;
-          
-          let users = JSON.parse(localStorage.getItem('nyxora:users') || '[]');
-          let user = users.find(u => u.email === email);
-
-          if (!user) {
-            user = { firstName: login, lastName: '', login: login, email: email, password: 'lj_auth', isAdmin: false };
-            users.push(user);
-            localStorage.setItem('nyxora:users', JSON.stringify(users));
-          }
-
-          currentUser = { ...user, username: user.login };
-          localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
-
-          if (window.showToast) window.showToast(`Вход через LiveJournal выполнен`, 'success');
-          closeModal();
-          updateUI();
-        });
-        return;
+        if (error) throw error;
+      } catch (err) {
+        showToast(`Ошибка входа: ${err.message}`, 'error');
       }
-
-      // --- 3. Остальные (Имитация через Email) ---
-      const providerName = btn.textContent.trim();
-      const overlay = document.createElement('div');
-      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,8,16,0.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
-      
-      overlay.innerHTML = `
-        <div style="background:linear-gradient(145deg,rgba(34,24,52,0.95),rgba(20,14,31,0.95));border:1px solid rgba(168,121,255,0.3);border-radius:24px;padding:32px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.6);">
-          <h2 style="color:#f6f1ff;margin-bottom:12px;font-family:'Space Grotesk',sans-serif;">Вход через ${providerName}</h2>
-          <p style="color:#a49ab8;font-size:14px;margin-bottom:20px;">Введите ваш Email, чтобы войти.</p>
-          <input type="email" id="socialEmailInput" placeholder="mail@example.com" style="width:100%;padding:14px;background:rgba(0,0,0,0.3);border:1px solid rgba(220,204,255,0.1);border-radius:12px;color:#fff;outline:none;margin-bottom:15px;font-family:'Manrope',sans-serif;">
-          <div style="display:flex;gap:10px;">
-            <button id="socialCancelBtn" style="flex:1;padding:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#a49ab8;font-weight:700;cursor:pointer;">Отмена</button>
-            <button id="socialLoginBtn" style="flex:1;padding:14px;background:#a879ff;border:none;border-radius:12px;color:#100b1c;font-weight:700;cursor:pointer;">Войти</button>
-          </div>
-        </div>
-      `;
-      
-      document.body.appendChild(overlay);
-
-      const emailInput = overlay.querySelector('#socialEmailInput');
-      const cancelBtn = overlay.querySelector('#socialCancelBtn');
-      const loginBtn = overlay.querySelector('#socialLoginBtn');
-
-      const closeModal = () => overlay.remove();
-      cancelBtn.addEventListener('click', closeModal);
-      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
-
-      loginBtn.addEventListener('click', () => {
-        const email = emailInput.value.trim();
-        if (!email || !email.includes('@')) {
-          if (window.showToast) window.showToast('Введите корректный Email', 'error');
-          return;
-        }
-
-        let users = JSON.parse(localStorage.getItem('nyxora:users') || '[]');
-        let user = users.find(u => u.email === email);
-
-        if (!user) {
-          const namePart = email.split('@')[0];
-          user = { firstName: namePart, lastName: '', login: namePart, email: email, password: 'social_demo', isAdmin: false };
-          users.push(user);
-          localStorage.setItem('nyxora:users', JSON.stringify(users));
-        }
-
-        currentUser = { ...user, username: user.login };
-        localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
-
-        if (window.showToast) window.showToast(`Вход через ${providerName} выполнен`, 'success');
-        closeModal();
-        updateUI();
-      });
     });
   });
 
@@ -498,7 +369,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!localUser) {
         const nameParts = name.split(' ');
-        localUser = { firstName: nameParts[0] || 'Пользователь', lastName: nameParts[1] || '', login: email.split('@')[0], email: email, password: 'social_auth', isAdmin: false };
+        localUser = { 
+          firstName: nameParts[0] || 'Пользователь', 
+          lastName: nameParts[1] || '', 
+          login: email.split('@')[0], 
+          email: email, 
+          password: 'social_auth', 
+          isAdmin: false 
+        };
         users.push(localUser);
         localStorage.setItem('nyxora:users', JSON.stringify(users));
       }
