@@ -273,37 +273,33 @@
       document.body.appendChild(region);
     }
 
-    // Контейнер: снизу по центру, элементы идут в столбик
+    // Контейнер: фиксирован снизу по центру, с жесткой высотой для стопки
     region.style.position = 'fixed';
     region.style.bottom = '20px';
     region.style.left = '50%';
     region.style.transform = 'translateX(-50%)';
     region.style.zIndex = '9999';
-    region.style.display = 'flex';
-    region.style.flexDirection = 'column';
-    region.style.alignItems = 'center';
-    region.style.gap = '10px';
+    region.style.width = '100%';
+    region.style.maxWidth = '450px';
+    region.style.height = '150px'; // Высота, чтобы уведомления было куда складывать
     region.style.pointerEvents = 'none';
-
-    // ОГРАНИЧЕНИЕ: Если уведомлений уже 3, удаляем самое старое (верхнее)
-    const currentToasts = region.querySelectorAll('.yandex-toast');
-    if (currentToasts.length >= 3) {
-      currentToasts[0].remove();
-    }
 
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
     
-    // Стили уведомления: ширина по содержимому (свободная)
-    toast.style.position = 'relative';
-    toast.style.width = 'max-content'; 
-    toast.style.maxWidth = '90vw';
+    // Абсолютное позиционирование для стопки
+    toast.style.position = 'absolute';
+    toast.style.bottom = '0';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%) translateY(20px) scale(0.9)';
+    toast.style.width = 'max-content';
+    toast.style.maxWidth = '100%';
     toast.style.display = 'flex';
     toast.style.alignItems = 'center';
     toast.style.gap = '10px';
     toast.style.padding = '6px 12px 6px 6px';
     
-    toast.style.background = 'rgba(20, 15, 25, 0.9)'; 
+    toast.style.background = 'rgba(20, 15, 25, 0.95)'; 
     toast.style.backdropFilter = 'blur(20px)';
     toast.style.webkitBackdropFilter = 'blur(20px)';
     toast.style.border = '1px solid rgba(255, 255, 255, 0.15)';
@@ -314,7 +310,8 @@
     toast.style.fontWeight = '500';
     toast.style.fontFamily = 'Manrope, sans-serif';
     toast.style.pointerEvents = 'auto';
-    toast.style.transition = 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    toast.style.transition = 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    toast.style.opacity = '0';
     
     // Начальное состояние для анимации выезда снизу
     toast.style.opacity = '0';
