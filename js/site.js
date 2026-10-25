@@ -273,29 +273,36 @@
       document.body.appendChild(region);
     }
 
-    // Настройки контейнера (фиксирован снизу по центру)
+    // Контейнер: снизу по центру, элементы идут в столбик
     region.style.position = 'fixed';
     region.style.bottom = '20px';
     region.style.left = '50%';
     region.style.transform = 'translateX(-50%)';
     region.style.zIndex = '9999';
-    region.style.width = '100%';
-    region.style.maxWidth = '380px';
-    region.style.height = '100px'; // Высота контейнера, чтобы уведомления не летели вверх
+    region.style.display = 'flex';
+    region.style.flexDirection = 'column';
+    region.style.alignItems = 'center';
+    region.style.gap = '10px';
     region.style.pointerEvents = 'none';
+
+    // ОГРАНИЧЕНИЕ: Если уведомлений уже 3, удаляем самое старое (верхнее)
+    const currentToasts = region.querySelectorAll('.yandex-toast');
+    if (currentToasts.length >= 3) {
+      currentToasts[0].remove();
+    }
 
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
     
-    // Стили для самого уведомления (абсолютное позиционирование)
-    toast.style.position = 'absolute';
-    toast.style.bottom = '0';
-    toast.style.left = '0';
-    toast.style.width = '100%';
+    // Стили уведомления: ширина по содержимому (свободная)
+    toast.style.position = 'relative';
+    toast.style.width = 'max-content'; 
+    toast.style.maxWidth = '90vw';
     toast.style.display = 'flex';
     toast.style.alignItems = 'center';
     toast.style.gap = '10px';
     toast.style.padding = '6px 12px 6px 6px';
+    
     toast.style.background = 'rgba(20, 15, 25, 0.9)'; 
     toast.style.backdropFilter = 'blur(20px)';
     toast.style.webkitBackdropFilter = 'blur(20px)';
@@ -307,7 +314,7 @@
     toast.style.fontWeight = '500';
     toast.style.fontFamily = 'Manrope, sans-serif';
     toast.style.pointerEvents = 'auto';
-    toast.style.transition = 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    toast.style.transition = 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
     
     // Начальное состояние для анимации выезда снизу
     toast.style.opacity = '0';
