@@ -131,3 +131,96 @@
 .confirm-cancel:hover { background: rgba(255, 255, 255, 0.1); color: #f6f1ff; }
 .confirm-delete { background: linear-gradient(135deg, #ff6d78, #e53935); color: #fff; box-shadow: 0 4px 15px rgba(255, 109, 120, 0.3); }
 .confirm-delete:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 109, 120, 0.5); }
+
+/* ============================================================
+ * Сворачиваемые карточки заказов (для пользователя)
+ * ============================================================ */
+.user-order-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.user-order-card:hover {
+  border-color: rgba(168, 121, 255, 0.3);
+}
+
+.user-order-card.open {
+  border-color: rgba(168, 121, 255, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.user-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.user-order-title h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  color: #f6f1ff;
+}
+
+.user-order-date {
+  font-size: 12px;
+  color: #a49ab8;
+}
+
+.user-order-total {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #a879ff;
+}
+
+.user-order-total .arrow {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+  color: #a49ab8;
+}
+
+.user-order-card.open .user-order-total .arrow {
+  transform: rotate(180deg);
+}
+
+/* Анимация раскрытия */
+.user-order-details {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.user-order-card.open .user-order-details {
+  grid-template-rows: 1fr;
+}
+
+.user-order-details-inner {
+  overflow: hidden;
+}
+
+.user-order-items {
+  padding: 0 20px 15px;
+}
+
+.user-order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-top: 1px solid rgba(220, 204, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.user-order-client {
+  font-size: 13px;
+  color: #a49ab8;
+}

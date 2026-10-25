@@ -4,10 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const clearWrapper = document.getElementById('clearOrdersWrapper');
   
   const currentUser = Store.getUser();
+  const clearOrdersWrapper = document.getElementById('clearOrdersWrapper');
 
   // 1. Если не авторизован — показываем заглушку
   if (!currentUser) {
-    if (clearWrapper) clearWrapper.style.display = 'none';
+    if (clearOrdersWrapper) clearOrdersWrapper.style.display = 'none';
     if (list) {
       list.innerHTML = `
         <div class="empty-cart" style="max-width: 600px; margin: 0 auto;">
@@ -20,14 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // 2. Функция загрузки с сервера
+  // 2. Загрузка заказов с сервера
   async function loadOrders() {
     if (!list) return;
     list.innerHTML = '<p style="text-align: center; color: #a49ab8; padding: 40px 0;">Загрузка истории...</p>';
-    if (clearWrapper) clearWrapper.style.display = 'none';
+    if (clearOrdersWrapper) clearOrdersWrapper.style.display = 'none';
 
     try {
-      // Ищем заказы по email текущего пользователя
       const res = await Store.apiFetch(`${APP_CONFIG.API.orders}?email=${encodeURIComponent(currentUser.email)}`);
       if (!res.ok) throw new Error('server');
       const orders = await res.json();
@@ -37,11 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      if (clearOrdersWrapper) clearOrdersWrapper.style.display = 'block';
+
       list.innerHTML = orders.map(order => {
         const date = new Date(order.date).toLocaleString('ru-RU', { 
           day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' 
         });
         
+        // Собираем товары
         const itemsHtml = order.items.map(i => `
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed rgba(220, 204, 255, 0.1);">
             <div style="flex: 1; padding-right: 15px;">
@@ -55,34 +58,35 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
         
         return `
-          <article class="order-card" style="margin-bottom: 20px; padding: 24px; border: 1px solid rgba(220, 204, 255, 0.1); border-radius: 16px; background: rgba(255,255,255,0.02);">
-            <div class="order-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid rgba(220,204,255,0.1); padding-bottom: 15px;">
-              <div>
-                <div class="order-number" style="font-size: 20px; font-weight: 800; color: #f6f1ff;">Заказ ${order.number}</div>
-                <div class="order-date" style="font-size: 13px; color: #a49ab8; margin-top: 5px;">${date}</div>
+          <article class="user-order-card" id="order-${order.number}">
+            <!-- Шапка заказа (всегда видна) -->
+            <div class="user-order-header" onclick="document.getElementById('order-${order.number}').classList.toggle('open')">
+              <div class="user-order-title">
+                <h3>Заказ ${order.number}</h3>
+                <span class="user-order-date">${date}</span>
               </div>
-              <div class="order-status" style="background: rgba(183, 255, 112, 0.1); color: #b7ff70; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700;">${order.status || 'Принят'}</div>
-            </div>
-            
-            <div class="order-items" style="display: block; margin-bottom: 20px;">
-              ${itemsHtml}
+              <div class="user-order-total">
+                ${order.total} ₽ <span class="arrow">▼</span>
+              </div>
             </div>
 
-            <div class="order-bottom" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(220,204,255,0.1); padding-top: 15px;">
-              <div class="order-client" style="font-size: 13px; color: #a49ab8;">
-                <strong>${order.name || 'Покупатель'}</strong> · ${order.city || 'Город не указан'}
-              </div>
-              <div style="display: flex; align-items: center; gap: 15px;">
-                <button onclick='repeatOrder(${JSON.stringify(order).replace(/'/g, "&#39;")})' class="button button-quiet" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 13px; border: 1px solid rgba(168, 121, 255, 0.3); color: #c6a6ff;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17 1l4 4-4 4"></path>
-                    <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                    <path d="M7 23l-4-4 4-4"></path>
-                    <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-                  </svg>
-                  Повторить
-                </button>
-                <div class="order-total" style="font-size: 24px; font-weight: 800; color: #a879ff;">${order.total} ₽</div>
+            <!-- Скрытые детали -->
+            <div class="user-order-details">
+              <div class="user-order-details-inner">
+                <div class="user-order-items">
+                  <small style="color: #a49ab8; display: block; margin-bottom: 8px;">Состав заказа:</small>
+                  ${itemsHtml}
+                </div>
+                
+                <!-- Футер с именем и кнопкой -->
+                <div class="user-order-footer">
+                  <div class="user-order-client">
+                    <strong>${order.name || 'Покупатель'}</strong> · ${order.city || 'Город не указан'}
+                  </div>
+                  <button onclick='repeatOrder(${JSON.stringify(order).replace(/'/g, "&#39;")})' class="button button-quiet" style="padding: 8px 16px; font-size: 13px; border: 1px solid rgba(168, 121, 255, 0.3); color: #c6a6ff;">
+                    🔄 Повторить
+                  </button>
+                </div>
               </div>
             </div>
           </article>
@@ -95,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 3. Очистка (для теста)
+  // 3. Очистка истории (сверху)
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
       const confirmOverlay = document.getElementById('confirmOverlay');
@@ -105,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
           localStorage.removeItem('nyxora:orders');
           if (list) list.innerHTML = `<p style="text-align: center; color: #a49ab8; padding: 40px 0;">История очищена.</p>`;
           confirmOverlay.classList.remove('open');
+          if (clearOrdersWrapper) clearOrdersWrapper.style.display = 'none';
         };
         document.getElementById('confirmCancel').onclick = () => confirmOverlay.classList.remove('open');
       }
