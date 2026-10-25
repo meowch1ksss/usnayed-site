@@ -8,7 +8,7 @@
   <title>У нас обед — вкусная столовая</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/sections.css">
   <script src="js/config.js" defer></script>
@@ -85,42 +85,57 @@
         <div class="hero-product hero-product-front"><img src="images/our-menu-2.jpg" alt="Готовый обед"></div>
         <div class="floating-price"><small>ДОМАШНЯЯ ЕДА</small><strong>Сытно, быстро и вкусно</strong><span>Выбирайте нас<b>↗</b></span></div>
         <div class="hero-tag tag-bottom"><span class="tag-dot"></span>ВКУСНЫЕ<b>ОБЕДЫ</b></div>
+      </div>
 
-        <!-- Параллакс элементы (лист, чек, помидор) -->
-        <div id="scene" class="scene" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none;">
+        <!-- Параллакс элементы -->
+        <div id="scene" class="scene">
           
-          <!-- Чек (справа, ровно рядом с фото) -->
-          <div data-depth="0.2" class="check" style="position: absolute; top: 15%; right: -2%; width: 220px;">
-            <img src="images/layer-2.png" alt="Чек" style="width: 100%; display: block; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.3));">
+          <!-- Чек -->
+          <div data-depth="0.4" class="check-1">
+            <img src="images/layer-2.png" alt="Чек">
           </div>
 
-          <!-- Помидорка 1 (снизу справа) -->
-          <div data-depth="0.4" class="tomato" style="position: absolute; bottom: 15%; right: 5%; width: 80px;">
-            <img src="images/layer-3.png" alt="Помидор" style="width: 100%; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));">
+          <!-- Чек -->
+          <div data-depth="0.4" class="check-2">
+            <img src="images/layer-2.png" alt="Чек">
           </div>
 
-          <!-- Помидорка 2 (снизу слева) -->
-          <div data-depth="0.5" class="tomato" style="position: absolute; bottom: 5%; left: 15%; width: 60px;">
-            <img src="images/layer-3.png" alt="Помидор" style="width: 100%; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));">
+          <!-- Помидорка 1 -->
+          <div data-depth="0.4" class="tomato tomato-1">
+            <img src="images/layer-3.png" alt="Помидор">
           </div>
 
-          <!-- Листик 1 (слева сверху) -->
-          <div data-depth="0.3" class="leaf" style="position: absolute; top: 10%; left: 5%; width: 100px;">
-            <img src="images/layer-4.png" alt="Лист" style="width: 100%; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));">
+          <!-- Помидорка 2 -->
+          <div data-depth="0.35" class="tomato tomato-2">
+            <img src="images/layer-3.png" alt="Помидор">
           </div>
 
-          <!-- Листик 2 (в центре) -->
-          <div data-depth="0.6" class="leaf" style="position: absolute; top: 40%; left: 40%; width: 70px;">
-            <img src="images/layer-4.png" alt="Лист" style="width: 100%; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));">
+          <!-- Листик 1 -->
+          <div data-depth="0.4" class="leaf leaf-1">
+            <img src="images/layer-4.png" alt="Лист">
           </div>
 
-          <!-- Тень (для объема) -->
-          <div data-depth="0.1" class="leaf-shadow" style="position: absolute; top: 15%; right: 15%; width: 150px; filter: blur(10px); opacity: 0.4;">
-            <img src="images/layer-1.png" alt="Тень" style="width: 100%; display: block;">
+          <!-- Листик 2 -->
+          <div data-depth="0.3" class="leaf leaf-2">
+            <img src="images/layer-4.png" alt="Лист">
+          </div>
+          
+          <!-- Листик 3 -->
+          <div data-depth="0.5" class="leaf leaf-3">
+            <img src="images/layer-4.png" alt="Лист">
+          </div>
+
+          <!-- Тень -->
+          <div data-depth="0.3" class="leaf-shadow-1">
+            <img src="images/layer-1.png" alt="Тень">
+          </div>
+
+          <!-- Тень -->
+          <div data-depth="0.3" class="leaf-shadow-2">
+            <img src="images/layer-1.png" alt="Тень">
           </div>
 
         </div>
-      </div>
     </section>
 
     <!-- КАТЕГОРИИ -->
@@ -129,21 +144,21 @@
         <h2 class="page-title">Комплексное питание с доставкой <span class="typewriter">✦ выберите категорию ✦</span></h2>
       </div>
       <div class="categories-grid" id="categoriesGrid">
-        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Завтраки')" class="category-card" data-category="Завтраки" style="background-image: url('images/our-menu-1.jpg');">
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Завтраки')" class="category-card" data-category="Завтраки" style="background-image: url('images/our-menu-1.jpg'); box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 20px rgba(168,121,255,0.2);">
             <div class="category-overlay"></div>
-            <h3 class="category-name">ЗАВТРАКИ</h3>
+            <h3 class="category-name"><strong>ЗАВТРАКИ</strong></h3>
         </a>
-        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Обеды в офис')" class="category-card" data-category="Обеды в офис" style="background-image: url('images/our-menu-2.jpg');">
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Обеды в офис')" class="category-card" data-category="Обеды в офис" style="background-image: url('images/our-menu-2.jpg'); box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 20px rgba(168,121,255,0.2);">
             <div class="category-overlay"></div>
-            <h3 class="category-name">ОБЕДЫ В ОФИС</h3>
+            <h3 class="category-name"><strong>ОБЕДЫ В ОФИС</strong></h3>
         </a>
-        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Комплексные обеды')" class="category-card" data-category="Комплексные обеды" style="background-image: url('images/our-menu-3.jpg');">
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Комплексные обеды')" class="category-card" data-category="Комплексные обеды" style="background-image: url('images/our-menu-3.jpg'); box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 20px rgba(168,121,255,0.2);">
             <div class="category-overlay"></div>
-            <h3 class="category-name">КОМПЛЕКСНЫЕ ОБЕДЫ</h3>
+            <h3 class="category-name"><strong>КОМПЛЕКСНЫЕ ОБЕДЫ</strong></h3>
         </a>
-        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Банкеты и фуршеты')" class="category-card" data-category="Банкеты и фуршеты" style="background-image: url('images/our-menu-4.jpg');">
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Банкеты и фуршеты')" class="category-card" data-category="Банкеты и фуршеты" style="background-image: url('images/our-menu-4.jpg'); box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 20px rgba(168,121,255,0.2);">
             <div class="category-overlay"></div>
-            <h3 class="category-name">БАНКЕТЫ И ФУРШЕТЫ</h3>
+            <h3 class="category-name"><strong>БАНКЕТЫ И ФУРШЕТЫ</strong></h3>
         </a>
       </div>
       <div class="office-delivery-note" id="officeDeliveryNote">Особенно удобна доставка обедов для коллективов, работающих в одном ритме и над одной задачей, которые могут заказывать комплексные обеды с доставкой. Можно выбирать обеды в офис с одинаковыми меню из предлагаемых вариантов, а можно несколько любых, предлагаемых меню, в количестве более 5 комплексных обедов. В таких случаях доставка обедов в офисы позволяет сотрудникам сэкономить время на прием пищи, и ускорить решение поставленных задач.</div>

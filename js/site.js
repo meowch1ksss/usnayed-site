@@ -132,17 +132,18 @@
       layers.forEach(layer => {
         const depth = parseFloat(layer.getAttribute('data-depth')) || 0.2;
         
-        // Движение и вращение
+        // ТОЛЬКО ДВИЖЕНИЕ (убрали rotate)
         const moveX = mouseX * depth * 80; 
         const moveY = mouseY * depth * 80;
-        const rotate = mouseX * depth * 45; // Резкое вращение
 
-        layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0) rotate(${rotate}deg)`;
+        layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
       });
       requestAnimationFrame(animate);
     }
     animate();
   }
+
+  initParallax();
 
   /* ============================================================
    * Init (Запуск при загрузке)
