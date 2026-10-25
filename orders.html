@@ -57,17 +57,17 @@
 
   <!-- КОНТЕНТ -->
   <main class="page-section page-shell" style="min-height: 70vh; padding-top: 40px; padding-bottom: 80px;">
-    <div class="section-center">
+    <div class="section-center" style="position: relative; margin-bottom: 20px;">
       <span class="eyebrow section-pill">✦ ИСТОРИЯ ✦</span>
       <h2>Мои заказы</h2>
       <p class="section-subtitle">✦ ваши прошлые покупки ✦</p>
-    </div>
 
-    <!-- Кнопка очистки (ТОЛЬКО СВЕРХУ) -->
-    <div style="text-align: right; margin-bottom: 15px;" id="clearOrdersWrapper">
-      <button id="clearOrdersBtn" class="button" style="background: rgba(255, 109, 120, 0.1); border: 1px solid rgba(255, 109, 120, 0.3); color: #ff6d78; padding: 10px 20px; font-size: 13px;">
-        🗑️ Очистить историю
-      </button>
+      <!-- Кнопка очистки теперь ровно по центру, под текстом -->
+      <div id="clearOrdersWrapper" style="margin-top: 15px; display: flex; justify-content: center;">
+        <button id="clearOrdersBtn" class="button" style="background: rgba(255, 109, 120, 0.1); border: 1px solid rgba(255, 109, 120, 0.3); color: #ff6d78; padding: 10px 20px; font-size: 13px;">
+          🗑️ Очистить историю
+        </button>
+      </div>
     </div>
 
     <div id="ordersList" class="orders-list"></div>
