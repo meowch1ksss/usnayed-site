@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================================
   
   // ВСТАВЬ СВОИ КЛЮЧИ SUPABASE ЗДЕСЬ
-  const SUPABASE_URL = 'https://jaotffxttfwkzueivmru.supabase.co'; 
+  const SUPABASE_URL = 'https://jaotffxttfwkzueivmru.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_J0eXhuE8bJd3Vz1eGWxnFQ_JOO1f_p9';
 
   let supabase = null;
