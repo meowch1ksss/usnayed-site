@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <p style="margin:0;font-size:13px;color:#a49ab8;">${ProductCard.esc(p.weight || '')} · ${ProductCard.esc(p.category)}</p>
           </div>
           <div class="cart-item-controls">
-            ${ProductCard.renderAction(id, qty).replace('class="qty-counter"', 'class="qty-counter cart-qty"')}
+            ${ProductCard.renderAction(id, qty)}
             <div class="cart-item-price">${p.price * qty} ₽</div>
-            <button class="cart-fav-btn ${isFav ? 'active' : ''}" data-action="favorite" data-id="${id}"
+            <button type="button" class="cart-fav-btn ${isFav ? 'active' : ''}" data-action="favorite" data-id="${id}"
                     title="${isFav ? 'Убрать из избранного' : 'В избранное'}">
               <svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>
             </button>
@@ -47,33 +47,42 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cartTotalPrice) cartTotalPrice.textContent = `${total} ₽`;
   }
 
+  // ВСЕ действия (включая remove) через единый биндер ProductCard
   ProductCard.bind(cartItemsContainer, {
-    onAdd:   (id, p) => { ProductCard.defaultAdd(cartItemsContainer, id, p); renderCart(); },
-    onPlus:  (id, p) => { ProductCard.defaultAdd(cartItemsContainer, id, p); renderCart(); },
-    onMinus: (id, p) => { ProductCard.defaultMinus(cartItemsContainer, id, p); renderCart(); },
-    onInput: (id, p, el) => { ProductCard.defaultInput(cartItemsContainer, id, p, el); renderCart(); },
+    onAdd: (id, p) => {
+      ProductCard.defaultAdd(cartItemsContainer, id, p);
+      renderCart();
+    },
+    onPlus: (id, p) => {
+      ProductCard.defaultAdd(cartItemsContainer, id, p);
+      renderCart();
+    },
+    onMinus: (id, p) => {
+      ProductCard.defaultMinus(cartItemsContainer, id, p);
+      renderCart();
+    },
+    onInput: (id, p, el) => {
+      ProductCard.defaultInput(cartItemsContainer, id, p, el);
+      renderCart();
+    },
     onFavorite: (id, p) => {
-      Store.toggleFavorite(id);
+      const isFav = Store.toggleFavorite(id);
       renderCart();
       if (window.showToast && p) {
-        const isFav = Store.isFavorite(id);
         window.showToast(
           isFav ? `«${p.name}» добавлен в избранное` : `«${p.name}» удалён из избранного`,
-          isFav ? 'success' : 'error', p.image
+          isFav ? 'success' : 'error',
+          p.image
         );
       }
     },
-  });
-
-  // «Удалить» — отдельно, т.к. это не add/minus
-  cartItemsContainer.addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-action="remove"]');
-    if (!btn) return;
-    const id = btn.dataset.id;
-    const p = ProductCard.find(id);
-    Store.removeFromCart(id);
-    if (window.showToast && p) window.showToast(`«${p.name}» удалён из корзины`, 'error', p.image);
-    renderCart();
+    onRemove: (id, p) => {
+      Store.removeFromCart(id);
+      if (window.showToast && p) {
+        window.showToast(`«${p.name}» удалён из корзины`, 'error', p.image);
+      }
+      renderCart();
+    },
   });
 
   clearCartBtn?.addEventListener('click', (e) => {

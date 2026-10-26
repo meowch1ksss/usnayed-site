@@ -4,7 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const accessDenied = document.getElementById('accessDenied');
   const adminPanel   = document.getElementById('adminPanel');
 
-  if (!currentUser || currentUser.isAdmin !== true) {
+  // Проверяем наличие токена и флага админа в localStorage
+  const token = Store.getToken();
+  
+  if (!currentUser || currentUser.isAdmin !== true || !token) {
     accessDenied?.classList.remove('hidden');
     adminPanel?.classList.add('hidden');
     return;
@@ -12,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   accessDenied?.classList.add('hidden');
   adminPanel?.classList.remove('hidden');
-  document.getElementById('adminUserName').textContent = currentUser.username || 'Администратор';
+  document.getElementById('adminUserName').textContent = currentUser.username || currentUser.login || 'Администратор';
 
   const escapeHTML = (s) => String(s ?? '').replace(/[&<>"']/g, c => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
@@ -21,20 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
     { '"': '&quot;', "'": '&#39;', '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]
   ));
 
-  function adminHeaders(extra = {}) {
-    const token = sessionStorage.getItem('nyxora:adminToken');
-    return {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...extra,
-    };
-  }
-
+  // Store.apiFetch теперь автоматически подставляет Bearer токен
   async function adminFetch(url, options = {}) {
-    const opts = {
-      ...options,
-      headers: { ...adminHeaders(), ...(options.headers || {}) },
-    };
-    return Store.apiFetch(url, opts);
+    return Store.apiFetch(url, options);
   }
 
   function showAdminToast(message, type = 'success') {
@@ -85,11 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const res = await adminFetch(APP_CONFIG.API.orders);
       if (res.status === 401) {
-        tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Нет доступа. Вы не админ.</div>';
+        tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Нет доступа. Сессия истекла, войдите снова.</div>';
         return;
       }
       const orders = await res.json();
-      window.ordersData = orders; // Сохраняем для функции печати
+      window.ordersData = orders;
 
       if (!orders.length) { tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>'; return; }
 
@@ -201,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const res = await adminFetch(`${APP_CONFIG.API.reviews}?status=pending`);
       if (res.status === 401) {
-        tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Нет доступа к отзывам. Войдите как администратор.</div>';
+        tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Нет доступа к отзывам. Сессия истекла.</div>';
         return;
       }
       if (!res.ok) throw new Error('server');
@@ -225,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `).join('');
     } catch (err) {
       console.error(err);
-      tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Ошибка загрузки отзывов. Проверьте интернет.</div>';
+      tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Ошибка загрузки отзывов.</div>';
     }
   }
 
@@ -247,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
       });
-      if (res.status === 401) { showAdminToast('Нет прав', 'error'); return; }
+      if (res.status === 401) { showAdminToast('Нет прав или сессия истекла', 'error'); return; }
       if (!res.ok) throw new Error('server');
 
       showAdminToast(action === 'approve' ? 'Отзыв опубликован' : 'Отзыв отклонён', action === 'approve' ? 'success' : 'error');
@@ -260,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 5. ЗАГРУЗКА МЕНЮ
+  // 5. ЗАГРУЗКА МЕНЮ (оставил как было)
   function renderMenuUpload() {
     tabContent.innerHTML = `
       <div class="admin-card">
@@ -356,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('adminLogoutBtn').addEventListener('click', () => {
     Store.clearUser();
-    sessionStorage.removeItem('nyxora:adminToken');
+    Store.clearToken(); // <-- Очищаем токен
     window.location.reload();
   });
 
@@ -371,7 +363,6 @@ window.printOrder = function(orderNumber) {
   const order = orders.find(o => o.number === orderNumber);
   if (!order) return;
 
-  // Открываем окно без лишних панелей браузера (чтобы убрать дату сверху)
   const printWindow = window.open('', '_blank', 'width=700,height=800');
   const allProducts = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
 
@@ -392,7 +383,6 @@ window.printOrder = function(orderNumber) {
   
   if (isJur) {
     let c = {};
-    // Пытаемся распарсить данные компании
     try { 
       const rawData = order.companyData || order.company_data; 
       c = typeof rawData === 'string' ? JSON.parse(rawData) : rawData || {};
@@ -423,7 +413,6 @@ window.printOrder = function(orderNumber) {
   const deliveryMethodStr = order.deliveryMethod === 'pickup' ? 'Самовывоз' : 'Курьером';
   const orderDate = new Date(order.date).toLocaleString('ru-RU');
 
-  // Формируем HTML чека
   printWindow.document.write(`
     <html>
       <head>
@@ -482,7 +471,6 @@ window.printOrder = function(orderNumber) {
 
   printWindow.document.close();
   
-  // Ждем загрузки стилей и вызываем печать
   setTimeout(() => {
     printWindow.focus();
     printWindow.print();

@@ -1,6 +1,4 @@
 // js/ui/product-card.js
-// Единый рендер карточки товара + счётчика количества + делегированные обработчики.
-// Требует: js/store.js (Store), js/data.js (window.LUNCH_DATA)
 (() => {
   'use strict';
 
@@ -11,15 +9,15 @@
   const cartSvg = `<svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>`;
   const heartSvg = `<svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>`;
 
-  /* ---------- рендер блока действий (кнопка / счётчик) ---------- */
+  // Рендер блока действий (кнопка / счётчик)
   function renderAction(id, qty) {
     const sid = String(id);
     if (qty > 0) {
       return `
         <div class="qty-counter" data-id="${sid}">
-          <button type="button" class="qty-btn minus" data-action="minus">−</button>
+          <button type="button" class="qty-btn minus" data-action="minus" data-id="${sid}">−</button>
           <input type="number" class="qty-input" data-action="input" data-id="${sid}" value="${qty}" min="1" max="99">
-          <button type="button" class="qty-btn plus" data-action="plus">+</button>
+          <button type="button" class="qty-btn plus" data-action="plus" data-id="${sid}">+</button>
         </div>`;
     }
     return `
@@ -28,8 +26,7 @@
       </button>`;
   }
 
-  /* ---------- рендер всей карточки ---------- */
-  // opts: { favorite: bool, onRemoveFavorite: bool, showFavoriteBtn: bool }
+  // Рендер всей карточки
   function renderProductCard(item, opts = {}) {
     const sid = String(item.id);
     const qty = Store.getCartQty(sid);
@@ -70,7 +67,7 @@
       </article>`;
   }
 
-  /* ---------- обновить только блок действий + состояние избранного ---------- */
+  // Обновить только кнопки/счётчик на карточке
   function updateActionUI(grid, id, { qty, favorite } = {}) {
     const card = grid.querySelector(`[data-card-id="${id}"]`);
     if (!card) return;
@@ -89,47 +86,50 @@
     }
   }
 
-  /* ---------- делегированные обработчики ---------- */
-  // handlers: { onAdd, onMinus, onPlus, onInput, onFavorite, onRemoveFavorite }
-  // onAdd/onMinus/... получают (id, product)
+  // НАДЕЖНЫЙ BIND
   function bindProductGrid(grid, handlers = {}) {
     if (!grid) return;
+    window.__pcHandlers = handlers;
 
-    grid.addEventListener('click', (e) => {
+    if (window.__pcBound) return;
+    window.__pcBound = true;
+
+    document.addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-action]');
       if (!btn) return;
+      if (!btn.closest('.product-card, .cart-item, .search-result-item')) return;
+
       e.preventDefault();
       e.stopPropagation();
 
       const action = btn.dataset.action;
-      const id = btn.dataset.id;
+      // СТРАХОВКА: если у кнопки нет data-id, ищем его у родителя (например, .qty-counter)
+      const id = btn.dataset.id || btn.closest('[data-id]')?.dataset.id;
+      
+      if (!id) return; // Если id вообще нет — ничего не делаем
+
       const product = findProduct(id);
+      const h = window.__pcHandlers || {};
 
       switch (action) {
-        case 'add':
-          handlers.onAdd?.(id, product);
-          break;
-        case 'plus':
-          handlers.onPlus?.(id, product);
-          break;
-        case 'minus':
-          handlers.onMinus?.(id, product);
-          break;
-        case 'favorite':
-          handlers.onFavorite?.(id, product);
-          break;
-        case 'remove-favorite':
-          handlers.onRemoveFavorite?.(id, product);
-          break;
+        case 'add':             h.onAdd?.(id, product); break;
+        case 'plus':            h.onPlus?.(id, product); break;
+        case 'minus':           h.onMinus?.(id, product); break;
+        case 'favorite':        h.onFavorite?.(id, product); break;
+        case 'remove-favorite': h.onRemoveFavorite?.(id, product); break;
+        case 'remove':          h.onRemove?.(id, product); break;
       }
-    });
+    }, true);
 
-    grid.addEventListener('change', (e) => {
+    document.addEventListener('change', (e) => {
       if (!e.target.classList.contains('qty-input')) return;
-      const id = e.target.dataset.id;
+      const id = e.target.dataset.id || e.target.closest('[data-id]')?.dataset.id;
+      if (!id) return;
+
       const product = findProduct(id);
-      handlers.onInput?.(id, product, e.target);
-    });
+      const h = window.__pcHandlers || {};
+      h.onInput?.(id, product, e.target);
+    }, true);
   }
 
   function findProduct(id) {
@@ -137,13 +137,13 @@
     return products.find(p => String(p.id) === String(id));
   }
 
-  /* ---------- универсальные хелперы для обработчиков ---------- */
-  // Стандартное поведение: добавить/убавить/ввести кол-во + тост
+  // Стандартные действия
   function defaultAdd(grid, id, product, toast = window.showToast) {
     Store.addToCart(id, +1);
     updateActionUI(grid, id, { qty: Store.getCartQty(id) });
     if (toast && product) toast(`«${product.name}» добавлен в корзину`, 'success', product.image);
   }
+
   function defaultMinus(grid, id, product, toast = window.showToast) {
     if (Store.getCartQty(id) > 0) {
       Store.addToCart(id, -1);
@@ -151,6 +151,7 @@
       if (toast && product) toast(`«${product.name}» удалён из корзины`, 'error', product.image);
     }
   }
+
   function defaultInput(grid, id, _product, inputEl) {
     let q = parseInt(inputEl.value, 10);
     if (isNaN(q) || q < 1) q = 1;
@@ -160,19 +161,17 @@
     if (item) { item.qty = q; Store.saveCart(cart); }
     updateActionUI(grid, id, { qty: q });
   }
+
   function defaultFavorite(grid, id, product, toast = window.showToast) {
     const isFav = Store.toggleFavorite(id);
     updateActionUI(grid, id, { favorite: isFav });
     if (toast && product) {
-      toast(
-        isFav ? `«${product.name}» добавлен в избранное` : `«${product.name}» удалён из избранного`,
-        isFav ? 'success' : 'error',
-        product.image
-      );
+      toast(isFav ? `«${product.name}» добавлен в избранное` : `«${product.name}» удалён из избранного`, isFav ? 'success' : 'error', product.image);
     }
     return isFav;
   }
 
+  // Экспорт
   window.ProductCard = {
     render: renderProductCard,
     renderAction,
@@ -180,7 +179,6 @@
     bind: bindProductGrid,
     find: findProduct,
     esc,
-    // хелперы
     defaultAdd, defaultMinus, defaultInput, defaultFavorite,
   };
 })();

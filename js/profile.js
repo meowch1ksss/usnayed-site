@@ -242,63 +242,51 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUI();
   });
 
-  // ============================================================
-  // 6. ВХОД
-  // ============================================================
-  loginForm?.addEventListener('submit', (e) => {
+  loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const emailOrLogin = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
+    const password      = document.getElementById('loginPassword').value;
 
-    // СПЕЦ-ВХОД АДМИНИСТРАТОРА: admin / admin
-    if (emailOrLogin === 'admin' && password === 'admin') {
-      let users = JSON.parse(localStorage.getItem('nyxora:users') || '[]');
-      let adminUser = users.find(u => u.login === 'admin');
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Вход...';
 
-      if (!adminUser) {
-        adminUser = {
-          firstName: 'Администратор',
-          lastName: '',
-          login: 'admin',
-          username: 'admin',
-          email: 'admin@usnayed.ru',
-          password: 'admin',
-          isAdmin: true
-        };
-        users.push(adminUser);
-      } else {
-        adminUser.isAdmin = true;
-        adminUser.password = 'admin';
-        adminUser.username = 'admin';
+    try {
+      // 1. Отправляем логин/пароль на сервер
+      const res = await fetch(APP_CONFIG.API.login, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login: emailOrLogin, password }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        showToast(err.message || 'Неверный логин или пароль', 'error');
+        return;
       }
-      localStorage.setItem('nyxora:users', JSON.stringify(users));
 
-      currentUser = { ...adminUser, username: 'admin', isAdmin: true };
-      localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
+      const data = await res.json();
+      // data = { token: '...', user: { firstName, lastName, email, isAdmin } }
 
-      // ВСТАВЬ СВОЙ НОВЫЙ ТОКЕН СЮДА
-      sessionStorage.setItem('nyxora:adminToken', '119d332b8282d04c0f1743b8e28396dd0247f20c4abb285b77e13eddef121d32');
+      // 2. Сохраняем токен и данные юзера
+      Store.setToken(data.token);
+      Store.setUser(data.user);
+      currentUser = data.user;
 
-      showToast('Вход администратора выполнен', 'success');
-      updateUI();
-
-      setTimeout(() => { window.location.href = 'admin.html'; }, 400);
-      return;
-    }
-
-    // Обычный вход
-    let users = JSON.parse(localStorage.getItem('nyxora:users') || '[]');
-    const user = users.find(u =>
-      (u.email === emailOrLogin || u.login === emailOrLogin) && u.password === password
-    );
-
-    if (user) {
-      currentUser = { ...user, username: user.login };
-      localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
       showToast('Вы успешно вошли!', 'success');
       updateUI();
-    } else {
-      showToast('Неверный логин/email или пароль', 'error');
+
+      // 3. Если админ — сразу в админку
+      if (data.user.isAdmin) {
+        setTimeout(() => { window.location.href = 'admin.html'; }, 400);
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Ошибка соединения с сервером', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
     }
   });
 
@@ -308,17 +296,13 @@ document.addEventListener('DOMContentLoaded', () => {
   logoutBtn?.addEventListener('click', async () => {
     currentUser = null;
     localStorage.removeItem('nyxora:user');
+    Store.clearToken(); // <-- НОВОЕ
     sessionStorage.removeItem('nyxora:adminToken');
-    
-    // ВАЖНО: Говорим Supabase, чтобы он тоже разлогинил сессию
+
     if (supabase) {
-      try {
-        await supabase.auth.signOut();
-      } catch (e) {
-        console.error('Ошибка выхода из Supabase', e);
-      }
+      try { await supabase.auth.signOut(); } catch (e) { console.error(e); }
     }
-    
+
     showToast('Вы вышли из аккаунта', 'success');
     updateUI();
   });

@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     menuGrid.innerHTML = items.map(it => ProductCard.render(it)).join('');
   }
 
-  // Делегированные обработчики — вся возня внутри ProductCard
+  // Навешиваем обработчики (сработает только один раз при загрузке)
   ProductCard.bind(menuGrid, {
     onAdd:    (id, p) => ProductCard.defaultAdd(menuGrid, id, p),
     onPlus:   (id, p) => ProductCard.defaultAdd(menuGrid, id, p),
