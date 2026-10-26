@@ -191,10 +191,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }).join('');
 
       const clearBtn = document.getElementById('clearAllOrdersBtn');
-      if (clearBtn) {
-        clearBtn.addEventListener('click', async () => {
-          if (!confirm('Вы уверены, что хотите удалить ВСЕ заказы? Это действие нельзя отменить.')) return;
-          
+      const confirmOverlay = document.getElementById('confirmOverlay');
+      const confirmCancel = document.getElementById('confirmCancel');
+      const confirmDelete = document.getElementById('confirmDelete');
+
+      if (clearBtn && confirmOverlay) {
+        clearBtn.addEventListener('click', () => {
+          confirmOverlay.classList.add('open');
+        });
+
+        confirmCancel.addEventListener('click', () => {
+          confirmOverlay.classList.remove('open');
+        });
+
+        confirmOverlay.addEventListener('click', (e) => {
+          if (e.target === confirmOverlay) confirmOverlay.classList.remove('open');
+        });
+
+        confirmDelete.addEventListener('click', async () => {
+          confirmOverlay.classList.remove('open');
           clearBtn.disabled = true;
           clearBtn.textContent = 'Удаление...';
 
