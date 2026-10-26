@@ -11,20 +11,18 @@
   <link rel="stylesheet" href="css/sections.css">
   <link rel="stylesheet" href="css/profile.css">
   
-  <!-- 1. Сначала подключаем саму библиотеку Supabase (без defer) -->
+  <!-- Supabase для Google -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
-  <!-- 2. Потом наши скрипты -->
-  <script src="js/config.js" defer></script>
-  <script src="js/store.js" defer></script>
-  <script src="js/data.js" defer></script>
-  <script src="js/ui/product-card.js" defer></script>
+  <!-- Наши скрипты -->
+  <script src="js/config.js"></script>
+  <script src="js/store.js"></script>
   <script src="js/site.js" defer></script>
-  <script src="js/search.js" defer></script>
-  <script src="js/menu.js" defer></script>
+  <script src="js/profile.js" defer></script>
 </head>
 <body>
-  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div class="ambient ambient-one" style="pointer-events: none;"></div>
+  <div class="ambient ambient-two" style="pointer-events: none;"></div>
 
   <!-- ШАПКА -->
   <header class="site-header">
@@ -37,32 +35,17 @@
       </svg>
       <span>У нас обед<span class="brand-dot">.</span><small>Столовая</small></span>
     </a>
-    <form class="search search-desktop" id="search-form" role="search">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>
-      <input id="search-input" type="search" placeholder="Найти что-то особенное..." autocomplete="off" aria-label="Поиск по меню">
-    </form>
     <nav class="main-nav" aria-label="Разделы сайта">
       <a href="index.html#home">Главная</a><a href="menu.html">Меню</a><a href="index.html#reviews">Отзывы</a><a href="index.html#faq">FAQ</a><a href="contacts.html">Контакты</a>
     </nav>
     <nav class="header-actions" aria-label="Основная навигация">
-      <a href="favorites.html" class="icon-button nav-fav" aria-label="Избранное" title="Избранное" style="text-decoration: none;">
-        <svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>
-        <span class="count-badge" id="favorite-count">0</span>
-      </a>
-      <a href="orders.html" class="icon-button" aria-label="Заказы" title="Заказы" style="text-decoration: none;">
-        <svg viewBox="0 0 24 24"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
-      </a>
-      <a href="cart.html" class="icon-button cart-trigger" aria-label="Корзина" title="Корзина" style="text-decoration: none;">
-        <svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
-        <span class="count-badge" id="cart-count">0</span>
-      </a>
-      <a href="profile.html" class="profile-trigger" style="text-decoration: none;">
-        <span class="avatar">N</span><span class="profile-label">Профиль</span>
-      </a>
+      <a href="favorites.html" class="icon-button nav-fav" aria-label="Избранное"><svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg></a>
+      <a href="orders.html" class="icon-button" aria-label="Заказы"><svg viewBox="0 0 24 24"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg></a>
+      <a href="cart.html" class="icon-button cart-trigger" aria-label="Корзина"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></a>
+      <a href="profile.html" class="profile-trigger"><span class="avatar">N</span><span class="profile-label">Профиль</span></a>
     </nav>
   </header>
 
-  <!-- КОНТЕНТ -->
   <main class="page-section page-shell" style="min-height: 70vh; padding-top: 40px; padding-bottom: 80px;">
     <div class="section-center">
       <span class="eyebrow section-pill">✦ ЛИЧНЫЙ КАБИНЕТ ✦</span>
@@ -72,10 +55,10 @@
 
     <div class="profile-container">
 
-      <!-- Форма Входа -->
+      <!-- ФОРМА ВХОДА -->
       <div id="loginBox" class="auth-box">
         <h3>Вход</h3>
-        <form id="loginForm">
+        <form id="loginForm" onsubmit="event.preventDefault();">
           <div class="input-group">
             <label>Email или Логин</label>
             <input type="text" id="loginEmail" required placeholder="mail@example.com">
@@ -84,153 +67,71 @@
             <label>Пароль</label>
             <input type="password" id="loginPassword" required placeholder="••••••••">
           </div>
-          <!-- + ADM: подсказка для админа -->
-          <p class="admin-hint" style="margin: 4px 0 0; color: #7d718e; font-size: 11px; text-align: left;">
-            Вход для администратора: <code style="color:#c6a6ff;">admin</code> / <code style="color:#c6a6ff;">admin</code>
-          </p>
           <button type="submit" class="button button-primary" style="width: 100%; margin-top: 10px;">Войти</button>
         </form>
         <p class="auth-switch">Нет аккаунта? <a href="#" id="showRegister">Зарегистрироваться</a></p>
 
-        <!-- СОЦСЕТИ -->
-        <div class="social-login-separator">
-          <span>или войти через</span>
-        </div>
-
+        <div class="social-login-separator"><span>или войти через</span></div>
         <div class="social-buttons">
-          <button type="button" class="social-btn gmail" data-provider="gmail" style="grid-column: 1 / -1; justify-content: center;">
-            <svg viewBox="0 0 24 24"><path fill="#EA4335" d="M12 11.5 3 5.2v13.3h3v-9l6 4.5 6-4.5v9h3V5.2l-9 6.3Z"/><path fill="#34A853" d="M6 18.5h12v3H6z"/><path fill="#4285F4" d="M3 18.5h3v3H3z"/><path fill="#FBBC05" d="M18 18.5h3v3h-3z"/></svg>
+          <button type="button" class="social-btn gmail" style="grid-column: 1 / -1; justify-content: center; z-index: 10;">
+            <svg viewBox="0 0 24 24"><path fill="#EA4335" d="M12 11.5 3 5.2v13.3h3v-9l6 4.5 6-4.5v9h3V5.2l-9 6.3Z"/></svg>
             Войти через Google
           </button>
         </div>
       </div>
 
-      <!-- Форма Регистрации -->
+      <!-- ФОРМА РЕГИСТРАЦИИ -->
       <div id="registerBox" class="auth-box hidden">
         <h3>Регистрация</h3>
-        <form id="registerForm">
-          <div class="form-row" style="display: flex; gap: 10px;">
-            <div class="input-group" style="flex: 1;">
-              <label>Имя</label>
-              <input type="text" id="regFirstName" required placeholder="Иван">
-            </div>
-            <div class="input-group" style="flex: 1;">
-              <label>Фамилия</label>
-              <input type="text" id="regLastName" required placeholder="Иванов">
-            </div>
+        <form id="registerForm" onsubmit="event.preventDefault();">
+          <div class="form-row">
+            <div class="input-group"><label>Имя</label><input type="text" id="regFirstName" required></div>
+            <div class="input-group"><label>Фамилия</label><input type="text" id="regLastName" required></div>
           </div>
-
+          <div class="input-group"><label>Логин</label><input type="text" id="regLogin" required minlength="3"></div>
+          <div class="input-group"><label>E-mail *</label><input type="email" id="regEmail" required></div>
+          <div class="input-group"><label>Пароль *</label><input type="password" id="regPassword" required minlength="6"></div>
+          <div class="input-group"><label>Подтверждение *</label><input type="password" id="regPasswordConfirm" required></div>
+          
           <div class="input-group">
-            <label>Логин <span style="color:#a49ab8;font-weight:normal;">(мин. 3 символа)</span></label>
-            <input type="text" id="regLogin" required placeholder="ivanov_ivan" minlength="3">
-          </div>
-
-          <div class="input-group">
-            <label>E-mail *</label>
-            <input type="email" id="regEmail" required placeholder="mail@example.com">
-          </div>
-
-          <div class="input-group">
-            <label>Пароль *</label>
-            <input type="password" id="regPassword" required placeholder="Минимум 6 символов" minlength="6">
-          </div>
-
-          <div class="input-group">
-            <label>Подтверждение пароля *</label>
-            <input type="password" id="regPasswordConfirm" required placeholder="Повторите пароль">
-          </div>
-
-          <!-- Капча -->
-          <div class="input-group" style="margin-top: 10px;">
-            <label>Введите код с картинки *</label>
+            <label>Код с картинки *</label>
             <div class="captcha-wrapper">
-              <canvas id="captchaCanvas" width="200" height="60" style="border-radius: 8px; background: #fff; cursor: pointer;" title="Нажмите, чтобы обновить"></canvas>
-              <input type="text" id="regCaptcha" required placeholder="Код" autocomplete="off" style="flex: 1;">
+              <canvas id="captchaCanvas" width="200" height="60" style="border-radius: 8px; background: #fff; cursor: pointer;"></canvas>
+              <input type="text" id="regCaptcha" required autocomplete="off">
             </div>
           </div>
-
           <button type="submit" class="button button-primary" style="width: 100%; margin-top: 15px;">Создать аккаунт</button>
         </form>
         <p class="auth-switch">Уже есть аккаунт? <a href="#" id="showLogin">Войти</a></p>
       </div>
 
-      <!-- Данные пользователя (когда вошел) -->
+      <!-- ПРОФИЛЬ -->
       <div id="userProfile" class="auth-box hidden" style="text-align: center;">
         <div class="avatar-large" id="userAvatar">N</div>
         <h3 id="userName">Иван Иванов</h3>
         <p id="userEmail" style="color: var(--muted); margin-bottom: 20px;">mail@example.com</p>
 
-        <!-- + ADM: ссылка на админку (показываем только админу) -->
-        <a id="adminLink" href="admin.html" class="button button-primary hidden"
-           style="width: 100%; margin-bottom: 15px; background: linear-gradient(115deg,#ffbe2e,#ffaa00); color:#1a1027;">
-          ⚙️ Админ-панель
-        </a>
+        <a id="adminLink" href="admin.html" class="button button-primary hidden" style="width: 100%; margin-bottom: 15px; background: linear-gradient(115deg,#ffbe2e,#ffaa00); color:#1a1027;">⚙️ Админ-панель</a>
 
-        <!-- Быстрые ссылки -->
         <div class="profile-quick-links">
-          <a href="cart.html" class="profile-link-card">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
-            <span>Корзина</span>
-          </a>
-          <a href="favorites.html" class="profile-link-card">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>
-            <span>Избранное</span>
-          </a>
-          <a href="orders.html" class="profile-link-card">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
-            <span>Мои заказы</span>
-          </a>
+          <a href="cart.html" class="profile-link-card"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span>Корзина</span></a>
+          <a href="favorites.html" class="profile-link-card"><svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg><span>Избранное</span></a>
+          <a href="orders.html" class="profile-link-card"><svg viewBox="0 0 24 24"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span>Мои заказы</span></a>
         </div>
 
-        <!-- Кнопка и форма отзыва в ЛК -->
-        <div style="margin-bottom: 20px; margin-top: 10px;">
-          <button id="toggleReviewBtn" class="button button-primary" style="width: 100%; display: flex; justify-content: center; align-items: center; background: rgba(168, 121, 255, 0.15); color: #c6a6ff; border: 1px solid rgba(168, 121, 255, 0.3); padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.2s;">
-            Оставить отзыв
-          </button>
-
-          <!-- Скрытая форма -->
-          <div id="profileReviewFormWrapper" class="profile-review-wrapper">
-            <form id="profileReviewForm" style="display: flex; flex-direction: column; gap: 15px; padding-top: 15px;">
-              <input type="text" id="profRevName" placeholder="Ваше имя" required style="width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(220,204,255,0.1); border-radius: 12px; color: #fff; outline: none;">
-              <textarea id="profRevText" placeholder="Ваш отзыв..." rows="4" required style="width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(220,204,255,0.1); border-radius: 12px; color: #fff; outline: none; resize: vertical;"></textarea>
-              <button type="submit" class="button button-primary" style="width: 100%;">Отправить отзыв</button>
-            </form>
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; margin-top: 20px;">
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
           <button id="editProfileBtn" class="button" style="background: rgba(168, 121, 255, 0.15); color: #a879ff; flex: 1;">Редактировать</button>
           <button id="logoutBtn" class="button" style="border-color: rgba(255, 109, 120, 0.3); color: #ff6d78; flex: 1;">Выйти</button>
         </div>
 
-        <!-- Форма редактирования -->
-        <div id="editProfileForm" class="hidden" style="text-align: left; border-top: 1px solid rgba(220, 204, 255, 0.1); padding-top: 20px; margin-top: 20px;">
-          <h4 style="margin-bottom: 15px; color: #f6f1ff;">Настройки аккаунта</h4>
-
-          <form id="updateForm">
-            <div class="form-row" style="display: flex; gap: 10px; margin-bottom: 15px;">
-              <div class="input-group" style="flex: 1;">
-                <label>Имя</label>
-                <input type="text" id="editFirstName" required>
-              </div>
-              <div class="input-group" style="flex: 1;">
-                <label>Фамилия</label>
-                <input type="text" id="editLastName" required>
-              </div>
-            </div>
-
-            <div class="input-group" style="margin-bottom: 15px;">
-              <label>E-mail</label>
-              <input type="email" id="editEmail" required>
-            </div>
-
-            <div class="input-group" style="margin-bottom: 15px;">
-              <label>Новый пароль <span style="color:#a49ab8;font-weight:normal;">(оставьте пустым, если не меняете)</span></label>
-              <input type="password" id="editPassword" placeholder="••••••••">
-            </div>
-
-            <button type="submit" class="button button-primary" style="width: 100%;">Сохранить изменения</button>
-            <button type="button" id="cancelEditBtn" class="button" style="width: 100%; margin-top: 10px; background: transparent; border: 1px solid rgba(255,255,255,0.1);">Отмена</button>
+        <div id="editProfileForm" class="hidden" style="text-align: left; margin-top: 20px; border-top: 1px solid rgba(220, 204, 255, 0.1); padding-top: 20px;">
+          <form id="updateForm" onsubmit="event.preventDefault();">
+            <div class="input-group"><label>Имя</label><input type="text" id="editFirstName" required></div>
+            <div class="input-group"><label>Фамилия</label><input type="text" id="editLastName" required></div>
+            <div class="input-group"><label>E-mail</label><input type="email" id="editEmail" required></div>
+            <div class="input-group"><label>Новый пароль</label><input type="password" id="editPassword" placeholder="Оставьте пустым"></div>
+            <button type="submit" class="button button-primary" style="width: 100%;">Сохранить</button>
+            <button type="button" id="cancelEditBtn" class="button" style="width: 100%; margin-top: 10px;">Отмена</button>
           </form>
         </div>
       </div>
@@ -238,39 +139,37 @@
     </div>
   </main>
 
-  <!-- ФУТЕР -->
-  <footer class="site-footer" id="footer">
+  <footer class="site-footer">
     <div class="footer-column footer-brand-column">
-      <a class="brand footer-brand" href="index.html" aria-label="У нас обед — главная">
+      <a class="brand footer-brand" href="index.html">
         <svg class="footer-logo" viewBox="0 0 49 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M48.4734 25.3728C48.4734 12.6485 38.9302 3.55976 26.8118 2.49941C26.8118 -0.833136 21.813 -0.833136 21.813 2.49941C9.54319 3.55976 0 12.497 0 25.2213C0 29.4627 48.4734 29.4627 48.4734 25.3728Z" fill="#FE0000"/>
-            <path d="M22.7219 5.98346C18.4805 6.58938 14.6935 8.71009 12.1184 11.7397C9.54321 14.7693 8.33137 18.8592 8.63433 22.6462C8.63433 24.6154 5.30179 24.6154 5.30179 22.6462C5.60475 18.1018 7.57398 13.5574 10.9065 10.5278C14.2391 7.49825 18.4805 5.98346 22.7219 5.98346Z" fill="white"/>
-            <path d="M45.4438 31.5834C45.4438 40.2177 35.2947 50.3668 24.2367 50.3668C13.1787 50.3668 3.02959 40.2177 3.02959 31.5834C3.02959 28.7053 0 28.7053 0 31.5834C0 48.2461 20.9041 64 24.2367 64C27.5692 64 48.4734 48.0947 48.4734 31.5834C48.4734 28.8568 45.4438 28.8568 45.4438 31.5834Z" fill="#FFAA00"/>
-            <path d="M31.0533 37.0367C31.0533 27.9479 17.5716 27.9479 17.5716 37.0367C17.4201 49.155 31.0533 49.155 31.0533 37.0367Z" fill="#FFAA00"/>
         </svg>
         <span>У нас обед<span class="brand-dot">.</span><small>Столовая</small></span>
       </a>
       <p>ООО «У нас обед»<br>Все права защищены, 2026 ©</p>
       <a class="footer-policy" href="privacy.html">Политика конфиденциальности</a>
     </div>
-    <nav class="footer-links footer-pages" aria-label="Информация"><a href="index.html#home">Главная</a><a href="organizations.html">Организациям</a><a href="delivery.html">Доставка и оплата</a><a href="about.html">О компании</a><a href="privacy.html">Политика конфиденциальности</a><a href="contacts.html">Контакты</a></nav>
-    <div class="footer-hours"><strong>Часы работы:</strong><p>Пн–Пт: 8:00 — 15:00</p><p>Без обеда и выходных</p><strong>Заказы принимаются до 13:30</strong></div>
-    <div class="footer-contact"><div class="email-picker">
-      <button class="footer-email email-picker-trigger" type="button" aria-expanded="false" aria-controls="email-provider-list">✉ &nbsp; kolibri831@yandex.ru <span class="email-chevron">▾</span></button>
-      <div class="email-provider-list" id="email-provider-list" hidden>
-        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot gmail"></i><span>Gmail<small>@gmail.com</small></span></a>
-        <a href="https://outlook.live.com/mail/0/deeplink/compose?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot outlook"></i><span>Outlook / Hotmail<small>@outlook.com · @hotmail.com</small></span></a>
-        <a href="https://compose.mail.yahoo.com/?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yahoo"></i><span>Yahoo Mail<small>@yahoo.com</small></span></a>
-        <a href="https://www.icloud.com/mail/" target="_blank" rel="noopener noreferrer"><i class="mail-dot icloud"></i><span>iCloud Mail<small>@icloud.com</small></span></a>
-        <a href="https://mail.proton.me/u/0/inbox" target="_blank" rel="noopener noreferrer"><i class="mail-dot proton"></i><span>Proton Mail<small>@proton.me · @protonmail.com</small></span></a>
-        <a href="https://mail.zoho.com/" target="_blank" rel="noopener noreferrer"><i class="mail-dot zoho"></i><span>Zoho Mail<small>@zoho.com</small></span></a>
-        <a href="https://mail.yandex.ru/compose?mailto=kolibri831@yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yandex"></i><span>Яндекс Почта<small>@yandex.ru</small></span></a>
-        <a href="https://e.mail.ru/compose/" target="_blank" rel="noopener noreferrer"><i class="mail-dot mailru"></i><span>Mail.ru<small>@mail.ru</small></span></a>
-      </div>
-    </div><a href="tel:+79185647212">☎ &nbsp;8 (918) 564-72-12</a><a href="tel:+78633113212">☎ &nbsp;8 (863) 311-32-12</a></div>
+    <nav class="footer-links footer-pages">
+      <a href="index.html#home">Главная</a>
+      <a href="organizations.html">Организациям</a>
+      <a href="delivery.html">Доставка и оплата</a>
+      <a href="about.html">О компании</a>
+      <a href="privacy.html">Политика конфиденциальности</a>
+      <a href="contacts.html">Контакты</a>
+    </nav>
+    <div class="footer-hours">
+      <strong>Часы работы:</strong>
+      <p>Пн–Пт: 8:00 — 15:00</p>
+      <p>Без обеда и выходных</p>
+      <strong>Заказы принимаются до 13:30</strong>
+    </div>
+    <div class="footer-contact">
+      <a href="tel:+79185647212">☎ &nbsp;8 (918) 564-72-12</a>
+      <a href="tel:+78633113212">☎ &nbsp;8 (863) 311-32-12</a>
+    </div>
   </footer>
 
-  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
   <div id="toast-container" class="toast-container"></div>
 </body>
 </html>
