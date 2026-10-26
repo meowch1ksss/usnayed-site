@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const accessDenied = document.getElementById('accessDenied');
   const adminPanel   = document.getElementById('adminPanel');
 
-  // Проверяем наличие токена и флага админа в localStorage
   const token = Store.getToken();
   
   if (!currentUser || currentUser.isAdmin !== true || !token) {
@@ -24,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { '"': '&quot;', "'": '&#39;', '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]
   ));
 
-  // Store.apiFetch теперь автоматически подставляет Bearer токен
   async function adminFetch(url, options = {}) {
     return Store.apiFetch(url, options);
   }
@@ -71,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 3. ЗАКАЗЫ
   async function renderOrders() {
     tabContent.innerHTML = '<div class="admin-empty">Загрузка заказов...</div>';
     try {
@@ -83,9 +80,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const orders = await res.json();
       window.ordersData = orders;
 
-      if (!orders.length) { tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>'; return; }
+      if (!orders.length) { 
+        tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>'; 
+        return; 
+      }
 
-      tabContent.innerHTML = orders.map(o => {
+      const clearBtnHTML = `
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+          <button id="clearAllOrdersBtn" class="admin-btn admin-btn-danger" style="font-size: 13px; padding: 8px 16px;">
+            🗑 Очистить историю заказов
+          </button>
+        </div>
+      `;
+
+      tabContent.innerHTML = clearBtnHTML + orders.map(o => {
         const isJur = (o.payerType || o.payer_type || '').includes('Юр');
         
         let deliveryText = 'Курьером';
@@ -181,13 +189,39 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         `;
       }).join('');
+
+      const clearBtn = document.getElementById('clearAllOrdersBtn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', async () => {
+          if (!confirm('Вы уверены, что хотите удалить ВСЕ заказы? Это действие нельзя отменить.')) return;
+          
+          clearBtn.disabled = true;
+          clearBtn.textContent = 'Удаление...';
+
+          try {
+            const deleteRes = await adminFetch(APP_CONFIG.API.orders, {
+              method: 'DELETE'
+            });
+
+            if (!deleteRes.ok) throw new Error('Ошибка удаления');
+
+            showAdminToast('История заказов очищена', 'success');
+            renderOrders();
+          } catch (err) {
+            console.error(err);
+            showAdminToast('Не удалось очистить историю', 'error');
+            clearBtn.disabled = false;
+            clearBtn.textContent = '🗑 Очистить историю заказов';
+          }
+        });
+      }
+
     } catch (err) {
       console.error(err);
       tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Ошибка загрузки заказов.</div>';
     }
   }
 
-  // 4. ОТЗЫВЫ
   async function renderReviews() {
     tabContent.innerHTML = '<div class="admin-empty">Загрузка отзывов...</div>';
     try {
@@ -252,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 5. ЗАГРУЗКА МЕНЮ (оставил как было)
   function renderMenuUpload() {
     tabContent.innerHTML = `
       <div class="admin-card">
@@ -348,16 +381,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('adminLogoutBtn').addEventListener('click', () => {
     Store.clearUser();
-    Store.clearToken(); // <-- Очищаем токен
+    Store.clearToken();
     window.location.reload();
   });
 
   renderTab();
 });
 
-// ============================================================
-// ФУНКЦИЯ ПЕЧАТИ ЧЕКА/НАКЛАДНОЙ
-// ============================================================
 window.printOrder = function(orderNumber) {
   const orders = window.ordersData || [];
   const order = orders.find(o => o.number === orderNumber);
