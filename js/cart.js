@@ -1,17 +1,18 @@
+// js/cart.js
 document.addEventListener('DOMContentLoaded', () => {
   const cartItemsContainer = document.getElementById('cartItems');
   const cartTotalPrice      = document.getElementById('cartTotalPrice');
   const clearCartBtn        = document.getElementById('clearCartBtn');
   const checkoutBtn         = document.getElementById('checkoutBtn');
-  const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
+  const products = window.LUNCH_DATA?.products ?? [];
 
   Store.updateBadges();
 
   function renderCart() {
-    const cart = Store.getCart(); 
-    const favorites = Store.getFavorites();
+    const cart = Store.getCart();
+    const favs = Store.getFavorites();
 
-    if (cart.length === 0) {
+    if (!cart.length) {
       cartItemsContainer.innerHTML = `<div class="empty-cart"><h3>Ваша корзина пуста</h3><p>Самое время добавить что-нибудь вкусное!</p><a href="menu.html" class="button button-primary">Перейти в меню</a></div>`;
       if (cartTotalPrice) cartTotalPrice.textContent = '0 ₽';
       if (checkoutBtn) checkoutBtn.disabled = true;
@@ -19,105 +20,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (checkoutBtn) checkoutBtn.disabled = false;
 
-    let totalPrice = 0;
+    let total = 0;
     cartItemsContainer.innerHTML = cart.map(({ id, qty }) => {
-      const product = products.find(p => String(p.id) === id);
-      if (!product) return '';
-      
-      const itemTotal = product.price * qty;
-      totalPrice += itemTotal;
-      
-      // Проверяем, есть ли товар в избранном
-      const isFav = favorites.includes(id);
-
+      const p = products.find(x => String(x.id) === id);
+      if (!p) return '';
+      total += p.price * qty;
+      const isFav = favs.includes(id);
       return `
         <article class="cart-item">
-          <div class="cart-item-img" style="background-image: url('${product.image}');"></div>
+          <div class="cart-item-img" style="background-image:url('${ProductCard.esc(p.image)}')"></div>
           <div class="cart-item-info">
-            <h3 style="margin: 0 0 6px; font-size: 15px; line-height: 1.3;">${product.name}</h3>
-            <p style="margin: 0; font-size: 13px; color: #a49ab8;">${product.weight || ''} · ${product.category}</p>
+            <h3 style="margin:0 0 6px;font-size:15px;line-height:1.3;">${ProductCard.esc(p.name)}</h3>
+            <p style="margin:0;font-size:13px;color:#a49ab8;">${ProductCard.esc(p.weight || '')} · ${ProductCard.esc(p.category)}</p>
           </div>
-          
           <div class="cart-item-controls">
-            <div class="qty-control">
-              <button type="button" data-cart-action="minus" data-id="${id}">−</button>
-              <input type="number" class="qty-input" data-cart-action="input" data-id="${id}" value="${qty}" min="1" max="99">
-              <button type="button" data-cart-action="plus" data-id="${id}">+</button>
-            </div>
-            
-            <div class="cart-item-price">${itemTotal} ₽</div>
-            
-            <button class="cart-fav-btn ${isFav ? 'active' : ''}" data-cart-action="favorite" data-id="${id}" title="${isFav ? 'Убрать из избранного' : 'В избранное'}" style="margin-left: 15px;">
+            ${ProductCard.renderAction(id, qty).replace('class="qty-counter"', 'class="qty-counter cart-qty"')}
+            <div class="cart-item-price">${p.price * qty} ₽</div>
+            <button class="cart-fav-btn ${isFav ? 'active' : ''}" data-action="favorite" data-id="${id}"
+                    title="${isFav ? 'Убрать из избранного' : 'В избранное'}">
               <svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>
             </button>
-            
-            <button type="button" class="remove-btn" data-cart-action="remove" data-id="${id}" style="margin-left: 10px;">Удалить</button>
+            <button type="button" class="remove-btn" data-action="remove" data-id="${id}">Удалить</button>
           </div>
-        </article>
-      `;
+        </article>`;
     }).join('');
-    if (cartTotalPrice) cartTotalPrice.textContent = `${totalPrice} ₽`;
+    if (cartTotalPrice) cartTotalPrice.textContent = `${total} ₽`;
   }
 
-  cartItemsContainer.addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-cart-action]');
-    if (!btn) return;
-    e.preventDefault();
-    const id = btn.dataset.id;
-    const action = btn.dataset.cartAction;
-    const product = products.find(p => String(p.id) === id);
-    const img = product ? product.image : null;
-    const name = product ? product.name : 'Товар';
-
-    if (action === 'favorite') {
-      const isFav = Store.toggleFavorite(id);
-      // Перерисовываем корзину, чтобы обновить иконку
+  ProductCard.bind(cartItemsContainer, {
+    onAdd:   (id, p) => { ProductCard.defaultAdd(cartItemsContainer, id, p); renderCart(); },
+    onPlus:  (id, p) => { ProductCard.defaultAdd(cartItemsContainer, id, p); renderCart(); },
+    onMinus: (id, p) => { ProductCard.defaultMinus(cartItemsContainer, id, p); renderCart(); },
+    onInput: (id, p, el) => { ProductCard.defaultInput(cartItemsContainer, id, p, el); renderCart(); },
+    onFavorite: (id, p) => {
+      Store.toggleFavorite(id);
       renderCart();
-      if (window.showToast) {
+      if (window.showToast && p) {
+        const isFav = Store.isFavorite(id);
         window.showToast(
-          isFav ? `«${name}» добавлен в избранное` : `«${name}» удалён из избранного`, 
-          isFav ? 'success' : 'error', 
-          img
+          isFav ? `«${p.name}» добавлен в избранное` : `«${p.name}» удалён из избранного`,
+          isFav ? 'success' : 'error', p.image
         );
       }
-      return;
-    }
-
-    if (action === 'plus') {
-      Store.addToCart(id, +1);
-      if (window.showToast) window.showToast(`«${name}» добавлен в корзину`, 'success', img);
-      renderCart();
-    }
-    if (action === 'minus') {
-      const currentQty = Store.getCartQty(id);
-      if (currentQty > 0) {
-        Store.addToCart(id, -1);
-        if (window.showToast) window.showToast(`«${name}» удалён из корзины`, 'error', img);
-      }
-      renderCart();
-    }
-    if (action === 'remove') {
-      Store.removeFromCart(id);
-      if (window.showToast) window.showToast(`«${name}» удалён из корзины`, 'error', img);
-      renderCart();
-    }
+    },
   });
 
-  cartItemsContainer.addEventListener('change', (e) => {
-    if (e.target.classList.contains('qty-input')) {
-      const id = e.target.dataset.id;
-      let newQty = parseInt(e.target.value, 10);
-      if (isNaN(newQty) || newQty < 1) newQty = 1;
-      if (newQty > 99) newQty = 99;
-
-      const cart = Store.getCart();
-      const item = cart.find(i => i.id === String(id));
-      if (item) {
-        item.qty = newQty;
-        Store.saveCart(cart);
-        renderCart();
-      }
-    }
+  // «Удалить» — отдельно, т.к. это не add/minus
+  cartItemsContainer.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action="remove"]');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const p = ProductCard.find(id);
+    Store.removeFromCart(id);
+    if (window.showToast && p) window.showToast(`«${p.name}» удалён из корзины`, 'error', p.image);
+    renderCart();
   });
 
   clearCartBtn?.addEventListener('click', (e) => {

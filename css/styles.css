@@ -1597,18 +1597,23 @@ h2 {
   display: block;
   aspect-ratio: 1 / 1.1;
   border-radius: 16px;
-  overflow: visible; /* ВАЖНО: Разрешает тени выходить за пределы */
+  overflow: visible; /* Разрешаем тени выходить за края */
   text-decoration: none;
-  border: 1px solid rgba(220, 204, 255, 0.15);
-  /* КРАСИВАЯ ТЕНЬ */
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 5px 15px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(220, 204, 255, 0.2);
+  
+  /* ОГРОМНАЯ ТЕНЬ */
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(168, 121, 255, 0.4) !important;
+  
   transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  background-size: cover;
+  background-position: center;
 }
 
+/* При наведении тень становится еще больше */
 #menu .category-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(168, 121, 255, 0.6);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 20px rgba(168, 121, 255, 0.3);
+  transform: translateY(-8px);
+  border-color: rgba(168, 121, 255, 0.8);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 1), 0 0 60px rgba(168, 121, 255, 0.6) !important;
 }
 
 #menu .category-card img {
@@ -1623,12 +1628,11 @@ h2 {
 }
 
 #menu .category-card:hover img { transform: scale(1.06); }
-
 #menu .category-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(16, 11, 28, 0.95) 0%, rgba(16, 11, 28, 0) 60%);
-  border-radius: 15px; /* Скругляем затемнение */
+  background: linear-gradient(to top, rgba(16, 11, 28, 0.95) 0%, transparent 60%);
+  border-radius: 15px;
   pointer-events: none;
   z-index: 1;
 }
@@ -2731,4 +2735,11 @@ body.page-leaving { overflow: hidden; }
 
 #menu .category-card {
     overflow: visible !important;
+}
+
+#menu .category-card {
+  border: none !important;
+}
+#menu .category-card img {
+  border-radius: 15px !important;
 }
