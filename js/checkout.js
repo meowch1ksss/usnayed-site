@@ -1,75 +1,98 @@
+// js/checkout.js
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('checkoutForm');
+  if (!form) return;
+
+  // Элементы UI
   const payerBtns = document.querySelectorAll('.payer-btn');
   const payerSwitch = document.querySelector('.payer-switch');
   const fieldsPhys = document.getElementById('fieldsPhys');
   const fieldsJur = document.getElementById('fieldsJur');
   const paymentHint = document.getElementById('paymentHint');
-
-  const tbody = document.getElementById('checkoutTableBody');
-  const totalPriceEl = document.getElementById('checkoutTotalPrice');
-  const totalWeightEl = document.getElementById('totalWeight');
-  const totalPriceBottom = document.getElementById('totalPriceBottom');
-
-  let cart = JSON.parse(localStorage.getItem('nyxora:cart') || '[]');
-  const products = window.LUNCH_DATA ? window.LUNCH_DATA.products : [];
-  const currentUser = Store.getUser(); // Получаем текущего пользователя
-
-  function parseWeight(w) {
-    const num = parseFloat(String(w).replace(/[^\d.,]/g, '').replace(',', '.'));
-    return isNaN(num) ? 0 : num;
-  }
-
-  let totalSum = 0;
-  let totalWeightGrams = 0;
-  let totalItemsCount = 0;
-
-  if (cart.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Корзина пуста</td></tr>`;
-  } else {
-    tbody.innerHTML = cart.map(item => {
-      const p = products.find(x => String(x.id) === String(item.id));
-      if (!p) return `<tr><td colspan="4" style="color:#ff6d78;">Товар ID ${item.id} не найден</td></tr>`;
-      
-      const sum = p.price * item.qty;
-      totalSum += sum;
-      totalWeightGrams += parseWeight(p.weight) * item.qty;
-      totalItemsCount += item.qty;
-      
-      return `
-        <tr>
-          <td>${p.name}</td>
-          <td>${item.qty}</td>
-          <td>${p.price} ₽</td>
-          <td>${sum} ₽</td>
-        </tr>
-      `;
-    }).join('');
-  }
-
-  let formattedWeight = totalWeightGrams >= 1000 
-    ? `${(totalWeightGrams / 1000).toFixed(2)} кг` 
-    : `${totalWeightGrams} г`;
-
-  if (totalPriceEl) totalPriceEl.textContent = `${totalSum} ₽`;
-  if (totalPriceBottom) totalPriceBottom.textContent = `${totalSum} ₽`;
-  if (totalWeightEl) totalWeightEl.textContent = formattedWeight;
+  
+  // Корзина и данные
+  const cart = Store.getCart();
+  const products = window.LUNCH_DATA?.products ?? [];
+  const currentUser = Store.getUser();
+  
+  // Константы для автосохранения
+  const SAVE_PREFIX = 'checkout_saved_';
 
   // ============================================================
-  // АВТОЗАПОЛНЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
+  // 1. ОТРИСОВКА ТАБЛИЦЫ ТОВАРОВ
   // ============================================================
-  if (currentUser) {
-    const nameInput = document.querySelector('input[name="fullName"]');
-    const emailInput = document.querySelector('input[name="email"]');
-    
-    if (nameInput && !nameInput.value) {
-      nameInput.value = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim();
+  try {
+    const tbody = document.getElementById('checkoutTableBody');
+    const totalPriceEl = document.getElementById('checkoutTotalPrice');
+    const totalWeightEl = document.getElementById('totalWeight');
+    const totalPriceBottom = document.getElementById('totalPriceBottom');
+
+    let totalSum = 0;
+    let totalWeightGrams = 0;
+
+    function parseWeight(w) {
+      const num = parseFloat(String(w).replace(/[^\d.,]/g, '').replace(',', '.'));
+      return isNaN(num) ? 0 : num;
     }
-    if (emailInput && !emailInput.value) {
-      emailInput.value = currentUser.email || '';
+
+    if (!cart.length) {
+      if (tbody) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Корзина пуста</td></tr>`;
+    } else if (tbody) {
+      tbody.innerHTML = cart.map(item => {
+        const p = products.find(x => String(x.id) === String(item.id));
+        if (!p) return '';
+        
+        const sum = p.price * item.qty;
+        totalSum += sum;
+        totalWeightGrams += parseWeight(p.weight) * item.qty;
+        
+        return `
+          <tr>
+            <td>${ProductCard.esc(p.name)}</td>
+            <td>${item.qty}</td>
+            <td>${p.price} ₽</td>
+            <td>${sum} ₽</td>
+          </tr>
+        `;
+      }).join('');
     }
+
+    let formattedWeight = totalWeightGrams >= 1000 
+      ? `${(totalWeightGrams / 1000).toFixed(2)} кг` 
+      : `${totalWeightGrams} г`;
+
+    if (totalPriceEl) totalPriceEl.textContent = `${totalSum} ₽`;
+    if (totalPriceBottom) totalPriceBottom.textContent = `${totalSum} ₽`;
+    if (totalWeightEl) totalWeightEl.textContent = formattedWeight;
+
+    // Сохраняем в глобал для отправки
+    window._checkoutTotals = { totalSum, formattedWeight };
+  } catch (e) {
+    console.error('Ошибка отрисовки таблицы:', e);
   }
 
+  // ============================================================
+  // 2. АВТОЗАПОЛНЕНИЕ
+  // ============================================================
+  try {
+    if (currentUser) {
+      const nameInput = document.querySelector('input[name="fullName"]');
+      const emailInput = document.querySelector('input[name="email"]');
+      
+      if (nameInput && !nameInput.value) {
+        nameInput.value = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim();
+      }
+      if (emailInput && !emailInput.value) {
+        emailInput.value = currentUser.email || '';
+      }
+    }
+  } catch (e) {
+    console.error('Ошибка автозаполнения:', e);
+  }
+
+  // ============================================================
+  // 3. КАСТОМНЫЕ СЕЛЕКТЫ (Город и Оплата)
+  // ============================================================
   function initCustomSelect(dropdownId, onChange) {
     const dropdown = document.getElementById(dropdownId);
     if (!dropdown) return null;
@@ -79,7 +102,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = dropdown.querySelector('input[type="hidden"]');
     const selectedText = dropdown.querySelector('.selected-text');
 
-    trigger.addEventListener('click', (e) => {
+    if (!trigger || !input) return null;
+
+    // Убираем старые слушатели, если есть (клонируем элемент)
+    const newTrigger = trigger.cloneNode(true);
+    trigger.parentNode.replaceChild(newTrigger, trigger);
+
+    newTrigger.addEventListener('click', (e) => {
       e.stopPropagation();
       document.querySelectorAll('.custom-dropdown').forEach(d => {
         if (d !== dropdown) d.classList.remove('open');
@@ -88,14 +117,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     options.forEach(option => {
-      option.addEventListener('click', () => {
-        const value = option.dataset.value;
-        const text = option.textContent;
+      // Клонируем, чтобы снять старые слушатели
+      const newOpt = option.cloneNode(true);
+      option.parentNode.replaceChild(newOpt, option);
+      
+      newOpt.addEventListener('click', () => {
+        const value = newOpt.dataset.value;
+        const text = newOpt.textContent;
         input.value = value;
-        selectedText.textContent = text;
-        options.forEach(o => o.classList.remove('selected'));
-        option.classList.add('selected');
+        if (selectedText) selectedText.textContent = text;
+        
+        dropdown.querySelectorAll('.custom-option').forEach(o => o.classList.remove('selected'));
+        newOpt.classList.add('selected');
         dropdown.classList.remove('open');
+        
+        sessionStorage.setItem(`${SAVE_PREFIX}${input.name}`, value);
         if (onChange) onChange(value);
       });
     });
@@ -103,115 +139,200 @@ document.addEventListener('DOMContentLoaded', () => {
     return dropdown;
   }
 
-  initCustomSelect('cityDropdown', (value) => {
-    if (value) {
-      document.getElementById('deliveryServiceGroup').classList.remove('hidden');
-    }
-  });
-
-  const deliveryMethods = document.querySelectorAll('.delivery-method');
-  const deliveryMethodInput = document.getElementById('deliveryMethodInput');
-
-  deliveryMethods.forEach(method => {
-    method.addEventListener('click', () => {
-      deliveryMethods.forEach(m => m.classList.remove('active'));
-      method.classList.add('active');
-      
-      const methodValue = method.dataset.method;
-      deliveryMethodInput.value = methodValue;
-
-      const addressInput = document.querySelector('input[name="address"]').closest('.form-group');
-      if (methodValue === 'pickup') {
-        addressInput.style.opacity = '0.5';
-        addressInput.querySelector('label').textContent = 'Адрес доставки (не требуется при самовывозе)';
-      } else {
-        addressInput.style.opacity = '1';
-        addressInput.querySelector('label').textContent = 'Адрес доставки';
+  try {
+    initCustomSelect('cityDropdown', (value) => {
+      if (value) {
+        const dsg = document.getElementById('deliveryServiceGroup');
+        if (dsg) dsg.classList.remove('hidden');
       }
     });
-  });
 
-  initCustomSelect('paymentDropdown', (value) => {
-    if (value === 'bank' || value === 'sber') {
-      paymentHint.textContent = 'Вы можете оплатить заказ в любом отделении Сбербанка. За услугу по переводу денег с Вас возьмут от 3 до 7% от стоимости заказа. Перечисление денег займет порядка 10 дней.';
-    } else {
-      paymentHint.textContent = 'Оплата наличными при получении заказа курьеру.';
-    }
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.custom-dropdown')) {
-      document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
-    }
-  });
-
-  // Переключатель Юр/Физ лицо
-  payerBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const type = btn.dataset.type;
-      
-      payerBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const paymentInput = document.getElementById('paymentInput');
-      const paymentTriggerText = document.querySelector('#paymentDropdown .selected-text');
-      const paymentOptions = document.querySelectorAll('#paymentDropdown .custom-option');
-      
-      if (type === 'jur') {
-        payerSwitch.classList.add('jur-active');
-        fieldsPhys.classList.add('hidden');
-        fieldsJur.classList.remove('hidden');
-        
-        document.querySelectorAll('#fieldsPhys input').forEach(i => i.removeAttribute('required'));
-        document.querySelectorAll('#fieldsJur input[name="companyName"], #fieldsJur input[name="jurEmail"]').forEach(i => i.setAttribute('required', 'true'));
-        
-        paymentOptions.forEach(opt => {
-          if (opt.dataset.value === 'bank') opt.style.display = 'flex';
-          else opt.style.display = 'none';
-        });
-        
-        paymentInput.value = 'bank';
-        paymentTriggerText.textContent = '🏦 Банковский перевод';
+    initCustomSelect('paymentDropdown', (value) => {
+      if (!paymentHint) return;
+      if (value === 'bank' || value === 'sber') {
         paymentHint.textContent = 'Вы можете оплатить заказ в любом отделении Сбербанка. За услугу по переводу денег с Вас возьмут от 3 до 7% от стоимости заказа. Перечисление денег займет порядка 10 дней.';
-        
       } else {
-        payerSwitch.classList.remove('jur-active');
-        fieldsPhys.classList.remove('hidden');
-        fieldsJur.classList.add('hidden');
-        
-        document.querySelectorAll('#fieldsJur input').forEach(i => i.removeAttribute('required'));
-        document.querySelectorAll('#fieldsPhys input[name="fullName"], #fieldsPhys input[name="email"], #fieldsPhys input[name="phone"]').forEach(i => i.setAttribute('required', 'true'));
-        
-        paymentOptions.forEach(opt => opt.style.display = 'flex');
-        
-        paymentInput.value = 'cash';
-        paymentTriggerText.textContent = '💵 Наличные курьеру';
         paymentHint.textContent = 'Оплата наличными при получении заказа курьеру.';
       }
     });
-  });
 
-  // ОТПРАВКА НА СЕРВЕР
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.custom-dropdown')) {
+        document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+      }
+    });
+  } catch (e) {
+    console.error('Ошибка инициализации селектов:', e);
+  }
+
+  // ============================================================
+  // 4. СПОСОБ ДОСТАВКИ (Курьер/Самовывоз)
+  // ============================================================
+  try {
+    const deliveryMethods = document.querySelectorAll('.delivery-method');
+    const deliveryMethodInput = document.getElementById('deliveryMethodInput');
+
+    deliveryMethods.forEach(method => {
+      method.addEventListener('click', () => {
+        deliveryMethods.forEach(m => m.classList.remove('active'));
+        method.classList.add('active');
+        if (deliveryMethodInput) deliveryMethodInput.value = method.dataset.method;
+
+        const addressInput = document.querySelector('input[name="address"]');
+        if (addressInput) {
+          const addressGroup = addressInput.closest('.form-group');
+          if (method.dataset.method === 'pickup') {
+            addressGroup.style.opacity = '0.5';
+            addressGroup.querySelector('label').textContent = 'Адрес доставки (не требуется при самовывозе)';
+          } else {
+            addressGroup.style.opacity = '1';
+            addressGroup.querySelector('label').textContent = 'Адрес доставки';
+          }
+        }
+      });
+    });
+  } catch (e) {
+    console.error('Ошибка инициализации способов доставки:', e);
+  }
+
+  // ============================================================
+  // 5. ПЕРЕКЛЮЧАТЕЛЬ ЮР/ФИЗ ЛИЦО
+  // ============================================================
+  try {
+    payerBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.dataset.type;
+        payerBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const paymentInput = document.getElementById('paymentInput');
+        const paymentTriggerText = document.querySelector('#paymentDropdown .selected-text');
+        const paymentOptions = document.querySelectorAll('#paymentDropdown .custom-option');
+        
+        if (type === 'jur') {
+          if (payerSwitch) payerSwitch.classList.add('jur-active');
+          if (fieldsPhys) fieldsPhys.classList.add('hidden');
+          if (fieldsJur) fieldsJur.classList.remove('hidden');
+          
+          paymentOptions.forEach(opt => {
+            opt.style.display = (opt.dataset.value === 'bank') ? 'flex' : 'none';
+          });
+          
+          if (paymentInput) paymentInput.value = 'bank';
+          if (paymentTriggerText) paymentTriggerText.textContent = '🏦 Банковский перевод';
+          if (paymentHint) paymentHint.textContent = 'Вы можете оплатить заказ в любом отделении Сбербанка...';
+        } else {
+          if (payerSwitch) payerSwitch.classList.remove('jur-active');
+          if (fieldsPhys) fieldsPhys.classList.remove('hidden');
+          if (fieldsJur) fieldsJur.classList.add('hidden');
+          
+          paymentOptions.forEach(opt => opt.style.display = 'flex');
+          
+          if (paymentInput) paymentInput.value = 'cash';
+          if (paymentTriggerText) paymentTriggerText.textContent = '💵 Наличные курьеру';
+          if (paymentHint) paymentHint.textContent = 'Оплата наличными при получении заказа курьеру.';
+        }
+      });
+    });
+  } catch (e) {
+    console.error('Ошибка переключателя лиц:', e);
+  }
+
+  // ============================================================
+  // 6. КАЛЕНДАРЬ (FLATPICKR)
+  // ============================================================
+  try {
+    if (typeof flatpickr !== 'undefined') {
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+
+      let minDate = "today";
+      if (currentHour > 13 || (currentHour === 13 && currentMinute > 30)) {
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        minDate = tomorrow;
+      }
+
+      const fpInstance = flatpickr("#deliveryTimeInput", {
+        enableTime: true,
+        dateFormat: "d.m.Y H:i",
+        time_24hr: true,
+        minDate: minDate,
+        minuteIncrement: 15,
+        minTime: "08:00",
+        maxTime: "15:00",
+        disableMobile: "true",
+        locale: {
+          firstDayOfWeek: 1,
+          weekdays: { shorthand: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'], longhand: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'] },
+          months: { shorthand: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'], longhand: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'] }
+        }
+      });
+
+      // Восстанавливаем дату
+      const savedDate = sessionStorage.getItem(`${SAVE_PREFIX}deliveryTime`);
+      if (savedDate) fpInstance.setDate(savedDate);
+
+      // Слушаем изменение
+      document.getElementById('deliveryTimeInput').addEventListener('change', (e) => {
+        sessionStorage.setItem(`${SAVE_PREFIX}deliveryTime`, e.target.value);
+      });
+    } else {
+      console.warn('⚠️ Flatpickr не загружен! Календарь не работает.');
+    }
+  } catch (e) {
+    console.error('Ошибка инициализации календаря:', e);
+  }
+
+  // ============================================================
+  // 7. АВТОСОХРАНЕНИЕ ТЕКСТОВЫХ ПОЛЕЙ
+  // ============================================================
+  try {
+    const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
+    
+    inputs.forEach(input => {
+      if (input.id === 'deliveryTimeInput') return; // Flatpickr обрабатывается отдельно
+
+      const savedValue = sessionStorage.getItem(`${SAVE_PREFIX}${input.name}`);
+      if (savedValue) input.value = savedValue;
+
+      input.addEventListener('input', (e) => {
+        sessionStorage.setItem(`${SAVE_PREFIX}${e.target.name}`, e.target.value);
+      });
+    });
+
+    const savedCity = sessionStorage.getItem(`${SAVE_PREFIX}city`);
+    if (savedCity) {
+      const cityOption = document.querySelector(`#cityDropdown .custom-option[data-value="${savedCity}"]`);
+      if (cityOption) cityOption.click();
+    }
+
+    const savedPayment = sessionStorage.getItem(`${SAVE_PREFIX}payment`);
+    if (savedPayment) {
+      const payOption = document.querySelector(`#paymentDropdown .custom-option[data-value="${savedPayment}"]`);
+      if (payOption) payOption.click();
+    }
+  } catch (e) {
+    console.error('Ошибка автосохранения:', e);
+  }
+
+  // ============================================================
+  // 8. ОТПРАВКА
+  // ============================================================
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const totals = window._checkoutTotals || { totalSum: 0, formattedWeight: '0 г' };
 
-    const isJur = document.querySelector('.payer-btn.active').dataset.type === 'jur';
+    const isJur = document.querySelector('.payer-btn.active')?.dataset.type === 'jur';
     
-    if (cart.length === 0) {
-      if (window.showToast) window.showToast('Корзина пуста!', 'error');
-      return;
-    }
-
-    if (!document.getElementById('cityInput').value) {
-      if (window.showToast) window.showToast('Пожалуйста, выберите город!', 'error');
-      return;
-    }
+    if (!cart.length) return window.showToast && window.showToast('Корзина пуста!', 'error');
 
     const deliveryTime = document.getElementById('deliveryTimeInput').value;
-    if (!deliveryTime) {
-      if (window.showToast) window.showToast('Пожалуйста, выберите время доставки!', 'error');
-      return;
-    }
+    if (!deliveryTime) return window.showToast && window.showToast('Выберите время доставки!', 'error');
+
+    const cityValue = document.getElementById('cityInput').value;
+    if (!cityValue) return window.showToast && window.showToast('Выберите город!', 'error');
 
     let name = '', email = '', phone = '';
     let companyData = null;
@@ -220,12 +341,8 @@ document.addEventListener('DOMContentLoaded', () => {
       name = document.querySelector('input[name="companyName"]').value;
       email = document.querySelector('input[name="jurEmail"]').value;
       phone = document.querySelector('input[name="jurPhone"]').value;
-
-      if (!name) {
-        if (window.showToast) window.showToast('Пожалуйста, укажите название компании!', 'error');
-        return;
-      }
-
+      if (!name || !phone) return window.showToast && window.showToast('Заполните название компании и телефон!', 'error');
+      
       companyData = {
         legalAddress: document.querySelector('input[name="legalAddress"]')?.value || '—',
         inn: document.querySelector('input[name="inn"]')?.value || '—',
@@ -237,43 +354,28 @@ document.addEventListener('DOMContentLoaded', () => {
       name = document.querySelector('input[name="fullName"]').value;
       email = document.querySelector('input[name="email"]').value;
       phone = document.querySelector('input[name="phone"]').value;
-
-      if (!name || !phone) {
-        if (window.showToast) window.showToast('Пожалуйста, заполните ФИО и телефон!', 'error');
-        return;
-      }
+      if (!name || !phone) return window.showToast && window.showToast('Заполните ФИО и телефон!', 'error');
     }
-
-    const city = document.querySelector('#cityDropdown .selected-text').textContent;
-    const address = document.querySelector('input[name="address"]').value;
-    const comment = document.querySelector('textarea[name="comment"]').value;
 
     const orderData = {
       number: 'ORD-' + Math.floor(Math.random() * 900000 + 100000),
       items: cart.map(item => {
         const p = products.find(x => String(x.id) === String(item.id));
-        return {
-          id: item.id,
-          name: p ? p.name : 'Блюдо',
-          qty: item.qty,
-          price: p ? p.price : 0
-        };
+        return { id: item.id, name: p ? p.name : 'Блюдо', qty: item.qty, price: p ? p.price : 0 };
       }),
-      total: totalSum,
-      weight: formattedWeight,
+      total: totals.totalSum,
+      weight: totals.formattedWeight,
       deliveryTime: deliveryTime,
       name: name || 'Покупатель',
       email: email || '',
       phone: phone || '',
-      city: city || 'Не указан',
-      address: address || '',
-      comment: comment || '',
+      city: document.querySelector('#cityDropdown .selected-text').textContent || 'Не указан',
+      address: document.querySelector('input[name="address"]').value || '',
+      comment: document.querySelector('textarea[name="comment"]').value || '',
       deliveryMethod: document.getElementById('deliveryMethodInput').value,
       payerType: isJur ? 'Юр. лицо' : 'Физ. лицо',
       paymentMethod: isJur ? 'bank' : document.getElementById('paymentInput').value,
       companyData: companyData,
-      
-      // Берем email из профиля, если он есть
       userEmail: currentUser ? currentUser.email : email
     };
 
@@ -283,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.disabled = true;
 
     try {
-      const response = await fetch('https://usnayed-api.aleksejmaculin1.workers.dev/api/orders', {
+      const response = await Store.apiFetch(APP_CONFIG.API.orders, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
@@ -292,128 +394,66 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!response.ok) throw new Error('Ошибка сервера');
 
       if (window.showToast) window.showToast('Заказ успешно оформлен! Спасибо!', 'success');
-
-      localStorage.removeItem('nyxora:cart');
+      Store.clearCart();
       
       const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
-      inputs.forEach(input => localStorage.removeItem('checkout_saved_' + input.name));
-      localStorage.removeItem('checkout_saved_city');
-      localStorage.removeItem('checkout_saved_payment');
+      inputs.forEach(input => sessionStorage.removeItem(`${SAVE_PREFIX}${input.name}`));
+      sessionStorage.removeItem(`${SAVE_PREFIX}city`);
+      sessionStorage.removeItem(`${SAVE_PREFIX}payment`);
 
       setTimeout(() => { window.location.href = 'index.html'; }, 1500);
     } catch (error) {
+      console.error(error);
       if (window.showToast) window.showToast('Не удалось отправить заказ. Проверьте интернет.', 'error');
       submitBtn.innerHTML = originalText;
       submitBtn.disabled = false;
     }
   });
 
-  // КАЛЕНДАРЬ
-  if (typeof flatpickr !== 'undefined') {
-    const now = new Date();
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
+  // ============================================================
+  // 9. МОДАЛКА ОЧИСТКИ
+  // ============================================================
+  try {
+    const resetBtn = document.getElementById('resetFormBtn');
+    const confirmOverlay = document.getElementById('confirmOverlay');
+    const confirmCancel = document.getElementById('confirmCancel');
+    const confirmDelete = document.getElementById('confirmDelete');
 
-    let minDate = "today";
-    if (currentHour > 13 || (currentHour === 13 && currentMinute > 30)) {
-      const tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      minDate = tomorrow;
-    }
+    if (resetBtn && confirmOverlay) {
+      resetBtn.addEventListener('click', () => confirmOverlay.classList.add('open'));
+      confirmCancel.addEventListener('click', () => confirmOverlay.classList.remove('open'));
+      confirmOverlay.addEventListener('click', (e) => {
+        if (e.target === confirmOverlay) confirmOverlay.classList.remove('open');
+      });
 
-    flatpickr("#deliveryTimeInput", {
-      enableTime: true,
-      dateFormat: "d.m.Y H:i",
-      time_24hr: true,
-      minDate: minDate,
-      minuteIncrement: 15,
-      monthSelectorType: "static",
-      minTime: "08:00",
-      maxTime: "15:00",
-      locale: {
-        firstDayOfWeek: 1,
-        weekdays: {
-          shorthand: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-          longhand: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
-        },
-        months: {
-          shorthand: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-          longhand: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+      confirmDelete.addEventListener('click', () => {
+        confirmOverlay.classList.remove('open');
+        
+        const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
+        inputs.forEach(input => sessionStorage.removeItem(`${SAVE_PREFIX}${input.name}`));
+        sessionStorage.removeItem(`${SAVE_PREFIX}city`);
+        sessionStorage.removeItem(`${SAVE_PREFIX}payment`);
+        
+        form.reset();
+        
+        document.querySelector('#cityDropdown .selected-text').textContent = 'Выберите город...';
+        document.getElementById('cityInput').value = '';
+        document.querySelectorAll('#cityDropdown .custom-option').forEach(o => o.classList.remove('selected'));
+        
+        document.querySelector('#paymentDropdown .selected-text').textContent = '💵 Наличные курьеру';
+        document.getElementById('paymentInput').value = 'cash';
+        document.querySelectorAll('#paymentDropdown .custom-option').forEach(o => o.classList.remove('selected'));
+        document.querySelector('#paymentDropdown .custom-option[data-value="cash"]').classList.add('selected');
+        
+        if (document.querySelector('#deliveryTimeInput')._flatpickr) {
+          document.querySelector('#deliveryTimeInput')._flatpickr.clear();
         }
-      }
-    });
-  }
 
-  // АВТОСОХРАНЕНИЕ
-  const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
-  
-  inputs.forEach(input => {
-    const savedValue = localStorage.getItem('checkout_saved_' + input.name);
-    if (savedValue) input.value = savedValue;
-  });
-
-  const savedCity = localStorage.getItem('checkout_saved_city');
-  if (savedCity) {
-    const cityOption = document.querySelector(`#cityDropdown .custom-option[data-value="${savedCity}"]`);
-    if (cityOption) cityOption.click();
-  }
-
-  const savedPayment = localStorage.getItem('checkout_saved_payment');
-  if (savedPayment) {
-    const payOption = document.querySelector(`#paymentDropdown .custom-option[data-value="${savedPayment}"]`);
-    if (payOption) payOption.click();
-  }
-
-  inputs.forEach(input => {
-    input.addEventListener('input', (e) => {
-      localStorage.setItem('checkout_saved_' + e.target.name, e.target.value);
-    });
-  });
-
-  document.querySelectorAll('#cityDropdown .custom-option').forEach(opt => {
-    opt.addEventListener('click', () => localStorage.setItem('checkout_saved_city', opt.dataset.value));
-  });
-  
-  document.querySelectorAll('#paymentDropdown .custom-option').forEach(opt => {
-    opt.addEventListener('click', () => localStorage.setItem('checkout_saved_payment', opt.dataset.value));
-  });
-
-  // МОДАЛКА ОЧИСТКИ
-  const resetBtn = document.getElementById('resetFormBtn');
-  const confirmOverlay = document.getElementById('confirmOverlay');
-  const confirmCancel = document.getElementById('confirmCancel');
-  const confirmDelete = document.getElementById('confirmDelete');
-
-  if (resetBtn && confirmOverlay) {
-    resetBtn.addEventListener('click', () => confirmOverlay.classList.add('open'));
-    confirmCancel.addEventListener('click', () => confirmOverlay.classList.remove('open'));
-    confirmOverlay.addEventListener('click', (e) => {
-      if (e.target === confirmOverlay) confirmOverlay.classList.remove('open');
-    });
-
-    confirmDelete.addEventListener('click', () => {
-      confirmOverlay.classList.remove('open');
-      inputs.forEach(input => localStorage.removeItem('checkout_saved_' + input.name));
-      localStorage.removeItem('checkout_saved_city');
-      localStorage.removeItem('checkout_saved_payment');
-      
-      form.reset();
-      
-      document.querySelector('#cityDropdown .selected-text').textContent = 'Выберите город...';
-      document.getElementById('cityInput').value = '';
-      document.querySelectorAll('#cityDropdown .custom-option').forEach(o => o.classList.remove('selected'));
-      
-      document.querySelector('#paymentDropdown .selected-text').textContent = '💵 Наличные курьеру';
-      document.getElementById('paymentInput').value = 'cash';
-      document.querySelectorAll('#paymentDropdown .custom-option').forEach(o => o.classList.remove('selected'));
-      document.querySelector('#paymentDropdown .custom-option[data-value="cash"]').classList.add('selected');
-      
-      if (document.querySelector('#deliveryTimeInput')._flatpickr) {
-        document.querySelector('#deliveryTimeInput')._flatpickr.clear();
-      }
-
-      document.getElementById('deliveryServiceGroup').classList.add('hidden');
-      document.querySelector('.payer-btn[data-type="phys"]').click();
-    });
+        document.getElementById('deliveryServiceGroup').classList.add('hidden');
+        document.querySelector('.payer-btn[data-type="phys"]').click();
+      });
+    }
+  } catch(e) {
+    console.error('Ошибка модалки очистки:', e);
   }
 });

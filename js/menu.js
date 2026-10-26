@@ -1,5 +1,15 @@
 // js/menu.js
 document.addEventListener('DOMContentLoaded', () => {
+  // Проверка, что все зависимости загружены
+  if (typeof ProductCard === 'undefined') {
+    console.error('❌ КРИТИЧЕСКАЯ ОШИБКА: ProductCard не найден. Проверьте подключение js/ui/product-card.js в menu.html');
+    return;
+  }
+  if (typeof Store === 'undefined') {
+    console.error('❌ КРИТИЧЕСКАЯ ОШИБКА: Store не найден. Проверьте подключение js/store.js');
+    return;
+  }
+
   const menuGrid = document.getElementById('menuGrid');
   const titleEl  = document.getElementById('categoryTitle');
   const allProducts = window.LUNCH_DATA?.products ?? [];
@@ -45,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     menuGrid.innerHTML = items.map(it => ProductCard.render(it)).join('');
   }
 
-  // Навешиваем обработчики (сработает только один раз при загрузке)
+  // Навешиваем обработчики
   ProductCard.bind(menuGrid, {
     onAdd:    (id, p) => ProductCard.defaultAdd(menuGrid, id, p),
     onPlus:   (id, p) => ProductCard.defaultAdd(menuGrid, id, p),
@@ -78,5 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMenu(currentCategory, currentDay);
   });
 
+  // Первая отрисовка
   renderMenu(currentCategory, currentDay);
 });

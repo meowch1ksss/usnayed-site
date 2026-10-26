@@ -11,12 +11,15 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/sections.css">
   <link rel="stylesheet" href="css/menu.css">
+  
+  <!-- СКРИПТЫ (Порядок критически важен!) -->
+  <script src="js/config.js" defer></script>
+  <script src="js/store.js" defer></script>
   <script src="js/data.js" defer></script>
-  <script src="js/site.js" defer></script>
-  <script src="js/menu.js" defer></script>
-  <script src="js/config.js"></script>
   <script src="js/ui/product-card.js" defer></script>
-  <script src="js/store.js"></script>
+  <script src="js/site.js" defer></script>
+  <script src="js/search.js" defer></script>
+  <script src="js/menu.js" defer></script>
 </head>
 <body>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
@@ -40,31 +43,23 @@
       <a href="index.html#home">Главная</a><a href="menu.html" class="active">Меню</a><a href="index.html#reviews">Отзывы</a><a href="index.html#faq">FAQ</a><a href="contacts.html">Контакты</a>
     </nav>
     <nav class="header-actions" aria-label="Основная навигация">
-      <!-- Избранное -->
       <a href="favorites.html" class="icon-button nav-fav" aria-label="Избранное" title="Избранное" style="text-decoration: none;">
         <svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>
         <span class="count-badge" id="favorite-count">0</span>
       </a>
-      
-      <!-- Заказы -->
       <a href="orders.html" class="icon-button" aria-label="Заказы" title="Заказы" style="text-decoration: none;">
         <svg viewBox="0 0 24 24"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
       </a>
-      
-      <!-- Корзина -->
       <a href="cart.html" class="icon-button cart-trigger" aria-label="Корзина" title="Корзина" style="text-decoration: none;">
         <svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
         <span class="count-badge" id="cart-count">0</span>
       </a>
-      
-      <!-- Профиль -->
       <a href="profile.html" class="profile-trigger" style="text-decoration: none;">
         <span class="avatar">N</span><span class="profile-label">Профиль</span>
       </a>
     </nav>
   </header>
 
-  <!-- КОНТЕНТ СТРАНИЦЫ МЕНЮ -->
   <main class="page-section page-shell">
     <div class="section-center">
       <span class="eyebrow section-pill">✦ МЕНЮ ✦</span>
@@ -73,7 +68,6 @@
     </div>
 
     <div class="menu-controls-wrapper">
-      <!-- Кнопки категорий -->
       <div class="category-switcher" id="categorySwitcher">
         <button class="category-switch" data-category="Завтраки">🍳 Завтраки</button>
         <button class="category-switch" data-category="Обеды в офис">📦 Обеды в офис</button>
@@ -81,7 +75,6 @@
         <button class="category-switch" data-category="Банкеты и фуршеты">🎉 Банкеты и фуршеты</button>
       </div>
 
-      <!-- Табы дней -->
       <div class="category-day-tabs" id="categoryDayTabs">
         <button class="day-tab active" data-day="понедельник">Понедельник</button>
         <button class="day-tab" data-day="вторник">Вторник</button>
@@ -91,7 +84,6 @@
       </div>
     </div>
 
-    <!-- Сетка для карточек -->
     <div id="menuGrid" class="product-grid"></div>
     
     <div style="text-align: center; margin-top: 40px;">
@@ -99,8 +91,8 @@
     </div>
   </main>
 
-  <!-- ПОДВАЛ -->
   <footer class="site-footer" id="footer">
+    <!-- ... подвал оставляем как у тебя ... -->
     <div class="footer-column footer-brand-column">
       <a class="brand footer-brand" href="index.html" aria-label="У нас обед — главная">
         <svg class="footer-logo" viewBox="0 0 49 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -132,7 +124,6 @@
     </div><a href="tel:+79185647212">☎ &nbsp;8 (918) 564-72-12</a><a href="tel:+78633113212">☎ &nbsp;8 (863) 311-32-12</a></div>
   </footer>
 
-  <!-- Плавающая корзина -->
   <div class="floating-cart" id="floatingCart">
     <div class="floating-cart-info">
       <span class="floating-cart-icon">🛒</span>
@@ -143,6 +134,5 @@
     </div>
     <a href="cart.html" class="floating-cart-btn">Перейти в корзину →</a>
   </div>
-
 </body>
 </html>

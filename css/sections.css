@@ -65,11 +65,10 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
  * ============================================================ */
 .email-picker {
   position: relative;
-  font-family: 'Manrope', sans-serif; /* Вернули современный шрифт */
+  font-family: 'Manrope', sans-serif;
   width: 100%;
 }
 
-/* Кнопка, на которую нажимают */
 .email-picker-trigger {
   display: flex;
   align-items: center;
@@ -101,14 +100,13 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   transform: rotate(180deg);
 }
 
-/* Выпадающее меню */
 .email-provider-list {
   position: absolute;
   z-index: 50;
   bottom: calc(100% + 8px);
   right: 0px;
   width: 265px;
-  max-height: 500px; /* Ограничили высоту, чтобы не растягивалось на весь экран */
+  max-height: 500px;
   overflow-y: auto;
   padding: 6px;
   background: #161022;
@@ -118,7 +116,6 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   backdrop-filter: blur(20px);
 }
 
-/* Красивый тонкий скроллбар */
 .email-provider-list::-webkit-scrollbar {
   display: none;
   width: 0;
@@ -133,7 +130,6 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   display: none;
 }
 
-/* Ссылки на почты */
 .email-provider-list a {
   display: flex;
   align-items: center;
@@ -169,22 +165,28 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   color: #a49ab8;
 }
 
-/* Точки-индикаторы (без свечения, аккуратные) */
 .mail-dot {
   width: 8px;
   height: 8px;
   flex: 0 0 8px;
   border-radius: 50%;
+  transition: box-shadow 0.3s ease;
 }
-.gmail { background: #ea4335; }
-.outlook { background: #0078d4; }
-.yahoo { background: #6001d2; }
-.icloud { background: #3693f3; }
-.proton { background: #6d4aff; }
-.zoho { background: #e42527; }
-.yandex { background: #fc3f1d; }
-.mailru { background: #005ff9; }
-.rambler { background: #315efb; }
+
+.gmail   { background: #ea4335; box-shadow: 0 0 12px rgba(234, 67, 53, 0.8); }
+.outlook { background: #0078d4; box-shadow: 0 0 12px rgba(0, 120, 212, 0.8); }
+.yahoo   { background: #6001d2; box-shadow: 0 0 12px rgba(96, 1, 210, 0.8); }
+.icloud  { background: #3693f3; box-shadow: 0 0 12px rgba(54, 147, 243, 0.8); }
+.proton  { background: #6d4aff; box-shadow: 0 0 12px rgba(109, 74, 255, 0.8); }
+.zoho    { background: #e42527; box-shadow: 0 0 12px rgba(228, 37, 39, 0.8); }
+.yandex  { background: #fc3f1d; box-shadow: 0 0 12px rgba(252, 63, 29, 0.8); }
+.mailru  { background: #005ff9; box-shadow: 0 0 12px rgba(0, 95, 249, 0.8); }
+.rambler { background: #315efb; box-shadow: 0 0 12px rgba(49, 94, 251, 0.8); }
+
+.email-provider-list a:hover .mail-dot {
+  box-shadow: 0 0 16px currentColor, 0 0 4px currentColor;
+  transform: scale(1.1);
+}
 
 @media (max-width: 480px) {
   .email-provider-list { width: min(250px, calc(100vw - 40px)); }
@@ -204,7 +206,6 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   visibility: hidden;
 }
 
-/* плюс/минус — по data-open, а не по open */
 .faq-list details summary:after {
   content: '+';
   position: absolute;
@@ -219,7 +220,6 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   content: '−';
 }
 
-/* перебиваем старые правила, которые ломают вид */
 .faq-list details[open] summary:after { content: '+'; }
 .faq-list details[open][data-open="true"] summary:after { content: '−'; }
 .faq-list details[open] .faq-answer { grid-template-rows: 1fr; }
@@ -294,10 +294,7 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   border: 1px solid rgba(183,145,255,.22); 
   border-radius: 18px; 
   background-color: #1a1128; 
-  
-  /* УБИРАЕМ ТЕНЬ */
   box-shadow: none; 
-  
   transition: transform 0.5s ease;
 }
 
@@ -305,31 +302,27 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   transform: scale(1.03);
 }
 
-/* Подпись оставляем читаемой, но убираем тяжелый черный градиент */
 .gallery-grid figcaption { 
   position: absolute; 
   right: 0; 
   bottom: 0; 
   left: 0; 
   padding: 30px 16px 14px; 
-  
-  /* Делаем градиент легким и прозрачным, только чтобы текст не сливался с фото */
   background: linear-gradient(transparent, rgba(16, 8, 28, 0.6)); 
-  
   font-size: 11px; 
   font-weight: 800; 
   color: #f6efff; 
   letter-spacing: .06em; 
   z-index: 2;
   pointer-events: none;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8); /* Тень только для текста */
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
 /* ============================================================
  * Живой поиск (Выпадающий список)
  * ============================================================ */
 .search {
-  position: relative; /* Чтобы выпадашка позиционировалась относительно поиска */
+  position: relative; 
 }
 
 .search-dropdown {
@@ -354,10 +347,9 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
 .search-result-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
   padding: 8px;
   border-radius: 10px;
-  text-decoration: none;
   transition: background 0.2s;
 }
 
@@ -365,7 +357,16 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   background: rgba(168, 121, 255, 0.1);
 }
 
-.search-result-item img {
+.search-result-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.search-result-link img {
   width: 48px;
   height: 48px;
   border-radius: 8px;
@@ -423,42 +424,12 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
 }
 
 /* ============================================================
- * Кнопки в живом поиске
+ * Кнопки в живом поиске (Исправленные под ProductCard)
  * ============================================================ */
-.search-result-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px;
-  border-radius: 10px;
-  transition: background 0.2s;
-}
-
-.search-result-item:hover {
-  background: rgba(168, 121, 255, 0.1);
-}
-
-.search-result-link {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-  text-decoration: none;
-  overflow: hidden;
-}
-
-.search-result-link img {
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
 .search-result-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-shrink: 0;
   padding-left: 10px;
 }
@@ -501,21 +472,76 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   fill: #ff78c8;
 }
 
-/* Кнопка добавления в корзину */
-.search-add-btn {
-  display: grid;
-  place-items: center;
-  width: 32px;
+/* Стили для счётчика (классы из product-card.js) */
+.search-result-item .qty-counter {
+  display: flex;
+  align-items: center;
   height: 32px;
   background: rgba(168, 121, 255, 0.1);
   border: 1px solid rgba(168, 121, 255, 0.3);
   border-radius: 8px;
+  overflow: hidden;
+}
+
+.search-result-item .qty-btn {
+  width: 26px;
+  height: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #f6f1ff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.search-result-item .qty-btn:hover {
+  background: rgba(168, 121, 255, 0.3);
+}
+
+.search-result-item .qty-input {
+  width: 26px;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: #f6f1ff;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.search-result-item .qty-input::-webkit-outer-spin-button,
+.search-result-item .qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Кнопка добавления (когда 0 товаров) */
+.search-result-item .add-cart {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(168, 121, 255, 0.1);
+  border: 1px solid rgba(168, 121, 255, 0.3);
   color: #d6bdff;
+  display: grid;
+  place-items: center;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.search-add-btn svg {
+.search-result-item .add-cart:hover {
+  background: #a879ff;
+  color: #1a1027;
+}
+
+.search-result-item .add-cart svg {
   width: 16px;
   height: 16px;
   fill: none;
@@ -523,72 +549,6 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   stroke-width: 2;
 }
 
-.search-add-btn:hover {
-  background: #a879ff;
-  color: #1a1027;
-}
-
-/* Счетчик плюс/минус */
-.search-qty {
-  display: flex;
-  align-items: center;
-  background: rgba(168, 121, 255, 0.1);
-  border: 1px solid rgba(168, 121, 255, 0.3);
-  border-radius: 8px;
-  overflow: hidden;
-  height: 32px;
-}
-
-.search-qty button {
-  background: transparent;
-  border: none;
-  color: #f6f1ff;
-  width: 26px;
-  height: 100%;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.search-qty button:hover {
-  background: rgba(168, 121, 255, 0.3);
-}
-
-.search-qty span {
-  min-width: 20px;
-  text-align: center;
-  font-size: 13px;
-  font-weight: 800;
-  color: #f6f1ff;
-}
-
-/* Стили для ручного ввода количества */
-.qty-input {
-  width: 32px;
-  background: transparent;
-  border: none;
-  color: #f6f1ff;
-  font-size: 14px;
-  font-weight: 800;
-  text-align: center;
-  outline: none;
-  font-family: 'Manrope', sans-serif;
-  -moz-appearance: textfield; /* Убираем стрелки в Firefox */
-}
-
-/* Убираем стрелки в Chrome/Safari */
-.qty-input::-webkit-outer-spin-button,
-.qty-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* При фокусе делаем красивую обводку */
-.qty-input:focus {
-  background: rgba(168, 121, 255, 0.15);
-  border-radius: 4px;
-}
 
 /* ============================================================
  * Плавный FAQ (Grid-анимация)
@@ -607,7 +567,6 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
   overflow: hidden;
 }
 
-/* Убираем старые стили высоты, если они мешают */
 .faq-answer {
   height: auto !important;
 }
@@ -616,46 +575,16 @@ body.page-leaving main, body.page-leaving .site-header, body.page-leaving .site-
  * Плавный Email Picker
  * ============================================================ */
 .email-provider-list {
-  /* Начальные стили для анимации */
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
   visibility: visible;
 }
 
-/* Класс, который мы добавляем в JS для скрытия */
 .email-list-hidden {
   opacity: 0 !important;
   transform: translateY(10px) !important;
   visibility: hidden !important;
   pointer-events: none !important;
-  /* Задержка для visibility, чтобы анимация прозрачности успела пройти */
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s !important;
-}
-
-/* Базовые точки */
-.mail-dot {
-  width: 8px;
-  height: 8px;
-  flex: 0 0 8px;
-  border-radius: 50%;
-  /* Добавляем плавный переход для ховера (если захочешь сделать еще ярче) */
-  transition: box-shadow 0.3s ease;
-}
-
-/* Свечение для каждой почты (тот же цвет, но с прозрачностью) */
-.gmail   { background: #ea4335; box-shadow: 0 0 12px rgba(234, 67, 53, 0.8); }
-.outlook { background: #0078d4; box-shadow: 0 0 12px rgba(0, 120, 212, 0.8); }
-.yahoo   { background: #6001d2; box-shadow: 0 0 12px rgba(96, 1, 210, 0.8); }
-.icloud  { background: #3693f3; box-shadow: 0 0 12px rgba(54, 147, 243, 0.8); }
-.proton  { background: #6d4aff; box-shadow: 0 0 12px rgba(109, 74, 255, 0.8); }
-.zoho    { background: #e42527; box-shadow: 0 0 12px rgba(228, 37, 39, 0.8); }
-.yandex  { background: #fc3f1d; box-shadow: 0 0 12px rgba(252, 63, 29, 0.8); }
-.mailru  { background: #005ff9; box-shadow: 0 0 12px rgba(0, 95, 249, 0.8); }
-.rambler { background: #315efb; box-shadow: 0 0 12px rgba(49, 94, 251, 0.8); }
-
-.email-provider-list a:hover .mail-dot {
-  /* Увеличиваем радиус и интенсивность свечения при наведении */
-  box-shadow: 0 0 16px currentColor, 0 0 4px currentColor;
-  transform: scale(1.1);
 }
