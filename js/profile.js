@@ -1,3 +1,4 @@
+// js/profile.js
 document.addEventListener('DOMContentLoaded', () => {
   const loginBox = document.getElementById('loginBox');
   const registerBox = document.getElementById('registerBox');
@@ -18,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const adminLink = document.getElementById('adminLink');
 
-  let currentUser = JSON.parse(localStorage.getItem('nyxora:user') || 'null');
+  let currentUser = Store.getUser(); // Берем из Store
 
   // ============================================================
   // 1. УВЕДОМЛЕНИЯ (ТОСТЫ)
@@ -27,18 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showToast(message, type = 'success') {
     if (!toastContainer) return;
-
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     const icon = type === 'success' ? '✓' : '!';
-
-    toast.innerHTML = `
-      <div class="toast-icon">${icon}</div>
-      <div>${message}</div>
-    `;
-
+    toast.innerHTML = `<div class="toast-icon">${icon}</div><div>${message}</div>`;
     toastContainer.appendChild(toast);
-
     setTimeout(() => {
       toast.classList.add('hiding');
       setTimeout(() => toast.remove(), 300);
@@ -89,15 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const x = 20 + i * 30 + (Math.random() * 10 - 5);
       const y = 30 + (Math.random() * 10 - 5);
       const angle = (Math.random() * 0.6) - 0.3;
-
       ctx.translate(x, y);
       ctx.rotate(angle);
-
       ctx.font = `bold ${24 + Math.random() * 10}px 'Courier New', monospace`;
       ctx.fillStyle = `rgb(${Math.random()*80},${Math.random()*80},${Math.random()*80})`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-
       ctx.fillText(currentCaptchaCode[i], 0, 0);
       ctx.restore();
     }
@@ -108,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
       generateCaptcha();
       if (regCaptchaInput) regCaptchaInput.value = '';
     });
+    generateCaptcha(); // Генерируем сразу при загрузке
   }
 
   // ============================================================
@@ -158,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const newEmail = document.getElementById('editEmail').value.trim();
     const newPassword = document.getElementById('editPassword').value;
 
-    let users = JSON.parse(localStorage.getItem('nyxora:users') || '[]');
+    let users = Store.getUsers();
 
     const emailTaken = users.find(u => u.email === newEmail && u.login !== currentUser.login);
     if (emailTaken) {
@@ -180,10 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
         users[userIndex].password = newPassword;
       }
 
-      localStorage.setItem('nyxora:users', JSON.stringify(users));
-
+      Store.saveUsers(users);
       currentUser = users[userIndex];
-      localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
+      Store.setUser(currentUser);
 
       showToast('Данные профиля обновлены', 'success');
       editProfileForm.classList.add('hidden');
@@ -220,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    let users = JSON.parse(localStorage.getItem('nyxora:users') || '[]');
+    let users = Store.getUsers();
 
     if (users.find(u => u.login === login)) {
       showToast('Пользователь с таким логином уже существует', 'error');
@@ -233,15 +224,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const newUser = { firstName, lastName, login, email, password, isAdmin: false };
     users.push(newUser);
-    localStorage.setItem('nyxora:users', JSON.stringify(users));
+    Store.saveUsers(users);
 
     currentUser = newUser;
-    localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
+    Store.setUser(currentUser);
 
     showToast('Регистрация успешна! Добро пожаловать!', 'success');
     updateUI();
   });
 
+  // ============================================================
+  // 6. ВХОД (ЧЕРЕЗ СЕРВЕР)
+  // ============================================================
   loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const emailOrLogin = document.getElementById('loginEmail').value.trim();
@@ -253,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.textContent = 'Вход...';
 
     try {
-      // 1. Отправляем логин/пароль на сервер
       const res = await fetch(APP_CONFIG.API.login, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -267,9 +260,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const data = await res.json();
-      // data = { token: '...', user: { firstName, lastName, email, isAdmin } }
-
-      // 2. Сохраняем токен и данные юзера
+      
+      // Сохраняем токен и данные
       Store.setToken(data.token);
       Store.setUser(data.user);
       currentUser = data.user;
@@ -277,7 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast('Вы успешно вошли!', 'success');
       updateUI();
 
-      // 3. Если админ — сразу в админку
       if (data.user.isAdmin) {
         setTimeout(() => { window.location.href = 'admin.html'; }, 400);
       }
@@ -295,12 +286,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================================
   logoutBtn?.addEventListener('click', async () => {
     currentUser = null;
-    localStorage.removeItem('nyxora:user');
-    Store.clearToken(); // <-- НОВОЕ
-    sessionStorage.removeItem('nyxora:adminToken');
+    Store.clearUser();
+    Store.clearToken();
 
-    if (supabase) {
-      try { await supabase.auth.signOut(); } catch (e) { console.error(e); }
+    if (window.supabaseClient) {
+      try { await window.supabaseClient.auth.signOut(); } catch (e) { console.error(e); }
     }
 
     showToast('Вы вышли из аккаунта', 'success');
@@ -308,27 +298,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ============================================================
-  // 8. СОЦСЕТИ (РЕАЛЬНЫЙ OAUTH ЧЕРЕЗ SUPABASE)
+  // 8. СОЦСЕТИ (GOOGLE OAUTH)
   // ============================================================
-  
-  // ВСТАВЬ СВОИ КЛЮЧИ SUPABASE ЗДЕСЬ
   const SUPABASE_URL = 'https://jaotffxttfwkzueivmru.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_J0eXhuE8bJd3Vz1eGWxnFQ_JOO1f_p9';
 
-  let supabase = null;
-  if (window.supabase) {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // Создаем клиент Supabase только один раз и сохраняем глобально
+  if (window.supabase && !window.supabaseClient) {
+    window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 
   document.querySelectorAll('.social-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
-      if (!supabase) {
+      if (!window.supabaseClient) {
         showToast('Ошибка: Библиотека Supabase не загружена.', 'error');
         return;
       }
 
       try {
-        const { error } = await supabase.auth.signInWithOAuth({
+        const { error } = await window.supabaseClient.auth.signInWithOAuth({
           provider: 'google',
           options: { redirectTo: 'https://usnayed-site.pages.dev/profile.html' }
         });
@@ -341,103 +329,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Проверяем сессию Google при загрузке
   async function checkSocialSession() {
-    if (!supabase) return;
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session && session.user) {
-      const user = session.user;
-      const email = user.email;
-      const name = user.user_metadata.full_name || user.user_metadata.name || 'Пользователь';
-      
-      let users = JSON.parse(localStorage.getItem('nyxora:users') || '[]');
-      let localUser = users.find(u => u.email === email);
+    if (!window.supabaseClient) return;
+    try {
+      const { data: { session } } = await window.supabaseClient.auth.getSession();
+      if (session && session.user) {
+        const user = session.user;
+        const email = user.email;
+        const name = user.user_metadata.full_name || user.user_metadata.name || 'Пользователь';
+        
+        let users = Store.getUsers();
+        let localUser = users.find(u => u.email === email);
 
-      if (!localUser) {
-        const nameParts = name.split(' ');
-        localUser = { 
-          firstName: nameParts[0] || 'Пользователь', 
-          lastName: nameParts[1] || '', 
-          login: email.split('@')[0], 
-          email: email, 
-          password: 'social_auth', 
-          isAdmin: false 
-        };
-        users.push(localUser);
-        localStorage.setItem('nyxora:users', JSON.stringify(users));
-      }
+        if (!localUser) {
+          const nameParts = name.split(' ');
+          localUser = { 
+            firstName: nameParts[0] || 'Пользователь', 
+            lastName: nameParts[1] || '', 
+            login: email.split('@')[0], 
+            email: email, 
+            password: 'social_auth', 
+            isAdmin: false 
+          };
+          users.push(localUser);
+          Store.saveUsers(users);
+        }
 
-      currentUser = { ...localUser, username: localUser.login };
-      localStorage.setItem('nyxora:user', JSON.stringify(currentUser));
-      
-      if (window.location.hash.includes('access_token')) {
-        showToast('Вы успешно вошли через Google!', 'success');
+        currentUser = { ...localUser, username: localUser.login };
+        Store.setUser(currentUser);
+        
+        if (window.location.hash.includes('access_token')) {
+          showToast('Вы успешно вошли через Google!', 'success');
+        }
+        updateUI();
+        
+        if (window.location.hash) window.history.replaceState(null, null, window.location.pathname);
       }
-      updateUI();
-      
-      if (window.location.hash) window.history.replaceState(null, null, window.location.pathname);
+    } catch (err) {
+      console.error('Ошибка проверки сессии Google:', err);
     }
   }
 
   checkSocialSession();
-
-  // ============================================================
-  // 9. ОТПРАВКА ОТЗЫВА ИЗ ЛК
-  // ============================================================
-  const toggleReviewBtn = document.getElementById('toggleReviewBtn');
-  const profileReviewFormWrapper = document.getElementById('profileReviewFormWrapper');
-  const profileReviewForm = document.getElementById('profileReviewForm');
-
-  if (toggleReviewBtn && profileReviewFormWrapper) {
-    toggleReviewBtn.addEventListener('click', () => {
-      profileReviewFormWrapper.classList.toggle('open');
-      if (profileReviewFormWrapper.classList.contains('open')) {
-        toggleReviewBtn.textContent = 'Свернуть форму';
-        toggleReviewBtn.style.background = 'rgba(255, 255, 255, 0.05)';
-        toggleReviewBtn.style.color = '#a49ab8';
-      } else {
-        toggleReviewBtn.textContent = 'Оставить отзыв';
-        toggleReviewBtn.style.background = 'rgba(168, 121, 255, 0.15)';
-        toggleReviewBtn.style.color = '#c6a6ff';
-      }
-    });
-  }
-
-  if (profileReviewForm) {
-    profileReviewForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('profRevName').value.trim();
-      const text = document.getElementById('profRevText').value.trim();
-      if (!name || !text) return;
-
-      const submitBtn = profileReviewForm.querySelector('button[type="submit"]');
-      const original = submitBtn.textContent;
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Отправка...';
-
-      try {
-        const res = await Store.apiFetch(APP_CONFIG.API.reviews, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, text }),
-        });
-        if (!res.ok) throw new Error('server');
-
-        profileReviewForm.reset();
-        profileReviewFormWrapper.classList.remove('open');
-        toggleReviewBtn.textContent = 'Оставить отзыв';
-        toggleReviewBtn.style.background = 'rgba(168, 121, 255, 0.15)';
-        toggleReviewBtn.style.color = '#c6a6ff';
-        
-        showToast('Спасибо! Ваш отзыв отправлен на проверку.', 'success');
-      } catch {
-        showToast('Не удалось отправить отзыв. Попробуйте позже.', 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = original;
-      }
-    });
-  }
-
-  // Инициализация
-  checkSocialSession(); // Проверяем, не вернулся ли пользователь из Гугла
   updateUI();
 });
