@@ -1,191 +1,375 @@
 document.addEventListener('DOMContentLoaded', () => {
-  try {
-    const loginBox = document.getElementById('loginBox');
-    const registerBox = document.getElementById('registerBox');
-    const userProfile = document.getElementById('userProfile');
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const userNameEl = document.getElementById('userName');
-    const userEmailEl = document.getElementById('userEmail');
-    const userAvatarEl = document.getElementById('userAvatar');
-    const editProfileBtn = document.getElementById('editProfileBtn');
-    const editProfileForm = document.getElementById('editProfileForm');
-    const cancelEditBtn = document.getElementById('cancelEditBtn');
-    const updateForm = document.getElementById('updateForm');
-    const adminLink = document.getElementById('adminLink');
+  const loginBox = document.getElementById('loginBox');
+  const registerBox = document.getElementById('registerBox');
+  const userProfile = document.getElementById('userProfile');
 
-    let currentUser = Store.getUser();
-    const toastContainer = document.getElementById('toast-container');
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+  const logoutBtn = document.getElementById('logoutBtn');
 
-    function showToast(message, type = 'success') {
-      if (!toastContainer) return;
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      toast.innerHTML = `<div class="toast-icon">${type === 'success' ? '✓' : '!'}</div><div>${message}</div>`;
-      toastContainer.appendChild(toast);
-      setTimeout(() => {
-        toast.classList.add('hiding');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
+  const userNameEl = document.getElementById('userName');
+  const userEmailEl = document.getElementById('userEmail');
+  const userAvatarEl = document.getElementById('userAvatar');
+
+  const editProfileBtn = document.getElementById('editProfileBtn');
+  const editProfileForm = document.getElementById('editProfileForm');
+  const cancelEditBtn = document.getElementById('cancelEditBtn');
+  const updateForm = document.getElementById('updateForm');
+
+  const adminLink = document.getElementById('adminLink');
+
+  let currentUser = Store.getUser();
+
+  const toastContainer = document.getElementById('toast-container');
+
+  function showToast(message, type = 'success') {
+    if (!toastContainer) return;
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icon = type === 'success' ? '✓' : '!';
+    toast.innerHTML = `<div class="toast-icon">${icon}</div><div>${message}</div>`;
+    toastContainer.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('hiding');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  // ============================================================
+  // КАПЧА
+  // ============================================================
+  const captchaCanvas = document.getElementById('captchaCanvas');
+  const regCaptchaInput = document.getElementById('regCaptcha');
+  let currentCaptchaCode = '';
+
+  function generateCaptcha() {
+    if (!captchaCanvas) return;
+    const ctx = captchaCanvas.getContext('2d');
+    const w = captchaCanvas.width;
+    const h = captchaCanvas.height;
+
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, w, h);
+
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    currentCaptchaCode = '';
+    for (let i = 0; i < 5; i++) {
+      currentCaptchaCode += chars[Math.floor(Math.random() * chars.length)];
     }
 
-    function updateUI() {
-      if (currentUser) {
-        if (loginBox) loginBox.classList.add('hidden');
-        if (registerBox) registerBox.classList.add('hidden');
-        if (userProfile) userProfile.classList.remove('hidden');
+    for (let i = 0; i < 100; i++) {
+      ctx.fillStyle = `rgba(${Math.random()*100},${Math.random()*100},${Math.random()*100},${Math.random()*0.5})`;
+      ctx.beginPath();
+      ctx.arc(Math.random()*w, Math.random()*h, Math.random()*2, 0, Math.PI*2);
+      ctx.fill();
+    }
 
-        if (userNameEl) userNameEl.textContent = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Пользователь';
-        if (userEmailEl) userEmailEl.textContent = currentUser.email || '';
-        if (userAvatarEl) userAvatarEl.textContent = (currentUser.firstName || 'U').charAt(0).toUpperCase();
+    for (let i = 0; i < 4; i++) {
+      ctx.strokeStyle = `rgba(${Math.random()*100},${Math.random()*100},${Math.random()*100}, 0.4)`;
+      ctx.lineWidth = Math.random() * 2 + 1;
+      ctx.beginPath();
+      ctx.moveTo(Math.random()*w, Math.random()*h);
+      ctx.bezierCurveTo(Math.random()*w, Math.random()*h, Math.random()*w, Math.random()*h, Math.random()*w, Math.random()*h);
+      ctx.stroke();
+    }
 
-        if (adminLink) {
-          adminLink.classList.toggle('hidden', !currentUser.isAdmin);
-        }
-      } else {
-        if (loginBox) loginBox.classList.remove('hidden');
-        if (registerBox) registerBox.classList.add('hidden');
-        if (userProfile) userProfile.classList.add('hidden');
-        if (editProfileForm) editProfileForm.classList.add('hidden');
-        if (adminLink) adminLink.classList.add('hidden');
+    for (let i = 0; i < currentCaptchaCode.length; i++) {
+      ctx.save();
+      const x = 20 + i * 30 + (Math.random() * 10 - 5);
+      const y = 30 + (Math.random() * 10 - 5);
+      const angle = (Math.random() * 0.6) - 0.3;
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.font = `bold ${24 + Math.random() * 10}px 'Courier New', monospace`;
+      ctx.fillStyle = `rgb(${Math.random()*80},${Math.random()*80},${Math.random()*80})`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(currentCaptchaCode[i], 0, 0);
+      ctx.restore();
+    }
+  }
+
+  if (captchaCanvas) {
+    captchaCanvas.addEventListener('click', () => {
+      generateCaptcha();
+      if (regCaptchaInput) regCaptchaInput.value = '';
+    });
+    generateCaptcha();
+  }
+
+  // ============================================================
+  // UI
+  // ============================================================
+  function updateUI() {
+    if (currentUser) {
+      if (loginBox) loginBox.classList.add('hidden');
+      if (registerBox) registerBox.classList.add('hidden');
+      if (userProfile) userProfile.classList.remove('hidden');
+
+      if (userNameEl) userNameEl.textContent = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Пользователь';
+      if (userEmailEl) userEmailEl.textContent = currentUser.email || '';
+      if (userAvatarEl) userAvatarEl.textContent = (currentUser.firstName || 'U').charAt(0).toUpperCase();
+
+      if (adminLink) {
+        adminLink.classList.toggle('hidden', !currentUser.isAdmin);
       }
+    } else {
+      if (loginBox) loginBox.classList.remove('hidden');
+      if (registerBox) registerBox.classList.add('hidden');
+      if (userProfile) userProfile.classList.add('hidden');
+      if (editProfileForm) editProfileForm.classList.add('hidden');
+      if (adminLink) adminLink.classList.add('hidden');
     }
+  }
 
-    updateUI();
+  // ============================================================
+  // РЕДАКТИРОВАНИЕ
+  // ============================================================
+  if (editProfileBtn) {
+    editProfileBtn.addEventListener('click', () => {
+      editProfileForm.classList.remove('hidden');
+      document.getElementById('editFirstName').value = currentUser.firstName || '';
+      document.getElementById('editLastName').value = currentUser.lastName || '';
+      document.getElementById('editEmail').value = currentUser.email || '';
+      document.getElementById('editPassword').value = '';
+    });
+  }
 
-    // Форма входа
-    if (loginForm) {
-      loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const emailOrLogin = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPassword').value;
+  if (cancelEditBtn) {
+    cancelEditBtn.addEventListener('click', () => editProfileForm.classList.add('hidden'));
+  }
 
-        const submitBtn = loginForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Вход...';
+  if (updateForm) {
+    updateForm.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-        try {
-          const res = await fetch(APP_CONFIG.API.login, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ login: emailOrLogin, password }),
-          });
+      const newFirstName = document.getElementById('editFirstName').value.trim();
+      const newLastName = document.getElementById('editLastName').value.trim();
+      const newEmail = document.getElementById('editEmail').value.trim();
+      const newPassword = document.getElementById('editPassword').value;
 
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            showToast(err.message || 'Неверный логин или пароль', 'error');
+      let users = Store.getUsers();
+
+      const emailTaken = users.find(u => u.email === newEmail && u.login !== currentUser.login);
+      if (emailTaken) {
+        showToast('Этот email уже используется другим аккаунтом', 'error');
+        return;
+      }
+
+      const userIndex = users.findIndex(u => u.login === currentUser.login);
+      if (userIndex !== -1) {
+        users[userIndex].firstName = newFirstName;
+        users[userIndex].lastName = newLastName;
+        users[userIndex].email = newEmail;
+
+        if (newPassword) {
+          if (newPassword.length < 6) {
+            showToast('Новый пароль должен быть минимум 6 символов', 'error');
             return;
           }
-
-          const data = await res.json();
-          Store.setToken(data.token);
-          Store.setUser(data.user);
-          currentUser = data.user;
-
-          showToast('Вы успешно вошли!', 'success');
-          updateUI();
-
-          if (data.user.isAdmin) {
-            setTimeout(() => { window.location.href = 'admin.html'; }, 400);
-          }
-        } catch (err) {
-          console.error(err);
-          showToast('Ошибка соединения с сервером', 'error');
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
-        }
-      });
-    }
-
-    // Выход
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', async () => {
-        currentUser = null;
-        Store.clearUser();
-        Store.clearToken();
-
-        if (window.supabaseClient) {
-          try { await window.supabaseClient.auth.signOut(); } catch (e) { console.error(e); }
+          users[userIndex].password = newPassword;
         }
 
-        showToast('Вы вышли из аккаунта', 'success');
+        Store.saveUsers(users);
+        currentUser = users[userIndex];
+        Store.setUser(currentUser);
+
+        showToast('Данные профиля обновлены', 'success');
+        editProfileForm.classList.add('hidden');
         updateUI();
-      });
-    }
+      }
+    });
+  }
 
-    // Supabase
-    const SUPABASE_URL = 'https://jaotffxttfwkzueivmru.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_J0eXhuE8bJd3Vz1eGWxnFQ_JOO1f_p9';
+  // ============================================================
+  // РЕГИСТРАЦИЯ
+  // ============================================================
+  if (registerForm) {
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-    if (window.supabase && !window.supabaseClient) {
-      window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    }
+      const firstName = document.getElementById('regFirstName').value.trim();
+      const lastName = document.getElementById('regLastName').value.trim();
+      const login = document.getElementById('regLogin').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const passwordConfirm = document.getElementById('regPasswordConfirm').value;
+      const captchaInput = document.getElementById('regCaptcha').value.trim().toUpperCase();
 
-    document.querySelectorAll('.social-btn').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        if (!window.supabaseClient) {
-          showToast('Ошибка: Библиотека Supabase не загружена.', 'error');
+      if (password !== passwordConfirm) return showToast('Пароли не совпадают', 'error');
+      if (password.length < 6) return showToast('Пароль должен быть минимум 6 символов', 'error');
+      
+      if (captchaInput !== currentCaptchaCode) {
+        showToast('Неверный код с картинки', 'error');
+        generateCaptcha();
+        document.getElementById('regCaptcha').value = '';
+        return;
+      }
+
+      let users = Store.getUsers();
+
+      if (users.find(u => u.login === login)) return showToast('Пользователь с таким логином уже существует', 'error');
+      if (users.find(u => u.email === email)) return showToast('Пользователь с таким email уже существует', 'error');
+
+      const newUser = { firstName, lastName, login, email, password, isAdmin: false };
+      users.push(newUser);
+      Store.saveUsers(users);
+
+      currentUser = newUser;
+      Store.setUser(currentUser);
+
+      showToast('Регистрация успешна! Добро пожаловать!', 'success');
+      updateUI();
+    });
+  }
+
+  // ============================================================
+  // ВХОД
+  // ============================================================
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const emailOrLogin = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Вход...';
+
+      try {
+        const res = await fetch(APP_CONFIG.API.login, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ login: emailOrLogin, password }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          showToast(err.message || 'Неверный логин или пароль', 'error');
           return;
         }
-        try {
-          const { error } = await window.supabaseClient.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: 'https://usnayed-site.pages.dev/profile.html' }
-          });
-          if (error) throw error;
-        } catch (err) {
-          showToast(`Ошибка входа: ${err.message}`, 'error');
-        }
-      });
-    });
 
-    async function checkSocialSession() {
-      if (!window.supabaseClient) return;
-      try {
-        const { data: { session } } = await window.supabaseClient.auth.getSession();
-        if (session && session.user) {
-          const user = session.user;
-          const email = user.email;
-          const name = user.user_metadata.full_name || user.user_metadata.name || 'Пользователь';
-          
-          let users = Store.getUsers();
-          let localUser = users.find(u => u.email === email);
+        const data = await res.json();
+        Store.setToken(data.token);
+        Store.setUser(data.user);
+        currentUser = data.user;
 
-          if (!localUser) {
-            const nameParts = name.split(' ');
-            localUser = { 
-              firstName: nameParts[0] || 'Пользователь', 
-              lastName: nameParts[1] || '', 
-              login: email.split('@')[0], 
-              email: email, 
-              password: 'social_auth', 
-              isAdmin: false 
-            };
-            users.push(localUser);
-            Store.saveUsers(users);
-          }
+        showToast('Вы успешно вошли!', 'success');
+        updateUI();
 
-          currentUser = { ...localUser, username: localUser.login };
-          Store.setUser(currentUser);
-          
-          if (window.location.hash.includes('access_token')) {
-            showToast('Вы успешно вошли через Google!', 'success');
-          }
-          updateUI();
-          
-          if (window.location.hash) window.history.replaceState(null, null, window.location.pathname);
+        if (data.user.isAdmin) {
+          setTimeout(() => { window.location.href = 'admin.html'; }, 400);
         }
       } catch (err) {
-        console.error('Ошибка проверки сессии Google:', err);
+        console.error(err);
+        showToast('Ошибка соединения с сервером', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
       }
-    }
-
-    checkSocialSession();
-  } catch (globalError) {
-    console.error('КРИТИЧЕСКАЯ ОШИБКА ПРИ ЗАГРУЗКЕ ПРОФИЛЯ:', globalError);
+    });
   }
+
+  // ============================================================
+  // ВЫХОД
+  // ============================================================
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      currentUser = null;
+      Store.clearUser();
+      Store.clearToken();
+
+      if (window.supabaseClient) {
+        try { await window.supabaseClient.auth.signOut(); } catch (e) { console.error(e); }
+      }
+
+      showToast('Вы вышли из аккаунта', 'success');
+      updateUI();
+    });
+  }
+
+  // ============================================================
+  // СОЦСЕТИ (GOOGLE)
+  // ============================================================
+  const SUPABASE_URL = 'https://jaotffxttfwkzueivmru.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_J0eXhuE8bJd3Vz1eGWxnFQ_JOO1f_p9';
+
+  if (window.supabase && !window.supabaseClient) {
+    window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+
+  document.querySelectorAll('.social-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (!window.supabaseClient) {
+        showToast('Ошибка: Библиотека Supabase не загружена.', 'error');
+        return;
+      }
+      try {
+        const { error } = await window.supabaseClient.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: 'https://usnayed-site.pages.dev/profile.html' }
+        });
+        if (error) throw error;
+      } catch (err) {
+        showToast(`Ошибка входа: ${err.message}`, 'error');
+      }
+    });
+  });
+
+  async function checkSocialSession() {
+    if (!window.supabaseClient) return;
+    try {
+      const { data: { session } } = await window.supabaseClient.auth.getSession();
+      if (session && session.user) {
+        const user = session.user;
+        const email = user.email;
+        const name = user.user_metadata.full_name || user.user_metadata.name || 'Пользователь';
+        
+        let users = Store.getUsers();
+        let localUser = users.find(u => u.email === email);
+
+        if (!localUser) {
+          const nameParts = name.split(' ');
+          localUser = { 
+            firstName: nameParts[0] || 'Пользователь', 
+            lastName: nameParts[1] || '', 
+            login: email.split('@')[0], 
+            email: email, 
+            password: 'social_auth', 
+            isAdmin: false 
+          };
+          users.push(localUser);
+          Store.saveUsers(users);
+        }
+
+        currentUser = { ...localUser, username: localUser.login };
+        Store.setUser(currentUser);
+        
+        if (window.location.hash.includes('access_token')) {
+          showToast('Вы успешно вошли через Google!', 'success');
+        }
+        updateUI();
+        
+        if (window.location.hash) window.history.replaceState(null, null, window.location.pathname);
+      }
+    } catch (err) {
+      console.error('Ошибка проверки сессии Google:', err);
+    }
+  }
+
+  checkSocialSession();
+  updateUI();
+
+  // ДОБАВЛЯЕМ ЖЕСТКИЙ ПЕРЕХВАТ ДЛЯ ВСЕХ ФОРМ, ЧТОБЫ ОНИ НЕ ПЕРЕЗАГРУЖАЛИ СТРАНИЦУ
+  document.querySelectorAll('form').forEach(f => {
+    f.addEventListener('submit', (e) => {
+      if (!e.defaultPrevented) {
+        e.preventDefault();
+        console.warn('Форма перехвачена глобально. Скорее всего, обработчик внутри profile.js не сработал.');
+      }
+    });
+  });
 });
