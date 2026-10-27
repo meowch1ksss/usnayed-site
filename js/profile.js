@@ -2,24 +2,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginBox = document.getElementById('loginBox');
   const registerBox = document.getElementById('registerBox');
   const userProfile = document.getElementById('userProfile');
-
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
   const logoutBtn = document.getElementById('logoutBtn');
-
   const userNameEl = document.getElementById('userName');
   const userEmailEl = document.getElementById('userEmail');
   const userAvatarEl = document.getElementById('userAvatar');
-
   const editProfileBtn = document.getElementById('editProfileBtn');
   const editProfileForm = document.getElementById('editProfileForm');
   const cancelEditBtn = document.getElementById('cancelEditBtn');
   const updateForm = document.getElementById('updateForm');
-
   const adminLink = document.getElementById('adminLink');
 
   let currentUser = Store.getUser();
-
   const toastContainer = document.getElementById('toast-container');
 
   function showToast(message, type = 'success') {
@@ -35,9 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   }
 
-  // ============================================================
-  // КАПЧА
-  // ============================================================
   const captchaCanvas = document.getElementById('captchaCanvas');
   const regCaptchaInput = document.getElementById('regCaptcha');
   let currentCaptchaCode = '';
@@ -98,9 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
     generateCaptcha();
   }
 
-  // ============================================================
-  // UI
-  // ============================================================
   function updateUI() {
     if (currentUser) {
       if (loginBox) loginBox.classList.add('hidden');
@@ -123,9 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ============================================================
-  // РЕДАКТИРОВАНИЕ
-  // ============================================================
   if (editProfileBtn) {
     editProfileBtn.addEventListener('click', () => {
       editProfileForm.classList.remove('hidden');
@@ -182,9 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ============================================================
-  // РЕГИСТРАЦИЯ (Сервер)
-  // ============================================================
   if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -242,9 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ============================================================
-  // ВХОД (Сервер)
-  // ============================================================
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -290,9 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ============================================================
-  // ВЫХОД
-  // ============================================================
   if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {
       currentUser = null;
@@ -308,9 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ============================================================
-  // СОЦСЕТИ (GOOGLE)
-  // ============================================================
   const SUPABASE_URL = 'https://jaotffxttfwkzueivmru.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_J0eXhuE8bJd3Vz1eGWxnFQ_JOO1f_p9';
 
@@ -381,12 +355,11 @@ document.addEventListener('DOMContentLoaded', () => {
   checkSocialSession();
   updateUI();
 
-  // ГЛОБАЛЬНЫЙ ПЕРЕХВАТ, ЧТОБЫ ФОРМЫ НЕ ПЕРЕЗАГРУЖАЛИ СТРАНИЦУ
   document.querySelectorAll('form').forEach(f => {
     f.addEventListener('submit', (e) => {
       if (!e.defaultPrevented) {
         e.preventDefault();
-        console.warn('Форма перехвачена глобально. Скорее всего, обработчик внутри profile.js не сработал.');
+        console.warn('Форма перехвачена глобально.');
       }
     });
   });
