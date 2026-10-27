@@ -319,22 +319,47 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   window.deleteReview = async function(id) {
-    if (!confirm('Вы уверены, что хотите навсегда удалить этот отзыв?')) return;
+    const reviewConfirmOverlay = document.getElementById('reviewConfirmOverlay');
+    const reviewConfirmCancel = document.getElementById('reviewConfirmCancel');
+    const reviewConfirmDelete = document.getElementById('reviewConfirmDelete');
 
-    try {
-      const res = await adminFetch(APP_CONFIG.API.review(id), {
-        method: 'DELETE'
-      });
+    if (!reviewConfirmOverlay) return;
+
+    // Открываем модалку
+    reviewConfirmOverlay.classList.add('open');
+
+    // Обработчик отмены
+    reviewConfirmCancel.onclick = () => {
+      reviewConfirmOverlay.classList.remove('open');
+    };
+
+    // Закрытие по клику вне модалки
+    reviewConfirmOverlay.onclick = (e) => {
+      if (e.target === reviewConfirmOverlay) reviewConfirmOverlay.classList.remove('open');
+    };
+
+    // Обработчик подтверждения удаления
+    reviewConfirmDelete.onclick = async () => {
+      reviewConfirmOverlay.classList.remove('open');
       
-      if (res.status === 401) { showAdminToast('Нет прав или сессия истекла', 'error'); return; }
-      if (!res.ok) throw new Error('server');
+      try {
+        const res = await adminFetch(APP_CONFIG.API.review(id), {
+          method: 'DELETE'
+        });
+        
+        if (res.status === 401) { 
+          showAdminToast('Нет прав или сессия истекла', 'error'); 
+          return; 
+        }
+        if (!res.ok) throw new Error('server');
 
-      showAdminToast('Отзыв удалён', 'success');
-      renderReviews();
-    } catch (err) {
-      console.error(err);
-      showAdminToast('Не удалось удалить отзыв', 'error');
-    }
+        showAdminToast('Отзыв удалён', 'success');
+        renderReviews(); // Обновляем список отзывов
+      } catch (err) {
+        console.error(err);
+        showAdminToast('Не удалось удалить отзыв', 'error');
+      }
+    };
   };
 
   function renderMenuUpload() {
