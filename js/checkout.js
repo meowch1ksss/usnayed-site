@@ -1,26 +1,12 @@
-// js/checkout.js
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('checkoutForm');
   if (!form) return;
 
-  // Элементы UI
-  const payerBtns = document.querySelectorAll('.payer-btn');
-  const payerSwitch = document.querySelector('.payer-switch');
-  const fieldsPhys = document.getElementById('fieldsPhys');
-  const fieldsJur = document.getElementById('fieldsJur');
-  const paymentHint = document.getElementById('paymentHint');
-  
-  // Корзина и данные
   const cart = Store.getCart();
   const products = window.LUNCH_DATA?.products ?? [];
   const currentUser = Store.getUser();
-  
-  // Константы для автосохранения
   const SAVE_PREFIX = 'checkout_saved_';
 
-  // ============================================================
-  // 1. ОТРИСОВКА ТАБЛИЦЫ ТОВАРОВ
-  // ============================================================
   try {
     const tbody = document.getElementById('checkoutTableBody');
     const totalPriceEl = document.getElementById('checkoutTotalPrice');
@@ -31,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let totalWeightGrams = 0;
 
     function parseWeight(w) {
+      if (!w) return 0;
       const num = parseFloat(String(w).replace(/[^\d.,]/g, '').replace(',', '.'));
       return isNaN(num) ? 0 : num;
     }
@@ -48,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         return `
           <tr>
-            <td>${ProductCard.esc(p.name)}</td>
+            <td>${p.name}</td>
             <td>${item.qty}</td>
             <td>${p.price} ₽</td>
             <td>${sum} ₽</td>
@@ -65,15 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (totalPriceBottom) totalPriceBottom.textContent = `${totalSum} ₽`;
     if (totalWeightEl) totalWeightEl.textContent = formattedWeight;
 
-    // Сохраняем в глобал для отправки
     window._checkoutTotals = { totalSum, formattedWeight };
   } catch (e) {
     console.error('Ошибка отрисовки таблицы:', e);
   }
 
-  // ============================================================
-  // 2. АВТОЗАПОЛНЕНИЕ
-  // ============================================================
   try {
     if (currentUser) {
       const nameInput = document.querySelector('input[name="fullName"]');
@@ -90,9 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Ошибка автозаполнения:', e);
   }
 
-  // ============================================================
-  // 3. КАСТОМНЫЕ СЕЛЕКТЫ (Город и Оплата)
-  // ============================================================
   function initCustomSelect(dropdownId, onChange) {
     const dropdown = document.getElementById(dropdownId);
     if (!dropdown) return null;
@@ -104,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!trigger || !input) return null;
 
-    // Убираем старые слушатели, если есть (клонируем элемент)
     const newTrigger = trigger.cloneNode(true);
     trigger.parentNode.replaceChild(newTrigger, trigger);
 
@@ -117,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     options.forEach(option => {
-      // Клонируем, чтобы снять старые слушатели
       const newOpt = option.cloneNode(true);
       option.parentNode.replaceChild(newOpt, option);
       
@@ -148,9 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     initCustomSelect('paymentDropdown', (value) => {
+      const paymentHint = document.getElementById('paymentHint');
       if (!paymentHint) return;
       if (value === 'bank' || value === 'sber') {
-        paymentHint.textContent = 'Вы можете оплатить заказ в любом отделении Сбербанка. За услугу по переводу денег с Вас возьмут от 3 до 7% от стоимости заказа. Перечисление денег займет порядка 10 дней.';
+        paymentHint.textContent = 'Вы можете оплатить заказ в любом отделении Сбербанка...';
       } else {
         paymentHint.textContent = 'Оплата наличными при получении заказа курьеру.';
       }
@@ -165,9 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Ошибка инициализации селектов:', e);
   }
 
-  // ============================================================
-  // 4. СПОСОБ ДОСТАВКИ (Курьер/Самовывоз)
-  // ============================================================
   try {
     const deliveryMethods = document.querySelectorAll('.delivery-method');
     const deliveryMethodInput = document.getElementById('deliveryMethodInput');
@@ -195,10 +171,13 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Ошибка инициализации способов доставки:', e);
   }
 
-  // ============================================================
-  // 5. ПЕРЕКЛЮЧАТЕЛЬ ЮР/ФИЗ ЛИЦО
-  // ============================================================
   try {
+    const payerBtns = document.querySelectorAll('.payer-btn');
+    const payerSwitch = document.querySelector('.payer-switch');
+    const fieldsPhys = document.getElementById('fieldsPhys');
+    const fieldsJur = document.getElementById('fieldsJur');
+    const paymentHint = document.getElementById('paymentHint');
+
     payerBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const type = btn.dataset.type;
@@ -238,9 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Ошибка переключателя лиц:', e);
   }
 
-  // ============================================================
-  // 6. КАЛЕНДАРЬ (FLATPICKR)
-  // ============================================================
   try {
     if (typeof flatpickr !== 'undefined') {
       const now = new Date();
@@ -270,11 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Восстанавливаем дату
       const savedDate = sessionStorage.getItem(`${SAVE_PREFIX}deliveryTime`);
       if (savedDate) fpInstance.setDate(savedDate);
 
-      // Слушаем изменение
       document.getElementById('deliveryTimeInput').addEventListener('change', (e) => {
         sessionStorage.setItem(`${SAVE_PREFIX}deliveryTime`, e.target.value);
       });
@@ -285,14 +259,11 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Ошибка инициализации календаря:', e);
   }
 
-  // ============================================================
-  // 7. АВТОСОХРАНЕНИЕ ТЕКСТОВЫХ ПОЛЕЙ
-  // ============================================================
   try {
     const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
     
     inputs.forEach(input => {
-      if (input.id === 'deliveryTimeInput') return; // Flatpickr обрабатывается отдельно
+      if (input.id === 'deliveryTimeInput') return;
 
       const savedValue = sessionStorage.getItem(`${SAVE_PREFIX}${input.name}`);
       if (savedValue) input.value = savedValue;
@@ -317,13 +288,9 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Ошибка автосохранения:', e);
   }
 
-  // ============================================================
-  // 8. ОТПРАВКА
-  // ============================================================
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const totals = window._checkoutTotals || { totalSum: 0, formattedWeight: '0 г' };
-
     const isJur = document.querySelector('.payer-btn.active')?.dataset.type === 'jur';
     
     if (!cart.length) return window.showToast && window.showToast('Корзина пуста!', 'error');
@@ -376,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
       payerType: isJur ? 'Юр. лицо' : 'Физ. лицо',
       paymentMethod: isJur ? 'bank' : document.getElementById('paymentInput').value,
       companyData: companyData,
-      userEmail: currentUser ? currentUser.email : email
+      userEmail: currentUser ? currentUser.email : email,
       userId: currentUser ? currentUser.id : null
     };
 
@@ -411,9 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ============================================================
-  // 9. МОДАЛКА ОЧИСТКИ
-  // ============================================================
   try {
     const resetBtn = document.getElementById('resetFormBtn');
     const confirmOverlay = document.getElementById('confirmOverlay');
