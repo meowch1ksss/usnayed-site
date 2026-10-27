@@ -3,31 +3,107 @@
   
   if (isLocalFile) {
     const disableApp = () => {
-      const banner = document.createElement('div');
-      banner.innerHTML = '⚠️ Сайт открыт локально. Функции заказа, корзины и избранного отключены.';
-      banner.style.cssText = `
-        position: fixed; top: 0; left: 0; right: 0;
-        background: linear-gradient(90deg, #ff6d78, #e53935);
-        color: #fff; text-align: center; padding: 12px;
-        font-weight: 700; font-size: 14px; z-index: 999999;
-        font-family: 'Manrope', sans-serif;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        pointer-events: none;
-        transform: translateY(-100%);
-        animation: slideDown 0.5s forwards;
-      `;
+      // --- БЛОКИРОВКА КАРТЫ ЯНДЕКС ---
+      // 1. Удаляем уже существующие скрипты карт
+      document.querySelectorAll('script[src*="api-maps.yandex.ru"]').forEach(s => s.remove());
       
-      const style = document.createElement('style');
-      style.innerHTML = `
-        @keyframes slideDown { to { transform: translateY(0); } }
-        body { padding-top: 45px !important; }
-      `;
-      document.head.appendChild(style);
-      document.body.appendChild(banner);
+      // 2. Блокируем загрузку карт, если они пытаются загрузиться через iframe
+      document.querySelectorAll('iframe').forEach(iframe => {
+        if (iframe.src && iframe.src.includes('yandex')) {
+          iframe.remove();
+        }
+      });
 
+      // 3. Отслеживаем динамическую загрузку скриптов карт
+      const originalCreateElement = document.createElement.bind(document);
+      document.createElement = function(tagName, ...args) {
+        const el = originalCreateElement(tagName, ...args);
+        if (tagName.toLowerCase() === 'script') {
+          const originalSetAttribute = el.setAttribute.bind(el);
+          el.setAttribute = function(name, value) {
+            if (name === 'src' && value.includes('yandex')) return;
+            originalSetAttribute(name, value);
+          };
+        }
+        return el;
+      };
+
+      // 4. Подменяем контейнер карты на визуальную заглушку
+      const mapStyle = document.createElement('style');
+      mapStyle.innerHTML = `
+        .map-wrapper, .contacts-layout > div[style*="background"] {
+          background: #1c142b !important;
+          position: relative;
+        }
+        .map-wrapper::after {
+          content: '🔒 Карта недоступна';
+          position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+          color: #a49ab8; font-size: 16px; font-weight: 700; background: #1c142b; border-radius: 19px;
+          border: 1px solid rgba(183, 145, 255, 0.22);
+        }
+      `;
+      document.head.appendChild(mapStyle);
+
+      // --- ПЛАШКА СВЕРХУ ---
+      const banner = document.createElement('div');
+      banner.innerHTML = '⚠️ Сайт открыт локально. Действия и загрузка изображений заблокированы.';
+      banner.style.cssText = `
+        position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+        background: rgba(30, 22, 45, 0.95); backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 109, 120, 0.5);
+        color: #ff6d78; text-align: center; padding: 10px 24px; border-radius: 30px;
+        font-weight: 700; font-size: 13px; z-index: 1000000; font-family: 'Manrope', sans-serif;
+        box-shadow: 0 8px 30px rgba(255, 109, 120, 0.2), 0 0 0 1px rgba(255, 109, 120, 0.1);
+        pointer-events: none; display: flex; align-items: center; gap: 8px;
+        opacity: 0; transition: opacity 0.5s ease; white-space: nowrap;
+      `;
+      document.body.appendChild(banner);
+      requestAnimationFrame(() => { banner.style.opacity = '1'; });
+
+      // --- БЛОКИРОВКА КАРТИНОК (БЕЗ СМЕЩЕНИЯ ВЕРСТКИ) ---
+      const removeImages = () => {
+        document.querySelectorAll('img').forEach(img => {
+          img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+          img.style.opacity = '0';
+        });
+        
+        document.querySelectorAll('*').forEach(el => {
+          if (el.style.backgroundImage && el.style.backgroundImage !== 'none') {
+            el.style.backgroundImage = 'none';
+            el.style.backgroundColor = '#1c142b';
+          }
+        });
+      };
+      
+      removeImages();
+
+      // Отслеживаем динамическое добавление картинок
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+          mutation.addedNodes.forEach(node => {
+            if (node.tagName === 'IMG') {
+              node.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+              node.style.opacity = '0';
+            }
+            if (node.querySelectorAll) {
+              node.querySelectorAll('img').forEach(img => {
+                img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                img.style.opacity = '0';
+              });
+            }
+          });
+        });
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      // --- КАСТОМНЫЕ УВЕДОМЛЕНИЯ ---
       const showCustomAlert = (msg) => {
+        const oldToast = document.getElementById('local-protect-toast');
+        if (oldToast) oldToast.remove();
+
         const toast = document.createElement('div');
-        toast.innerHTML = `<div style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; background: rgba(255, 109, 120, 0.2); color: #ff6d78; margin-right: 10px;">!</div><div>${msg}</div>`;
+        toast.id = 'local-protect-toast';
+        toast.innerHTML = `<div style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; background: rgba(255, 109, 120, 0.2); color: #ff6d78; margin-right: 10px; flex-shrink: 0;">!</div><div>${msg}</div>`;
         toast.style.cssText = `
           position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
           background: rgba(20, 15, 25, 0.95); backdrop-filter: blur(20px);
@@ -48,9 +124,10 @@
           toast.style.transform = 'translateX(-50%) translateY(20px)';
           toast.style.opacity = '0';
           setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        }, 2500);
       };
 
+      // --- БЛОКИРОВКА КЛИКОВ ---
       document.addEventListener('click', (e) => {
         const btn = e.target.closest('button, a, .add-cart, .qty-btn, .favorite-button, form');
         if (btn) {
