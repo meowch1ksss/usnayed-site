@@ -183,10 +183,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // РЕГИСТРАЦИЯ
+  // РЕГИСТРАЦИЯ (Сервер)
   // ============================================================
   if (registerForm) {
-    registerForm.addEventListener('submit', (e) => {
+    registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const firstName = document.getElementById('regFirstName').value.trim();
@@ -207,25 +207,43 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      let users = Store.getUsers();
+      const submitBtn = registerForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Регистрация...';
 
-      if (users.find(u => u.login === login)) return showToast('Пользователь с таким логином уже существует', 'error');
-      if (users.find(u => u.email === email)) return showToast('Пользователь с таким email уже существует', 'error');
+      try {
+        const res = await fetch(APP_CONFIG.API_BASE + '/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ firstName, lastName, login, email, password }),
+        });
 
-      const newUser = { firstName, lastName, login, email, password, isAdmin: false };
-      users.push(newUser);
-      Store.saveUsers(users);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          showToast(err.message || 'Ошибка регистрации', 'error');
+          return;
+        }
 
-      currentUser = newUser;
-      Store.setUser(currentUser);
+        const data = await res.json();
+        Store.setToken(data.token);
+        Store.setUser(data.user);
+        currentUser = data.user;
 
-      showToast('Регистрация успешна! Добро пожаловать!', 'success');
-      updateUI();
+        showToast('Регистрация успешна! Добро пожаловать!', 'success');
+        updateUI();
+      } catch (err) {
+        console.error(err);
+        showToast('Ошибка соединения с сервером', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
     });
   }
 
   // ============================================================
-  // ВХОД
+  // ВХОД (Сервер)
   // ============================================================
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
@@ -239,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.textContent = 'Вход...';
 
       try {
-        const res = await fetch(APP_CONFIG.API.login, {
+        const res = await fetch(APP_CONFIG.API_BASE + '/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ login: emailOrLogin, password }),
@@ -363,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
   checkSocialSession();
   updateUI();
 
-  // ДОБАВЛЯЕМ ЖЕСТКИЙ ПЕРЕХВАТ ДЛЯ ВСЕХ ФОРМ, ЧТОБЫ ОНИ НЕ ПЕРЕЗАГРУЖАЛИ СТРАНИЦУ
+  // ГЛОБАЛЬНЫЙ ПЕРЕХВАТ, ЧТОБЫ ФОРМЫ НЕ ПЕРЕЗАГРУЖАЛИ СТРАНИЦУ
   document.querySelectorAll('form').forEach(f => {
     f.addEventListener('submit', (e) => {
       if (!e.defaultPrevented) {
