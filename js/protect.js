@@ -1,15 +1,15 @@
 (function() {
   const isLocalFile = window.location.protocol === 'file:';
   const isProtectDisabled = localStorage.getItem('nyxora:disable_local_protect') === 'true';
-  
+
+  console.log('Проверка защиты: isLocalFile =', isLocalFile, ', isProtectDisabled =', isProtectDisabled);
+
   if (isLocalFile && !isProtectDisabled) {
     const disableApp = () => {
+      // Удаляем скрипты карт Яндекса
       document.querySelectorAll('script[src*="api-maps.yandex.ru"]').forEach(s => s.remove());
-      
       document.querySelectorAll('iframe').forEach(iframe => {
-        if (iframe.src && iframe.src.includes('yandex')) {
-          iframe.remove();
-        }
+        if (iframe.src && iframe.src.includes('yandex')) iframe.remove();
       });
 
       const originalCreateElement = document.createElement.bind(document);
@@ -25,42 +25,41 @@
         return el;
       };
 
+      // Заглушка для карты
       const mapStyle = document.createElement('style');
       mapStyle.innerHTML = `
         .map-wrapper, .contacts-layout > div[style*="background"] {
-          background: #1c142b !important;
-          position: relative;
+          background: #1c142b !important; position: relative;
         }
         .map-wrapper::after {
-          content: '🔒 Карта недоступна';
-          position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-          color: #a49ab8; font-size: 16px; font-weight: 700; background: #1c142b; border-radius: 19px;
-          border: 1px solid rgba(183, 145, 255, 0.22);
+          content: '🔒 Карта недоступна'; position: absolute; inset: 0;
+          display: flex; align-items: center; justify-content: center;
+          color: #a49ab8; font-size: 16px; font-weight: 700; background: #1c142b;
+          border-radius: 19px; border: 1px solid rgba(183, 145, 255, 0.22);
         }
       `;
       document.head.appendChild(mapStyle);
 
+      // Плашка сверху
       const banner = document.createElement('div');
       banner.innerHTML = '⚠️ Сайт открыт локально. Действия и загрузка изображений заблокированы.';
       banner.style.cssText = `
         position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
         background: rgba(30, 22, 45, 0.95); backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 109, 120, 0.5);
-        color: #ff6d78; text-align: center; padding: 10px 24px; border-radius: 30px;
-        font-weight: 700; font-size: 13px; z-index: 1000000; font-family: 'Manrope', sans-serif;
-        box-shadow: 0 8px 30px rgba(255, 109, 120, 0.2), 0 0 0 1px rgba(255, 109, 120, 0.1);
-        pointer-events: none; display: flex; align-items: center; gap: 8px;
-        opacity: 0; transition: opacity 0.5s ease; white-space: nowrap;
+        border: 1px solid rgba(255, 109, 120, 0.5); color: #ff6d78; text-align: center;
+        padding: 10px 24px; border-radius: 30px; font-weight: 700; font-size: 13px;
+        z-index: 1000000; font-family: 'Manrope', sans-serif; pointer-events: none;
+        display: flex; align-items: center; gap: 8px; opacity: 0; transition: opacity 0.5s ease;
       `;
       document.body.appendChild(banner);
       requestAnimationFrame(() => { banner.style.opacity = '1'; });
 
+      // Блокировка картинок
       const removeImages = () => {
         document.querySelectorAll('img').forEach(img => {
           img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
           img.style.opacity = '0';
         });
-        
         document.querySelectorAll('*').forEach(el => {
           if (el.style.backgroundImage && el.style.backgroundImage !== 'none') {
             el.style.backgroundImage = 'none';
@@ -68,7 +67,6 @@
           }
         });
       };
-      
       removeImages();
 
       const observer = new MutationObserver((mutations) => {
@@ -89,10 +87,10 @@
       });
       observer.observe(document.body, { childList: true, subtree: true });
 
+      // Тост
       const showCustomAlert = (msg) => {
         const oldToast = document.getElementById('local-protect-toast');
         if (oldToast) oldToast.remove();
-
         const toast = document.createElement('div');
         toast.id = 'local-protect-toast';
         toast.innerHTML = `<div style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; background: rgba(255, 109, 120, 0.2); color: #ff6d78; margin-right: 10px; flex-shrink: 0;">!</div><div>${msg}</div>`;
@@ -106,12 +104,10 @@
           opacity: 0; transition: all 0.3s ease; pointer-events: none;
         `;
         document.body.appendChild(toast);
-        
         requestAnimationFrame(() => {
           toast.style.transform = 'translateX(-50%) translateY(0)';
           toast.style.opacity = '1';
         });
-
         setTimeout(() => {
           toast.style.transform = 'translateX(-50%) translateY(20px)';
           toast.style.opacity = '0';
@@ -119,6 +115,7 @@
         }, 2500);
       };
 
+      // Блокировка кликов
       document.addEventListener('click', (e) => {
         const btn = e.target.closest('button, a, .add-cart, .qty-btn, .favorite-button, form');
         if (btn) {
