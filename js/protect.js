@@ -1,20 +1,17 @@
 (function() {
   const isLocalFile = window.location.protocol === 'file:';
+  const isProtectDisabled = localStorage.getItem('nyxora:disable_local_protect') === 'true';
   
-  if (isLocalFile) {
+  if (isLocalFile && !isProtectDisabled) {
     const disableApp = () => {
-      // --- БЛОКИРОВКА КАРТЫ ЯНДЕКС ---
-      // 1. Удаляем уже существующие скрипты карт
       document.querySelectorAll('script[src*="api-maps.yandex.ru"]').forEach(s => s.remove());
       
-      // 2. Блокируем загрузку карт, если они пытаются загрузиться через iframe
       document.querySelectorAll('iframe').forEach(iframe => {
         if (iframe.src && iframe.src.includes('yandex')) {
           iframe.remove();
         }
       });
 
-      // 3. Отслеживаем динамическую загрузку скриптов карт
       const originalCreateElement = document.createElement.bind(document);
       document.createElement = function(tagName, ...args) {
         const el = originalCreateElement(tagName, ...args);
@@ -28,7 +25,6 @@
         return el;
       };
 
-      // 4. Подменяем контейнер карты на визуальную заглушку
       const mapStyle = document.createElement('style');
       mapStyle.innerHTML = `
         .map-wrapper, .contacts-layout > div[style*="background"] {
@@ -44,7 +40,6 @@
       `;
       document.head.appendChild(mapStyle);
 
-      // --- ПЛАШКА СВЕРХУ ---
       const banner = document.createElement('div');
       banner.innerHTML = '⚠️ Сайт открыт локально. Действия и загрузка изображений заблокированы.';
       banner.style.cssText = `
@@ -60,7 +55,6 @@
       document.body.appendChild(banner);
       requestAnimationFrame(() => { banner.style.opacity = '1'; });
 
-      // --- БЛОКИРОВКА КАРТИНОК (БЕЗ СМЕЩЕНИЯ ВЕРСТКИ) ---
       const removeImages = () => {
         document.querySelectorAll('img').forEach(img => {
           img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -77,7 +71,6 @@
       
       removeImages();
 
-      // Отслеживаем динамическое добавление картинок
       const observer = new MutationObserver((mutations) => {
         mutations.forEach(mutation => {
           mutation.addedNodes.forEach(node => {
@@ -96,7 +89,6 @@
       });
       observer.observe(document.body, { childList: true, subtree: true });
 
-      // --- КАСТОМНЫЕ УВЕДОМЛЕНИЯ ---
       const showCustomAlert = (msg) => {
         const oldToast = document.getElementById('local-protect-toast');
         if (oldToast) oldToast.remove();
@@ -127,7 +119,6 @@
         }, 2500);
       };
 
-      // --- БЛОКИРОВКА КЛИКОВ ---
       document.addEventListener('click', (e) => {
         const btn = e.target.closest('button, a, .add-cart, .qty-btn, .favorite-button, form');
         if (btn) {

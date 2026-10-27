@@ -65,7 +65,42 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (activeTab === 'menu') {
       pageTitle.textContent = 'Управление меню';
       renderMenuUpload();
+    } else if (activeTab === 'settings') {
+      pageTitle.textContent = 'Настройки системы';
+      renderSettings();
     }
+  }
+
+  function renderSettings() {
+    const isProtectDisabled = localStorage.getItem('nyxora:disable_local_protect') === 'true';
+
+    tabContent.innerHTML = `
+      <div class="admin-card">
+        <h3>🛡️ Защита от локального копирования</h3>
+        <p>Если эта функция включена, при открытии сайта локально (через Ctrl+S) будут блокироваться картинки, кнопки и формы. Отключите её, если вам нужно настроить сайт локально и потом загрузить на сервер.</p>
+        
+        <label style="display: flex; align-items: center; gap: 15px; margin-top: 20px; cursor: pointer; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px;">
+          <input type="checkbox" id="protectToggle" ${!isProtectDisabled ? 'checked' : ''} style="width: 20px; height: 20px; accent-color: #a879ff;">
+          <span style="font-weight: 700; color: #f6f1ff; font-size: 15px;">Защита включена</span>
+        </label>
+        
+        <button id="saveSettingsBtn" class="admin-btn admin-btn-primary" style="margin-top: 20px;">Сохранить настройки</button>
+        <div id="settingsStatus" style="margin-top: 15px; color: #b7ff70; font-weight: 700; display: none;">✓ Настройки сохранены</div>
+      </div>
+    `;
+
+    document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+      const isChecked = document.getElementById('protectToggle').checked;
+      if (isChecked) {
+        localStorage.removeItem('nyxora:disable_local_protect');
+      } else {
+        localStorage.setItem('nyxora:disable_local_protect', 'true');
+      }
+      
+      const status = document.getElementById('settingsStatus');
+      status.style.display = 'block';
+      setTimeout(() => { status.style.display = 'none'; }, 3000);
+    });
   }
 
   async function renderOrders() {
@@ -325,20 +360,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!reviewConfirmOverlay) return;
 
-    // Открываем модалку
     reviewConfirmOverlay.classList.add('open');
 
-    // Обработчик отмены
     reviewConfirmCancel.onclick = () => {
       reviewConfirmOverlay.classList.remove('open');
     };
 
-    // Закрытие по клику вне модалки
     reviewConfirmOverlay.onclick = (e) => {
       if (e.target === reviewConfirmOverlay) reviewConfirmOverlay.classList.remove('open');
     };
 
-    // Обработчик подтверждения удаления
     reviewConfirmDelete.onclick = async () => {
       reviewConfirmOverlay.classList.remove('open');
       
@@ -354,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!res.ok) throw new Error('server');
 
         showAdminToast('Отзыв удалён', 'success');
-        renderReviews(); // Обновляем список отзывов
+        renderReviews();
       } catch (err) {
         console.error(err);
         showAdminToast('Не удалось удалить отзыв', 'error');
