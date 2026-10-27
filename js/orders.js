@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const currentUser = Store.getUser();
 
-  // 1. Если не авторизован — показываем заглушку
   if (!currentUser) {
     if (clearWrapper) clearWrapper.style.display = 'none';
     if (list) {
@@ -20,14 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // 2. Загрузка заказов
   async function loadOrders() {
     if (!list) return;
     list.innerHTML = '<p style="text-align: center; color: #a49ab8; padding: 40px 0;">Загрузка истории...</p>';
     if (clearWrapper) clearWrapper.style.display = 'none';
 
     try {
-      const res = await Store.apiFetch(`${APP_CONFIG.API.orders}?email=${encodeURIComponent(currentUser.email)}`);
+      const res = await Store.apiFetch(APP_CONFIG.API.orders + '?email=' + encodeURIComponent(currentUser.email));
       if (!res.ok) throw new Error('server');
       const orders = await res.json();
 
@@ -57,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         return `
           <article class="user-order-card" id="order-${order.number}">
-            <!-- Шапка заказа (всегда видна) -->
             <div class="user-order-header" onclick="document.getElementById('order-${order.number}').classList.toggle('open')">
               <div class="user-order-title">
                 <h3>Заказ ${order.number}</h3>
@@ -68,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
-            <!-- Скрытые детали -->
             <div class="user-order-details">
               <div class="user-order-details-inner">
                 <div class="user-order-items">
@@ -80,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <div class="user-order-client">
                     <strong>${order.name || 'Покупатель'}</strong> · ${order.city || 'Город не указан'}
                   </div>
-                  <button onclick='repeatOrder(${JSON.stringify(order).replace(/'/g, "&#39;")})' class="button button-quiet" style="padding: 8px 16px; font-size: 13px; border: 1px solid rgba(168, 121, 255, 0.3); color: #c6a6ff;">
+                  <button onclick='window.repeatOrder(${JSON.stringify(order).replace(/'/g, "&#39;")})' class="button button-quiet" style="padding: 8px 16px; font-size: 13px; border: 1px solid rgba(168, 121, 255, 0.3); color: #c6a6ff;">
                     🔄 Повторить
                   </button>
                 </div>
@@ -96,16 +92,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 3. Очистка
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
       const confirmOverlay = document.getElementById('confirmOverlay');
       if (confirmOverlay) {
         confirmOverlay.classList.add('open');
-        document.getElementById('confirmDelete').onclick = () => {
-          localStorage.removeItem('nyxora:orders');
-          if (list) list.innerHTML = `<p style="text-align: center; color: #a49ab8; padding: 40px 0;">История очищена.</p>`;
+        document.getElementById('confirmDelete').onclick = async () => {
           confirmOverlay.classList.remove('open');
+          
+          // Если нужно чистить локально (в базе мы чистим только через админку)
+          Store.clearOrders();
+          if (list) list.innerHTML = `<p style="text-align: center; color: #a49ab8; padding: 40px 0;">История очищена.</p>`;
           if (clearWrapper) clearWrapper.style.display = 'none';
         };
         document.getElementById('confirmCancel').onclick = () => confirmOverlay.classList.remove('open');
@@ -113,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. Повторить заказ
   window.repeatOrder = function(order) {
     if (!order || !order.items) return;
     const newCart = order.items.map(i => ({ id: i.id, qty: i.qty }));

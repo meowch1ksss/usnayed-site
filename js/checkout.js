@@ -377,6 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
       paymentMethod: isJur ? 'bank' : document.getElementById('paymentInput').value,
       companyData: companyData,
       userEmail: currentUser ? currentUser.email : email
+      userId: currentUser ? currentUser.id : null
     };
 
     const submitBtn = form.querySelector('button[type="submit"]');
