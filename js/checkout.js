@@ -84,34 +84,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!trigger || !input) return null;
 
-    const newTrigger = trigger.cloneNode(true);
-    trigger.parentNode.replaceChild(newTrigger, trigger);
-
-    newTrigger.addEventListener('click', (e) => {
+    trigger.onclick = (e) => {
       e.stopPropagation();
       document.querySelectorAll('.custom-dropdown').forEach(d => {
         if (d !== dropdown) d.classList.remove('open');
       });
       dropdown.classList.toggle('open');
-    });
+    };
 
     options.forEach(option => {
-      const newOpt = option.cloneNode(true);
-      option.parentNode.replaceChild(newOpt, option);
-      
-      newOpt.addEventListener('click', () => {
-        const value = newOpt.dataset.value;
-        const text = newOpt.textContent;
+      option.onclick = () => {
+        const value = option.dataset.value;
+        const text = option.textContent.trim();
+        
         input.value = value;
         if (selectedText) selectedText.textContent = text;
         
-        dropdown.querySelectorAll('.custom-option').forEach(o => o.classList.remove('selected'));
-        newOpt.classList.add('selected');
+        options.forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
         dropdown.classList.remove('open');
         
         sessionStorage.setItem(`${SAVE_PREFIX}${input.name}`, value);
         if (onChange) onChange(value);
-      });
+      };
     });
 
     return dropdown;
@@ -149,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const deliveryMethodInput = document.getElementById('deliveryMethodInput');
 
     deliveryMethods.forEach(method => {
-      method.addEventListener('click', () => {
+      method.onclick = () => {
         deliveryMethods.forEach(m => m.classList.remove('active'));
         method.classList.add('active');
         if (deliveryMethodInput) deliveryMethodInput.value = method.dataset.method;
@@ -165,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addressGroup.querySelector('label').textContent = 'Адрес доставки';
           }
         }
-      });
+      };
     });
   } catch (e) {
     console.error('Ошибка инициализации способов доставки:', e);
@@ -179,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const paymentHint = document.getElementById('paymentHint');
 
     payerBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.onclick = () => {
         const type = btn.dataset.type;
         payerBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -211,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (paymentTriggerText) paymentTriggerText.textContent = '💵 Наличные курьеру';
           if (paymentHint) paymentHint.textContent = 'Оплата наличными при получении заказа курьеру.';
         }
-      });
+      };
     });
   } catch (e) {
     console.error('Ошибка переключателя лиц:', e);
@@ -295,10 +290,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (!cart.length) return window.showToast && window.showToast('Корзина пуста!', 'error');
 
+    // Получаем значения из скрытых полей!
     const deliveryTime = document.getElementById('deliveryTimeInput').value;
-    if (!deliveryTime) return window.showToast && window.showToast('Выберите время доставки!', 'error');
-
     const cityValue = document.getElementById('cityInput').value;
+    
+    if (!deliveryTime) return window.showToast && window.showToast('Выберите время доставки!', 'error');
     if (!cityValue) return window.showToast && window.showToast('Выберите город!', 'error');
 
     let name = '', email = '', phone = '';
@@ -385,13 +381,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmDelete = document.getElementById('confirmDelete');
 
     if (resetBtn && confirmOverlay) {
-      resetBtn.addEventListener('click', () => confirmOverlay.classList.add('open'));
-      confirmCancel.addEventListener('click', () => confirmOverlay.classList.remove('open'));
-      confirmOverlay.addEventListener('click', (e) => {
+      resetBtn.onclick = () => confirmOverlay.classList.add('open');
+      confirmCancel.onclick = () => confirmOverlay.classList.remove('open');
+      confirmOverlay.onclick = (e) => {
         if (e.target === confirmOverlay) confirmOverlay.classList.remove('open');
-      });
+      };
 
-      confirmDelete.addEventListener('click', () => {
+      confirmDelete.onclick = () => {
         confirmOverlay.classList.remove('open');
         
         const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
@@ -416,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('deliveryServiceGroup').classList.add('hidden');
         document.querySelector('.payer-btn[data-type="phys"]').click();
-      });
+      };
     }
   } catch(e) {
     console.error('Ошибка модалки очистки:', e);

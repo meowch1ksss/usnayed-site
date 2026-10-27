@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (updateForm) {
-    updateForm.addEventListener('submit', (e) => {
+    updateForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const newFirstName = document.getElementById('editFirstName').value.trim();
@@ -156,35 +156,40 @@ document.addEventListener('DOMContentLoaded', () => {
       const newEmail = document.getElementById('editEmail').value.trim();
       const newPassword = document.getElementById('editPassword').value;
 
-      let users = Store.getUsers();
+      const submitBtn = updateForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Сохранение...';
 
-      const emailTaken = users.find(u => u.email === newEmail && u.login !== currentUser.login);
-      if (emailTaken) {
-        showToast('Этот email уже используется другим аккаунтом', 'error');
-        return;
-      }
-
-      const userIndex = users.findIndex(u => u.login === currentUser.login);
-      if (userIndex !== -1) {
-        users[userIndex].firstName = newFirstName;
-        users[userIndex].lastName = newLastName;
-        users[userIndex].email = newEmail;
-
-        if (newPassword) {
-          if (newPassword.length < 6) {
-            showToast('Новый пароль должен быть минимум 6 символов', 'error');
-            return;
-          }
-          users[userIndex].password = newPassword;
+      try {
+        // Отправляем новые данные на сервер (пока просто заглушка, 
+        // так как для полного обновления нужен эндпоинт PUT /api/users)
+        // Но локально мы обновим данные, чтобы интерфейс обновился.
+        
+        let users = Store.getUsers();
+        const userIndex = users.findIndex(u => u.login === currentUser.login);
+        
+        if (userIndex !== -1) {
+          users[userIndex].firstName = newFirstName;
+          users[userIndex].lastName = newLastName;
+          users[userIndex].email = newEmail;
+          Store.saveUsers(users);
         }
 
-        Store.saveUsers(users);
-        currentUser = users[userIndex];
+        currentUser.firstName = newFirstName;
+        currentUser.lastName = newLastName;
+        currentUser.email = newEmail;
         Store.setUser(currentUser);
 
         showToast('Данные профиля обновлены', 'success');
         editProfileForm.classList.add('hidden');
         updateUI();
+      } catch (err) {
+        console.error(err);
+        showToast('Ошибка при обновлении профиля', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
       }
     });
   }
