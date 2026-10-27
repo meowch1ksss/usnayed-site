@@ -1,4 +1,3 @@
-// js/admin.js
 document.addEventListener('DOMContentLoaded', () => {
   const currentUser = Store.getUser();
   const accessDenied = document.getElementById('accessDenied');
@@ -61,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
       pageTitle.textContent = 'Заказы';
       renderOrders();
     } else if (activeTab === 'reviews') {
-      pageTitle.textContent = 'Отзывы на модерации';
+      pageTitle.textContent = 'Все отзывы';
       renderReviews();
     } else if (activeTab === 'menu') {
       pageTitle.textContent = 'Управление меню';
@@ -240,30 +239,48 @@ document.addEventListener('DOMContentLoaded', () => {
   async function renderReviews() {
     tabContent.innerHTML = '<div class="admin-empty">Загрузка отзывов...</div>';
     try {
-      const res = await adminFetch(`${APP_CONFIG.API.reviews}?status=pending`);
+      const res = await adminFetch(`${APP_CONFIG.API.reviews}?status=all`); 
       if (res.status === 401) {
         tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Нет доступа к отзывам. Сессия истекла.</div>';
         return;
       }
       if (!res.ok) throw new Error('server');
-      const pending = await res.json();
+      const reviews = await res.json();
 
-      if (!Array.isArray(pending) || !pending.length) {
-        tabContent.innerHTML = '<div class="admin-empty">Нет отзывов на модерации.</div>';
+      if (!Array.isArray(reviews) || !reviews.length) {
+        tabContent.innerHTML = '<div class="admin-empty">Отзывов пока нет.</div>';
         return;
       }
 
-      tabContent.innerHTML = pending.map(r => `
-        <div class="admin-card">
-          <h3>${escapeHTML(r.name || 'Гость')}</h3>
+      tabContent.innerHTML = reviews.map(r => {
+        const statusBadge = r.status === 'pending' 
+          ? '<span style="color:#ffaa00; font-size: 11px; border: 1px solid #ffaa00; padding: 2px 6px; border-radius: 4px; margin-left: 10px;">На модерации</span>' 
+          : r.status === 'approved'
+          ? '<span style="color:#b7ff70; font-size: 11px; border: 1px solid #b7ff70; padding: 2px 6px; border-radius: 4px; margin-left: 10px;">Опубликован</span>'
+          : '';
+
+        return `
+        <div class="admin-card" style="margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div>
+              <h3 style="display: inline-block; margin: 0;">${escapeHTML(r.name || 'Гость')}</h3>
+              ${statusBadge}
+            </div>
+            <button class="admin-btn admin-btn-danger" onclick="deleteReview('${escapeAttr(r.id)}')" style="font-size: 12px; padding: 6px 12px;">
+              🗑 Удалить
+            </button>
+          </div>
           <p>${escapeHTML(r.text || '')}</p>
           <small>${r.date ? new Date(r.date).toLocaleString('ru-RU') : '—'}</small>
-          <div class="admin-actions">
-            <button class="admin-btn-success" data-review-action="approve" data-review-id="${escapeAttr(r.id)}">✓ Одобрить</button>
-            <button class="admin-btn-danger"  data-review-action="reject"  data-review-id="${escapeAttr(r.id)}">✕ Отклонить</button>
-          </div>
+          
+          ${r.status === 'pending' ? `
+            <div class="admin-actions" style="margin-top: 15px;">
+              <button class="admin-btn-success" data-review-action="approve" data-review-id="${escapeAttr(r.id)}">✓ Одобрить</button>
+              <button class="admin-btn-danger"  data-review-action="reject"  data-review-id="${escapeAttr(r.id)}">✕ Отклонить</button>
+            </div>
+          ` : ''}
         </div>
-      `).join('');
+      `}).join('');
     } catch (err) {
       console.error(err);
       tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Ошибка загрузки отзывов.</div>';
@@ -300,6 +317,25 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.textContent = original;
     }
   });
+
+  window.deleteReview = async function(id) {
+    if (!confirm('Вы уверены, что хотите навсегда удалить этот отзыв?')) return;
+
+    try {
+      const res = await adminFetch(APP_CONFIG.API.review(id), {
+        method: 'DELETE'
+      });
+      
+      if (res.status === 401) { showAdminToast('Нет прав или сессия истекла', 'error'); return; }
+      if (!res.ok) throw new Error('server');
+
+      showAdminToast('Отзыв удалён', 'success');
+      renderReviews();
+    } catch (err) {
+      console.error(err);
+      showAdminToast('Не удалось удалить отзыв', 'error');
+    }
+  };
 
   function renderMenuUpload() {
     tabContent.innerHTML = `
