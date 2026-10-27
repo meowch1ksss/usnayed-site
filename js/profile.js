@@ -118,11 +118,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (userProfile) userProfile.classList.remove('hidden');
 
       if (userNameEl) userNameEl.textContent = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Пользователь';
-      if (userEmailEl) userEmailEl.textContent = currentUser.email || '';
+      if (userEmailEl) {
+        userEmailEl.textContent = currentUser.email || '';
+        userEmailEl.style.display = currentUser.isAdmin ? 'none' : 'block';
+      }
       if (userAvatarEl) userAvatarEl.textContent = (currentUser.firstName || 'U').charAt(0).toUpperCase();
 
       if (adminLink) {
         adminLink.classList.toggle('hidden', !currentUser.isAdmin);
+      }
+      
+      if (editProfileBtn) {
+        editProfileBtn.style.display = currentUser.isAdmin ? 'none' : 'block';
       }
     } else {
       if (loginBox) loginBox.classList.remove('hidden');
@@ -140,6 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('editLastName').value = currentUser.lastName || '';
       document.getElementById('editEmail').value = currentUser.email || '';
       document.getElementById('editPassword').value = '';
+      
+      const emailGroup = document.getElementById('editEmail').closest('.input-group');
+      if (emailGroup) {
+        emailGroup.style.display = currentUser.isAdmin ? 'none' : 'block';
+      }
     });
   }
 
@@ -156,37 +168,47 @@ document.addEventListener('DOMContentLoaded', () => {
       const newEmail = document.getElementById('editEmail').value.trim();
       const newPassword = document.getElementById('editPassword').value;
 
+      if (!currentUser || !currentUser.id) {
+        showToast('Ошибка: вы не авторизованы', 'error');
+        return;
+      }
+
       const submitBtn = updateForm.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
       submitBtn.disabled = true;
       submitBtn.textContent = 'Сохранение...';
 
       try {
-        // Отправляем новые данные на сервер (пока просто заглушка, 
-        // так как для полного обновления нужен эндпоинт PUT /api/users)
-        // Но локально мы обновим данные, чтобы интерфейс обновился.
-        
-        let users = Store.getUsers();
-        const userIndex = users.findIndex(u => u.login === currentUser.login);
-        
-        if (userIndex !== -1) {
-          users[userIndex].firstName = newFirstName;
-          users[userIndex].lastName = newLastName;
-          users[userIndex].email = newEmail;
-          Store.saveUsers(users);
+        const payload = {
+          firstName: newFirstName,
+          lastName: newLastName,
+          email: newEmail,
+        };
+        if (newPassword) payload.password = newPassword;
+
+        const res = await Store.apiFetch(APP_CONFIG.API_BASE + '/api/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          showToast(err.message || 'Ошибка обновления профиля', 'error');
+          return;
         }
 
-        currentUser.firstName = newFirstName;
-        currentUser.lastName = newLastName;
-        currentUser.email = newEmail;
+        const data = await res.json();
+        
+        currentUser = { ...currentUser, ...data.user };
         Store.setUser(currentUser);
-
-        showToast('Данные профиля обновлены', 'success');
+        
+        showToast('Данные профиля успешно обновлены!', 'success');
         editProfileForm.classList.add('hidden');
         updateUI();
       } catch (err) {
         console.error(err);
-        showToast('Ошибка при обновлении профиля', 'error');
+        showToast('Ошибка соединения с сервером', 'error');
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
