@@ -368,30 +368,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = user.email;
         const name = user.user_metadata.full_name || user.user_metadata.name || 'Пользователь';
         
-        let users = Store.getUsers();
-        let localUser = users.find(u => u.email === email);
+        const nameParts = name.split(' ');
+        const firstName = nameParts[0] || 'Пользователь';
+        const lastName = nameParts[1] || '';
 
-        if (!localUser) {
-          const nameParts = name.split(' ');
-          localUser = { 
-            firstName: nameParts[0] || 'Пользователь', 
-            lastName: nameParts[1] || '', 
-            login: email.split('@')[0], 
-            email: email, 
-            password: 'social_auth', 
-            isAdmin: false 
-          };
-          users.push(localUser);
-          Store.saveUsers(users);
-        }
+        // Отправляем данные на НАШ сервер (Cloudflare Worker), чтобы получить JWT
+        const res = await fetch(APP_CONFIG.API_BASE + '/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, firstName, lastName })
+        });
 
-        currentUser = { ...localUser, username: localUser.login };
-        Store.setUser(currentUser);
-        
-        if (window.location.hash.includes('access_token')) {
-          showToast('Вы успешно вошли через Google!', 'success');
+        if (res.ok) {
+          const data = await res.json();
+          Store.setToken(data.token);
+          Store.setUser(data.user);
+          currentUser = data.user;
+          
+          if (window.location.hash.includes('access_token')) {
+            showToast('Вы успешно вошли через Google!', 'success');
+          }
+          updateUI();
+        } else {
+          console.error('Ошибка авторизации через Google на нашем сервере');
+          showToast('Ошибка синхронизации профиля Google', 'error');
         }
-        updateUI();
         
         if (window.location.hash) window.history.replaceState(null, null, window.location.pathname);
       }
