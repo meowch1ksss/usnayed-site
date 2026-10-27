@@ -13,6 +13,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelEditBtn = document.getElementById('cancelEditBtn');
   const updateForm = document.getElementById('updateForm');
   const adminLink = document.getElementById('adminLink');
+  const showRegisterBtn = document.getElementById('showRegister');
+  const showLoginBtn = document.getElementById('showLogin');
+
+  if (showRegisterBtn) {
+    showRegisterBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginBox.classList.add('hidden');
+      registerBox.classList.remove('hidden');
+      userProfile.classList.add('hidden');
+      generateCaptcha();
+    });
+  }
+
+  if (showLoginBtn) {
+    showLoginBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginBox.classList.remove('hidden');
+      registerBox.classList.add('hidden');
+      userProfile.classList.add('hidden');
+    });
+  }
 
   let currentUser = Store.getUser();
   const toastContainer = document.getElementById('toast-container');
