@@ -60,7 +60,10 @@
         
         <!-- Профиль -->
         <a href="profile.html" class="profile-trigger" style="text-decoration: none;">
-            <span class="avatar">N</span><span class="profile-label">Профиль</span>
+          <span class="avatar" style="background: transparent; padding: 0; display: flex; align-items: center; justify-content: center;">
+              <img src="rimgs/376867_user_square_vfd729aaac2.png" alt="Профиль" style="width: 24px; height: 24px; object-fit: contain; filter: brightness(0) invert(1);">
+          </span>
+          <span class="profile-label">Профиль</span>
         </a>
         </nav>
   </header>
@@ -350,7 +353,7 @@
       </div>
   </div>
 
-  <footer class="site-footer">
+  <footer class="site-footer" id="footer">
     <div class="footer-column footer-brand-column">
       <a class="brand footer-brand" href="index.html" aria-label="У нас обед — главная">
         <svg class="footer-logo" viewBox="0 0 49 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -364,39 +367,29 @@
       <p>ООО «У нас обед»<br>Все права защищены, 2026 ©</p>
       <a class="footer-policy" href="privacy.html">Политика конфиденциальности</a>
     </div>
-    
-    <nav class="footer-links footer-pages" aria-label="Информация">
-      <a href="index.html#home">Главная</a>
-      <a href="organizations.html">Организациям</a>
-      <a href="delivery.html">Доставка и оплата</a>
-      <a href="about.html">О компании</a>
-      <a href="privacy.html">Политика конфиденциальности</a>
-      <a href="contacts.html">Контакты</a>
-    </nav>
-    
-    <div class="footer-hours">
-      <strong>Часы работы:</strong>
-      <p>Пн–Пт: 8:00 — 15:00</p>
-      <p>Без обеда и выходных</p>
-      <strong>Заказы принимаются до 13:30</strong>
-    </div>
-    
-    <div class="footer-contact">
-      <div class="email-picker">
-        <button class="footer-email email-picker-trigger" type="button" aria-expanded="false" aria-controls="email-provider-list">✉ &nbsp; kolibri831@yandex.ru <span class="email-chevron">▾</span></button>
-        <div class="email-provider-list" id="email-provider-list" hidden>
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot gmail"></i><span>Gmail<small>@gmail.com</small></span></a>
-            <a href="https://outlook.live.com/mail/0/deeplink/compose?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot outlook"></i><span>Outlook / Hotmail<small>@outlook.com · @hotmail.com</small></span></a>
-            <a href="https://compose.mail.yahoo.com/?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yahoo"></i><span>Yahoo Mail<small>@yahoo.com</small></span></a>
-            <a href="https://www.icloud.com/mail/" target="_blank" rel="noopener noreferrer"><i class="mail-dot icloud"></i><span>iCloud Mail<small>@icloud.com</small></span></a>
-            <a href="https://mail.proton.me/u/0/inbox" target="_blank" rel="noopener noreferrer"><i class="mail-dot proton"></i><span>Proton Mail<small>@proton.me · @protonmail.com</small></span></a>
-            <a href="https://mail.zoho.com/" target="_blank" rel="noopener noreferrer"><i class="mail-dot zoho"></i><span>Zoho Mail<small>@zoho.com</small></span></a>
-            <a href="https://mail.yandex.ru/compose?mailto=kolibri831@yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yandex"></i><span>Яндекс Почта<small>@yandex.ru</small></span></a>
-            <a href="https://e.mail.ru/compose/" target="_blank" rel="noopener noreferrer"><i class="mail-dot mailru"></i><span>Mail.ru<small>@mail.ru</small></span></a>
-        </div>
+    <nav class="footer-links footer-pages" aria-label="Информация"><a href="index.html#home">Главная</a><a href="organizations.html">Организациям</a><a href="delivery.html">Доставка и оплата</a><a href="about.html">О компании</a><a href="privacy.html">Политика конфиденциальности</a><a href="contacts.html">Контакты</a></nav>
+    <div class="footer-hours"><strong>Часы работы:</strong><p>Пн–Пт: 8:00 — 15:00</p><p>Без обеда и выходных</p><strong>Заказы принимаются до 13:30</strong></div>
+    <div class="footer-contact"><div class="email-picker">
+      <button class="footer-email email-picker-trigger" type="button" aria-expanded="false" aria-controls="email-provider-list">✉ &nbsp; kolibri831@yandex.ru <span class="email-chevron">▾</span></button>
+      <div class="email-provider-list" id="email-provider-list" hidden>
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot gmail"></i><span>Gmail<small>@gmail.com</small></span></a>
+        <a href="https://outlook.live.com/mail/0/deeplink/compose?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot outlook"></i><span>Outlook / Hotmail<small>@outlook.com · @hotmail.com</small></span></a>
+        <a href="https://compose.mail.yahoo.com/?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yahoo"></i><span>Yahoo Mail<small>@yahoo.com</small></span></a>
+        <a href="https://www.icloud.com/mail/" target="_blank" rel="noopener noreferrer"><i class="mail-dot icloud"></i><span>iCloud Mail<small>@icloud.com</small></span></a>
+        <a href="https://mail.proton.me/u/0/inbox" target="_blank" rel="noopener noreferrer"><i class="mail-dot proton"></i><span>Proton Mail<small>@proton.me · @protonmail.com</small></span></a>
+        <a href="https://mail.zoho.com/" target="_blank" rel="noopener noreferrer"><i class="mail-dot zoho"></i><span>Zoho Mail<small>@zoho.com</small></span></a>
+        <a href="https://mail.yandex.ru/compose?mailto=kolibri831@yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yandex"></i><span>Яндекс Почта<small>@yandex.ru</small></span></a>
+        <a href="https://e.mail.ru/compose/" target="_blank" rel="noopener noreferrer"><i class="mail-dot mailru"></i><span>Mail.ru<small>@mail.ru</small></span></a>
       </div>
-      <a href="tel:+79185647212">☎ &nbsp;8 (918) 564-72-12</a>
-      <a href="tel:+78633113212">☎ &nbsp;8 (863) 311-32-12</a>
+    </div>      
+      <a href="tel:+79185647212" style="display: flex; align-items: center; gap: 8px;">
+        <img src="rimgs/icon-151154.png" alt="Телефон" style="width: 14px; height: 14px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
+        8 (918) 564-72-12
+      </a>
+      <a href="tel:+78633113212" style="display: flex; align-items: center; gap: 8px;">
+        <img src="rimgs/icon-151154.png" alt="Телефон" style="width: 14px; height: 14px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
+        8 (863) 311-32-12
+      </a>
     </div>
   </footer>
 </body>

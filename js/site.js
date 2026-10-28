@@ -8,6 +8,8 @@
     const items = $all('.faq-item');
     if (!items.length) return;
 
+    const isMobile = window.innerWidth <= 760; // Проверка на телефон
+
     items.forEach((item) => {
       const btn    = item.querySelector('.faq-question');
       const answer = item.querySelector('.faq-answer');
@@ -98,6 +100,9 @@
   function initParallax() {
     const scene = document.getElementById('scene');
     if (!scene) return;
+    
+    // Отключаем параллакс на телефоне для оптимизации
+    if (window.innerWidth <= 760) return; 
 
     const layers = Array.from(scene.querySelectorAll('[data-depth]'));
     let mouseX = 0;
@@ -118,10 +123,8 @@
     function animate() {
       layers.forEach(layer => {
         const depth = parseFloat(layer.getAttribute('data-depth')) || 0.2;
-        
         const moveX = mouseX * depth * 80; 
         const moveY = mouseY * depth * 80;
-
         layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
       });
       requestAnimationFrame(animate);
@@ -161,7 +164,6 @@
     toast.style.alignItems = 'center';
     toast.style.gap = '10px';
     toast.style.padding = '10px 14px';
-    
     toast.style.background = 'rgba(20, 15, 25, 0.95)'; 
     toast.style.backdropFilter = 'blur(20px)';
     toast.style.webkitBackdropFilter = 'blur(20px)';
