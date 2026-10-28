@@ -255,10 +255,8 @@
       if (!reviewsGrid) return;
       
       const isMobile = window.innerWidth <= 760;
-      const limit = isMobile && !isReviewsExpanded ? 2 : allReviews.length;
-      const visibleReviews = allReviews.slice(0, limit);
-
-      reviewsGrid.innerHTML = visibleReviews.map(rev => `
+      
+      reviewsGrid.innerHTML = allReviews.map(rev => `
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
           <blockquote>${escapeHTML(rev.text || '')}</blockquote>
@@ -266,19 +264,22 @@
         </article>
       `).join('');
 
-      if (isMobile && allReviews.length > 2) {
-        toggleReviewsBtn.style.display = 'inline-flex';
-        toggleReviewsBtn.innerHTML = isReviewsExpanded 
-          ? 'Скрыть отзывы ↑' 
-          : 'Показать все отзывы ↓';
+      if (isReviewsExpanded) {
+        reviewsGrid.classList.add('show-all');
+        if (addReviewFormWrapper) addReviewFormWrapper.classList.remove('hidden');
+        if (toggleReviewsBtn) toggleReviewsBtn.innerHTML = 'Скрыть отзывы ↑';
       } else {
-        toggleReviewsBtn.style.display = 'none';
+        reviewsGrid.classList.remove('show-all');
+        if (addReviewFormWrapper) addReviewFormWrapper.classList.add('hidden');
+        if (toggleReviewsBtn) toggleReviewsBtn.innerHTML = 'Показать все отзывы ↓';
       }
 
-      if (isReviewsExpanded) {
-        addReviewFormWrapper.classList.remove('hidden');
+      if (isMobile && allReviews.length > 2) {
+        if (toggleReviewsBtn) toggleReviewsBtn.style.display = 'inline-flex';
       } else {
-        addReviewFormWrapper.classList.add('hidden');
+        if (toggleReviewsBtn) toggleReviewsBtn.style.display = 'none';
+        if (addReviewFormWrapper) addReviewFormWrapper.classList.remove('hidden');
+        reviewsGrid.classList.add('show-all');
       }
     }
 
