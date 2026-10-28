@@ -1597,19 +1597,15 @@ h2 {
   display: block;
   aspect-ratio: 1 / 1.1;
   border-radius: 16px;
-  overflow: visible; /* Разрешаем тени выходить за края */
+  overflow: visible; 
   text-decoration: none;
   border: 1px solid rgba(220, 204, 255, 0.2);
-  
-  /* ОГРОМНАЯ ТЕНЬ */
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(168, 121, 255, 0.4) !important;
-  
   transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   background-size: cover;
   background-position: center;
 }
 
-/* При наведении тень становится еще больше */
 #menu .category-card:hover {
   transform: translateY(-8px);
   border-color: rgba(168, 121, 255, 0.8);
@@ -1623,7 +1619,7 @@ h2 {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 15px; /* Скругляем саму картинку */
+  border-radius: 15px; 
   transition: transform 0.5s ease;
 }
 
@@ -1643,10 +1639,10 @@ h2 {
   left: 20px;
   right: 20px;
   margin: 0;
-  color: #ffffff; /* Серый цвет */
+  color: #ffffff; 
   font-family: 'Manrope', sans-serif;
-  font-size: 20px; /* Большой текст */
-  font-weight: 900; /* Максимальная жирность */
+  font-size: 20px; 
+  font-weight: 900; 
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-shadow: 0 4px 10px rgba(0, 0, 0, 0.9);
@@ -1847,7 +1843,7 @@ h2 {
   .qty-counter { background: rgba(168, 121, 255, 0.1); border: 1px solid rgba(168, 121, 255, 0.3); border-radius: 10px; overflow: hidden; }
 
   /* --- FAQ --- */
-  .faq-answer { transition: none !important; } /* Отключаем анимацию для телефонов */
+  .faq-answer { transition: none !important; }
 
   /* --- БЛОК ПОЧЕМУ ВЫБИРАЮТ НАС --- */
   .why-us-section { padding-top: 30px; padding-bottom: 40px; }
@@ -1865,58 +1861,36 @@ h2 {
   #menu .category-card { padding-bottom: 14px; border-radius: 17px; }
   #menu .category-img { aspect-ratio: 1.05 / 1; }
 
-  /* --- ФУТЕР (КОМПАКТНЫЙ) --- */
+  /* --- ФУТЕР --- */
   .site-footer { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 16px; /* Уменьшаем расстояние между блоками */
-    padding: 24px 20px; 
-    margin-bottom: 20px; 
-    text-align: center;
-    align-items: center; /* Центрируем всё */
+    display: flex; flex-direction: column; gap: 16px; 
+    padding: 24px 20px; margin-bottom: 20px; text-align: center; align-items: center; 
   }
   
   .site-footer .footer-brand-column {
-    align-items: flex-start;
-    text-align: left;
-    transform: translate(0px, 0px); /* Здесь можно двигать текст */
+    align-items: flex-start; text-align: left; transform: translate(0px, 0px); 
   }
   
-    .site-footer .footer-hours { 
-    order: 2; 
-    margin: 0;
-    /* Движение часов работы: первое число - влево/вправо, второе - вверх/вниз */
-    transform: translate(-100px, 0px); 
+  .site-footer .footer-hours { 
+    order: 2; margin: 0; transform: translate(-100px, 0px); 
   }
-  .site-footer .footer-hours p { margin: 4px 0; } /* Убираем лишние отступы у текста часов */
+  .site-footer .footer-hours p { margin: 4px 0; } 
   
   .site-footer .footer-contact { 
-    order: 3; 
-    align-items: center; 
-    gap: 8px; /* Прижимаем телефоны и почту друг к другу */
-    width: 100%;
+    order: 3; align-items: center; gap: 8px; width: 100%;
   }
 
-  /* Электронная почта на всю ширину, чтобы текст не сжимался */
   .site-footer .email-picker { width: 100%; max-width: 300px; margin-bottom: 8px; }
 
-  /* Ссылки (Главная, Меню...) */
   .site-footer .footer-pages { 
-    order: 4; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 5px; /* Уменьшаем отступ между ссылками */
-    margin: 10px 0 0 0; 
-    align-items: center;
+    order: 4; display: flex; flex-direction: column; gap: 5px; margin: 10px 0 0 0; align-items: center;
   }
   
   .site-footer .brand {
-    transform: translate(-5px, -5px); /* -5px влево, 0px по высоте */
-    display: flex; 
-    justify-content: flex-start; 
+    transform: translate(-5px, -5px); display: flex; justify-content: flex-start; 
   }
   .site-footer .brand > span { font-size: 18px; }
-  .site-footer .footer-brand-column p { font-size: 10px; } /* Текст копирайта чуть меньше */
+  .site-footer .footer-brand-column p { font-size: 10px; }
 
   /* Остальное */
   .page-section { padding-right: 18px; padding-left: 18px; }
@@ -2428,7 +2402,7 @@ body.page-leaving { overflow: hidden; }
 .contacts-layout .info-panel p {
   display: flex;
   align-items: center;
-  gap: 12px; /* Расстояние между иконкой и текстом (можешь уменьшить до 8px) */
+  gap: 12px; 
   margin: 0;
   padding: 14px 0;
   border-bottom: 1px solid rgba(183, 145, 255, 0.12);
@@ -2883,78 +2857,67 @@ body.page-leaving { overflow: hidden; }
 
 /* ===== УПРАВЛЕНИЕ СТРОКАМИ ФУТЕРА ===== */
 
-.line-logo { transform: translate(0px, 0px); }                            /* Логотип                      */
-.line-copy-1 { transform: translate(0px, -2px); margin-bottom: 2px; }     /* ООО "У нас обед"             */
-.line-copy-2 { transform: translate(0px, -8px); }                         /* Все права защищены           */
-.line-copy-3 { transform: translate(0px, -16px); margin-top: 10px; }       /* Политика конфиденциальности  */
+.line-logo { transform: translate(0px, 0px); }                            
+.line-copy-1 { transform: translate(0px, -2px); margin-bottom: 2px; }     
+.line-copy-2 { transform: translate(0px, -8px); }                         
+.line-copy-3 { transform: translate(0px, -16px); margin-top: 10px; }      
 
-.line-nav-1 { transform: translate(0px, 0px); }                           /* Главная                      */
-.line-nav-2 { transform: translate(0px, 0px); }                           /* Организациям                 */
-.line-nav-3 { transform: translate(0px, 0px); }                           /* Доставка и оплата            */
-.line-nav-4 { transform: translate(0px, 0px); }                           /* О компании                   */
-.line-nav-5 { transform: translate(0px, 0px); }                           /* Политика конфиденциальности  */
-.line-nav-6 { transform: translate(0px, 0px); }                           /* Контакты                     */
+.line-nav-1 { transform: translate(119px, -170px); }                           
+.line-nav-2 { transform: translate(136px, -144px); }                           
+.line-nav-3 { transform: translate(145px, -148px); }                           
+.line-nav-4 { transform: translate(128px, -204px); }                           
+.line-nav-5 { transform: translate(180px, -174px); }                           
+.line-nav-6 { transform: translate(122px, -264px); }                           
 
-.line-hours-title { transform: translate(0px, 0px); }                     /* Часы работы:                 */
-.line-hours-1 { transform: translate(0px, 0px); }                         /* Пн–Пт...                     */
-.line-hours-2 { transform: translate(0px, 0px); }                         /* Без обеда...                 */
-.line-hours-title-2 { transform: translate(0px, 0px); }                   /* Заказы до 13:30              */
+.line-hours-title { transform: translate(0px, 0px); }                     
+.line-hours-1 { transform: translate(100px, 0px); }                         
+.line-hours-2 { transform: translate(100px, 0px); }                         
+.line-hours-title-2 { transform: translate(100px, 0px); }                   
 
-.line-email { transform: translate(80px, -245px); }                           /* Кнопка почты                 */
-.line-phone-1 { transform: translate(0px, 0px); }                         /* Первый телефон               */
-.line-phone-2 { transform: translate(0px, 0px); }                         /* Второй телефон               */
+/* ===== КНОПКА ПОЧТЫ И ТЕЛЕФОНЫ ===== */
+.line-email { 
+  transform: translate(-8px, -140px); 
+  display: block; 
+}
+
+.line-phone-1 { 
+  transform: translate(-49px, -150px); 
+  display: inline-flex; 
+}
+
+.line-phone-2 { 
+  transform: translate(-49px, -150px); 
+  display: inline-flex; 
+}
 
 /* Фикс для передвижения строк футера */
 .footer-brand-column .line-copy-1,
 .footer-brand-column .line-copy-2 {
-  margin: 0; /* Убираем стандартные отступы абзаца */
-  transition: transform 0.2s; /* Плавность для настройки */
+  margin: 0; 
+  transition: transform 0.2s; 
 }
 
 .footer-brand-column .line-copy-3 {
-  display: inline-block; /* Важно! Иначе transform не сработает на ссылке */
-  margin-top: 5px; /* Отступ от текста сверху */
+  display: inline-block; 
+  margin-top: 5px; 
   transition: transform 0.2s;
 }
 
-.line-email {
-  max-width: 2800px;
-  margin: 0 auto 10px auto; /* Центрируем блок */
-  width: 100%;
-}
-
-/* Фикс ширины кнопки почты */
-.footer-email.email-picker-trigger {
-  display: flex !important; 
-  width: 100% !important; /* Кнопка растягивается на всю ширину родителя */
-  max-width: 100% !important; 
-  box-sizing: border-box !important;
-}
-
-/* А тут ты задаешь конкретную ширину для телефонов */
-@media (max-width: 760px) {
-  .line-email {
-    width: 190px !important; /* <--- МЕНЯЙ ЭТО ЧИСЛО (например, 200px или 300px) */
-    max-width: 100% !important;
-    margin: 0 auto 10px auto; /* Центрируем */
-  }
-}
-
-/* Фикс выпадающего списка почт */
+/* Фикс выпадающего списка почт (текст влево) */
 .email-provider-list a {
   display: flex !important;
-  flex-direction: row !important; /* Строго в ряд */
-  align-items: center !important; /* По центру по вертикали */
-  justify-content: flex-start !important; /* Прижимаем влево */
-  text-align: left !important; /* Текст влево */
-  gap: 10px !important; /* Отступ между точкой и текстом */
+  flex-direction: row !important; 
+  align-items: center !important; 
+  justify-content: flex-start !important; 
+  text-align: left !important; 
+  gap: 10px !important; 
   padding: 10px 12px !important;
 }
 
 .email-provider-list span {
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important; /* Текст внутри тоже влево */
+  align-items: flex-start !important; 
   text-align: left !important;
 }
 
@@ -2963,14 +2926,85 @@ body.page-leaving { overflow: hidden; }
 }
 
 .email-provider-list .mail-dot {
-  margin: 0 !important; /* Убираем лишние отступы у точки */
+  margin: 0 !important; 
 }
 
-/* Настройка ширины выпадающего списка почт на телефоне */
-.email-provider-list {
-  width: 100% !important;    /* Растягиваем на ширину родителя (кнопки) */
-  max-width: 100% !important;
-  left: 0 !important;
-  right: auto !important;
-  box-sizing: border-box !important;
+/* ===== ДВИЖЕНИЕ ЧАСОВ РАБОТЫ (ВЫНЕСЕНО ИЗ МЕДИА) ===== */
+.footer-hours .line-hours-title,
+.footer-hours .line-hours-title-2 {
+  display: inline-block !important; 
+  width: 100%;
+  position: relative;
+  z-index: 5;
+}
+
+/* Двигай тут (первое число: влево/вправо, второе: вверх/вниз) */
+.line-hours-title { 
+  transform: translate(100px, -20px) !important; 
+}
+.line-hours-1 { 
+  transform: translate(100px, -20px); 
+}
+.line-hours-2 { 
+  transform: translate(100px, -20px); 
+}
+.line-hours-title-2 { 
+  transform: translate(100px, -20px) !important; 
+}
+
+/* ===== МОБИЛЬНЫЕ НАСТРОЙКИ ПОЧТЫ ===== */
+@media (max-width: 760px) {
+  /* Ширина КОНТЕЙНЕРА кнопки */
+  .line-email {
+    width: 100% !important; 
+    max-width: 600px !important; 
+    margin: 0 auto 10px auto !important;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Сама кнопка */
+  .footer-email.email-picker-trigger {
+    display: flex !important; 
+    width: 100% !important;
+    max-width: 100% !important; 
+    box-sizing: border-box !important;
+    font-size: 13px !important; 
+    padding: 12px 10px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+  }
+
+  /* Выпадающий список */
+  .email-provider-list {
+    width: 100% !important; 
+    left: 0 !important;
+    right: 0 !important;
+    max-height: 50vh !important; 
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+    z-index: 100;
+  }
+}
+
+/* Запрещаем перенос текста в ссылках футера */
+.footer-pages a {
+  white-space: nowrap !important;
+}
+
+/* ===== ФИКС ПУСТОТЫ СНИЗУ (НЕ ТРОГАЕТ ТЕКСТ) ===== */
+@media (max-width: 760px) {
+  .site-footer {
+    padding-bottom: 0px !important; 
+    margin-bottom: 10px !important; 
+    height: fit-content !important; 
+    min-height: 0 !important; 
+    overflow: hidden !important; 
+  }
+
+  .site-footer .footer-pages {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
 }
