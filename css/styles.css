@@ -1876,15 +1876,17 @@ h2 {
     align-items: center; /* Центрируем всё */
   }
   
-  .site-footer .footer-brand-column { 
-    order: 1; 
-    align-items: center; 
-    gap: 8px; /* Уменьшаем отступы внутри колонки бренда */
+  .site-footer .footer-brand-column {
+    align-items: flex-start;
+    text-align: left;
+    transform: translate(0px, 0px); /* Здесь можно двигать текст */
   }
   
-  .site-footer .footer-hours { 
+    .site-footer .footer-hours { 
     order: 2; 
     margin: 0;
+    /* Движение часов работы: первое число - влево/вправо, второе - вверх/вниз */
+    transform: translate(-100px, 0px); 
   }
   .site-footer .footer-hours p { margin: 4px 0; } /* Убираем лишние отступы у текста часов */
   
@@ -1903,12 +1905,16 @@ h2 {
     order: 4; 
     display: flex; 
     flex-direction: column; 
-    gap: 8px; /* Уменьшаем отступ между ссылками */
+    gap: 5px; /* Уменьшаем отступ между ссылками */
     margin: 10px 0 0 0; 
     align-items: center;
   }
   
-  .site-footer .brand { justify-content: center; }
+  .site-footer .brand {
+    transform: translate(-5px, -5px); /* -5px влево, 0px по высоте */
+    display: flex; 
+    justify-content: flex-start; 
+  }
   .site-footer .brand > span { font-size: 18px; }
   .site-footer .footer-brand-column p { font-size: 10px; } /* Текст копирайта чуть меньше */
 
@@ -2873,4 +2879,98 @@ body.page-leaving { overflow: hidden; }
 }
 #menu .category-card img {
   border-radius: 15px !important;
+}
+
+/* ===== УПРАВЛЕНИЕ СТРОКАМИ ФУТЕРА ===== */
+
+.line-logo { transform: translate(0px, 0px); }                            /* Логотип                      */
+.line-copy-1 { transform: translate(0px, -2px); margin-bottom: 2px; }     /* ООО "У нас обед"             */
+.line-copy-2 { transform: translate(0px, -8px); }                         /* Все права защищены           */
+.line-copy-3 { transform: translate(0px, -16px); margin-top: 10px; }       /* Политика конфиденциальности  */
+
+.line-nav-1 { transform: translate(0px, 0px); }                           /* Главная                      */
+.line-nav-2 { transform: translate(0px, 0px); }                           /* Организациям                 */
+.line-nav-3 { transform: translate(0px, 0px); }                           /* Доставка и оплата            */
+.line-nav-4 { transform: translate(0px, 0px); }                           /* О компании                   */
+.line-nav-5 { transform: translate(0px, 0px); }                           /* Политика конфиденциальности  */
+.line-nav-6 { transform: translate(0px, 0px); }                           /* Контакты                     */
+
+.line-hours-title { transform: translate(0px, 0px); }                     /* Часы работы:                 */
+.line-hours-1 { transform: translate(0px, 0px); }                         /* Пн–Пт...                     */
+.line-hours-2 { transform: translate(0px, 0px); }                         /* Без обеда...                 */
+.line-hours-title-2 { transform: translate(0px, 0px); }                   /* Заказы до 13:30              */
+
+.line-email { transform: translate(80px, -245px); }                           /* Кнопка почты                 */
+.line-phone-1 { transform: translate(0px, 0px); }                         /* Первый телефон               */
+.line-phone-2 { transform: translate(0px, 0px); }                         /* Второй телефон               */
+
+/* Фикс для передвижения строк футера */
+.footer-brand-column .line-copy-1,
+.footer-brand-column .line-copy-2 {
+  margin: 0; /* Убираем стандартные отступы абзаца */
+  transition: transform 0.2s; /* Плавность для настройки */
+}
+
+.footer-brand-column .line-copy-3 {
+  display: inline-block; /* Важно! Иначе transform не сработает на ссылке */
+  margin-top: 5px; /* Отступ от текста сверху */
+  transition: transform 0.2s;
+}
+
+.line-email {
+  max-width: 2800px;
+  margin: 0 auto 10px auto; /* Центрируем блок */
+  width: 100%;
+}
+
+/* Фикс ширины кнопки почты */
+.footer-email.email-picker-trigger {
+  display: flex !important; 
+  width: 100% !important; /* Кнопка растягивается на всю ширину родителя */
+  max-width: 100% !important; 
+  box-sizing: border-box !important;
+}
+
+/* А тут ты задаешь конкретную ширину для телефонов */
+@media (max-width: 760px) {
+  .line-email {
+    width: 190px !important; /* <--- МЕНЯЙ ЭТО ЧИСЛО (например, 200px или 300px) */
+    max-width: 100% !important;
+    margin: 0 auto 10px auto; /* Центрируем */
+  }
+}
+
+/* Фикс выпадающего списка почт */
+.email-provider-list a {
+  display: flex !important;
+  flex-direction: row !important; /* Строго в ряд */
+  align-items: center !important; /* По центру по вертикали */
+  justify-content: flex-start !important; /* Прижимаем влево */
+  text-align: left !important; /* Текст влево */
+  gap: 10px !important; /* Отступ между точкой и текстом */
+  padding: 10px 12px !important;
+}
+
+.email-provider-list span {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important; /* Текст внутри тоже влево */
+  text-align: left !important;
+}
+
+.email-provider-list small {
+  text-align: left !important;
+}
+
+.email-provider-list .mail-dot {
+  margin: 0 !important; /* Убираем лишние отступы у точки */
+}
+
+/* Настройка ширины выпадающего списка почт на телефоне */
+.email-provider-list {
+  width: 100% !important;    /* Растягиваем на ширину родителя (кнопки) */
+  max-width: 100% !important;
+  left: 0 !important;
+  right: auto !important;
+  box-sizing: border-box !important;
 }
