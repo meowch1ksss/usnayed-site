@@ -1865,17 +1865,52 @@ h2 {
   #menu .category-card { padding-bottom: 14px; border-radius: 17px; }
   #menu .category-img { aspect-ratio: 1.05 / 1; }
 
-  /* --- ФУТЕР --- */
+  /* --- ФУТЕР (КОМПАКТНЫЙ) --- */
   .site-footer { 
-    display: flex; flex-direction: column; gap: 20px; 
-    padding: 30px 20px; margin-bottom: 20px; text-align: center;
+    display: flex; 
+    flex-direction: column; 
+    gap: 16px; /* Уменьшаем расстояние между блоками */
+    padding: 24px 20px; 
+    margin-bottom: 20px; 
+    text-align: center;
+    align-items: center; /* Центрируем всё */
   }
-  .site-footer .footer-brand-column { order: 1; align-items: center; }
-  .site-footer .footer-hours { order: 2; }
-  .site-footer .footer-contact { order: 3; align-items: center; }
-  .site-footer .footer-pages { order: 4; align-items: center; margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+  
+  .site-footer .footer-brand-column { 
+    order: 1; 
+    align-items: center; 
+    gap: 8px; /* Уменьшаем отступы внутри колонки бренда */
+  }
+  
+  .site-footer .footer-hours { 
+    order: 2; 
+    margin: 0;
+  }
+  .site-footer .footer-hours p { margin: 4px 0; } /* Убираем лишние отступы у текста часов */
+  
+  .site-footer .footer-contact { 
+    order: 3; 
+    align-items: center; 
+    gap: 8px; /* Прижимаем телефоны и почту друг к другу */
+    width: 100%;
+  }
+
+  /* Электронная почта на всю ширину, чтобы текст не сжимался */
+  .site-footer .email-picker { width: 100%; max-width: 300px; margin-bottom: 8px; }
+
+  /* Ссылки (Главная, Меню...) */
+  .site-footer .footer-pages { 
+    order: 4; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; /* Уменьшаем отступ между ссылками */
+    margin: 10px 0 0 0; 
+    align-items: center;
+  }
+  
   .site-footer .brand { justify-content: center; }
   .site-footer .brand > span { font-size: 18px; }
+  .site-footer .footer-brand-column p { font-size: 10px; } /* Текст копирайта чуть меньше */
 
   /* Остальное */
   .page-section { padding-right: 18px; padding-left: 18px; }
