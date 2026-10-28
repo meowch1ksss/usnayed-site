@@ -1,13 +1,9 @@
 // js/site.js
-// Требует: js/config.js, js/store.js (подключены ДО этого файла).
 (() => {
   'use strict';
   const $el  = (s, root = document) => root.querySelector(s);
   const $all = (s, root = document) => [...root.querySelectorAll(s)];
 
-  /* ============================================================
-   * FAQ: плавный аккордеон
-   * ============================================================ */
   function initFaq() {
     const items = $all('.faq-item');
     if (!items.length) return;
@@ -43,9 +39,6 @@
     });
   }
 
-  /* ============================================================
-   * Email picker (Плавное открытие)
-   * ============================================================ */
   function initEmailPicker() {
     const trigger = $el('.email-picker-trigger');
     const list    = $el('.email-provider-list');
@@ -82,9 +75,6 @@
     });
   }
 
-  /* ============================================================
-   * Fade-переход между страницами
-   * ============================================================ */
   function initPageFade() {
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
@@ -105,9 +95,6 @@
     });
   }
 
-  /* ============================================================
-   * Параллакс эффект для главного экрана (Вращение)
-   * ============================================================ */
   function initParallax() {
     const scene = document.getElementById('scene');
     if (!scene) return;
@@ -132,7 +119,6 @@
       layers.forEach(layer => {
         const depth = parseFloat(layer.getAttribute('data-depth')) || 0.2;
         
-        // ТОЛЬКО ДВИЖЕНИЕ (убрали rotate)
         const moveX = mouseX * depth * 80; 
         const moveY = mouseY * depth * 80;
 
@@ -143,22 +129,6 @@
     animate();
   }
 
-  initParallax();
-
-  /* ============================================================
-   * Init (Запуск при загрузке)
-   * ============================================================ */
-  document.addEventListener('DOMContentLoaded', () => {
-    Store.updateBadges();
-    initFaq();
-    initEmailPicker();
-    initPageFade();
-    initParallax(); // Запускаем параллакс
-  });
-
-  /* ============================================================
-   * Уведомления (Плотная стопка)
-   * ============================================================ */
   function showToast(message, type = 'success', imageUrl = null) {
     let region = document.getElementById('toast-region');
     if (!region) {
@@ -266,107 +236,122 @@
   }
   window.showToast = showToast;
 
-  /* ============================================================
-   * Отзывы
-   * ============================================================ */
-  const showMoreBtn        = document.getElementById('showMoreReviewsBtn');
-  const hiddenReviews      = document.getElementById('hiddenReviews');
-  const showMoreWrapper    = document.getElementById('showMoreWrapper');
-  const addReviewFormWrapper = document.getElementById('addReviewFormWrapper');
-  const addReviewForm      = document.getElementById('addReviewForm');
+  document.addEventListener('DOMContentLoaded', () => {
+    Store.updateBadges();
+    initFaq();
+    initEmailPicker();
+    initPageFade();
+    initParallax();
 
-  if (window.location.hash === '#reviews' && hiddenReviews) {
-    setTimeout(() => {
-      hiddenReviews.style.display = 'block';
-      addReviewFormWrapper?.classList.remove('hidden');
-      showMoreWrapper.style.display = 'none';
-      document.getElementById('reviews').scrollIntoView({ behavior: 'smooth' });
-    }, 300);
-  }
+    const reviewsGrid = document.getElementById('reviewsGrid');
+    const toggleReviewsBtn = document.getElementById('toggleReviewsBtn');
+    const addReviewFormWrapper = document.getElementById('addReviewFormWrapper');
+    const addReviewForm = document.getElementById('addReviewForm');
 
-  if (showMoreBtn && hiddenReviews) {
-    showMoreBtn.addEventListener('click', () => {
-      const isOpen = hiddenReviews.style.display === 'block';
+    let allReviews = [];
+    let isReviewsExpanded = false;
+
+    function renderReviews() {
+      if (!reviewsGrid) return;
       
-      if (isOpen) {
-        hiddenReviews.style.display = 'none';
-        addReviewFormWrapper?.classList.add('hidden');
-        showMoreBtn.innerHTML = 'Показать все отзывы ↓';
-      } else {
-        hiddenReviews.style.display = 'block';
-        addReviewFormWrapper?.classList.remove('hidden');
-        showMoreBtn.innerHTML = 'Свернуть отзывы ↑';
-      }
-    });
-  }
+      const isMobile = window.innerWidth <= 760;
+      const limit = isMobile && !isReviewsExpanded ? 2 : allReviews.length;
+      const visibleReviews = allReviews.slice(0, limit);
 
-  if (addReviewForm) {
-    addReviewForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('reviewName').value.trim();
-      const text = document.getElementById('reviewText').value.trim();
-      if (!name || !text) return;
-
-      const submitBtn = addReviewForm.querySelector('button[type="submit"]');
-      const original = submitBtn?.textContent;
-      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Отправка...'; }
-
-      try {
-        const res = await Store.apiFetch(APP_CONFIG.API.reviews, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, text }),
-        });
-        if (!res.ok) throw new Error('server');
-
-        addReviewForm.reset();
-        showToast('Спасибо! Ваш отзыв отправлен на проверку.', 'success');
-      } catch {
-        showToast('Не удалось отправить отзыв. Попробуйте позже.', 'error');
-      } finally {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = original; }
-      }
-    });
-  }
-
-  async function loadApprovedReviews() {
-    const hiddenGrid = document.querySelector('#hiddenReviews .reviews-grid');
-    if (!hiddenGrid) return;
-
-    try {
-      const res = await Store.apiFetch(APP_CONFIG.API.reviews);
-      if (!res.ok) return;
-      const approved = await res.json();
-      if (!Array.isArray(approved)) return;
-
-      approved.forEach(rev => {
-        if (document.getElementById('rev-' + rev.id)) return;
-        const el = document.createElement('article');
-        el.className = 'review-card';
-        el.id = 'rev-' + rev.id;
-        el.innerHTML = `
+      reviewsGrid.innerHTML = visibleReviews.map(rev => `
+        <article class="review-card">
           <div class="review-stars">★★★★★</div>
           <blockquote>${escapeHTML(rev.text || '')}</blockquote>
           <strong>— ${escapeHTML(rev.name || 'Гость')}</strong>
-        `;
-        hiddenGrid.prepend(el);
-      });
+        </article>
+      `).join('');
 
-      if (hiddenGrid.children.length === 0) {
-        if (showMoreBtn) showMoreBtn.style.display = 'none';
-        if (showMoreWrapper) showMoreWrapper.style.display = 'none';
+      if (isMobile && allReviews.length > 2) {
+        toggleReviewsBtn.style.display = 'inline-flex';
+        toggleReviewsBtn.innerHTML = isReviewsExpanded 
+          ? 'Скрыть отзывы ↑' 
+          : 'Показать все отзывы ↓';
+      } else {
+        toggleReviewsBtn.style.display = 'none';
       }
 
-    } catch (err) {
-      console.error('Ошибка загрузки отзывов', err);
+      if (isReviewsExpanded) {
+        addReviewFormWrapper.classList.remove('hidden');
+      } else {
+        addReviewFormWrapper.classList.add('hidden');
+      }
     }
-  }
+
+    if (toggleReviewsBtn) {
+      toggleReviewsBtn.addEventListener('click', () => {
+        isReviewsExpanded = !isReviewsExpanded;
+        renderReviews();
+      });
+    }
+
+    async function loadApprovedReviews() {
+      if (!reviewsGrid) return;
+
+      const staticReviews = [
+        { name: 'Кристина', text: 'Все очень вкусно! Оперативно! Поднесли еду прям к вагону, накормили группу из 18 человек...' },
+        { name: 'Виктор Васильевич', text: 'Заказывали в компании проведение корпоратива. Результатом более чем довольны...' }
+      ];
+
+      try {
+        const res = await Store.apiFetch(APP_CONFIG.API.reviews);
+        if (res.ok) {
+          const serverReviews = await res.json();
+          if (Array.isArray(serverReviews)) {
+            allReviews = [...staticReviews, ...serverReviews];
+          } else {
+            allReviews = staticReviews;
+          }
+        } else {
+          allReviews = staticReviews;
+        }
+      } catch (err) {
+        console.error('Ошибка загрузки отзывов', err);
+        allReviews = staticReviews;
+      }
+
+      renderReviews();
+    }
+
+    if (addReviewForm) {
+      addReviewForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('reviewName').value.trim();
+        const text = document.getElementById('reviewText').value.trim();
+        if (!name || !text) return;
+
+        const submitBtn = addReviewForm.querySelector('button[type="submit"]');
+        const original = submitBtn?.textContent;
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Отправка...'; }
+
+        try {
+          const res = await Store.apiFetch(APP_CONFIG.API.reviews, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, text }),
+          });
+          if (!res.ok) throw new Error('server');
+
+          addReviewForm.reset();
+          showToast('Спасибо! Ваш отзыв отправлен на проверку.', 'success');
+        } catch {
+          showToast('Не удалось отправить отзыв. Попробуйте позже.', 'error');
+        } finally {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = original; }
+        }
+      });
+    }
+
+    loadApprovedReviews();
+  });
 
   function escapeHTML(s) {
     return String(s).replace(/[&<>"']/g, c => (
       { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]
     ));
   }
-
-  loadApprovedReviews();
 })();

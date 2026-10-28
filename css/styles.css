@@ -1943,11 +1943,6 @@ h2 {
   #menu .category-name { min-height: 42px; margin: 13px 12px 10px; font-size: 16px; }
   #menu .category-btn { min-height: 36px; margin-left: 12px; padding: 0 12px; }
   #menu .office-delivery-note { padding: 15px; font-size: 11px; }
-
-  /* Показываем только 2 отзыва на телефоне */
-  .reviews-grid .review-card:nth-child(n+3) {
-    display: none !important;
-  }
 }
 
 @media (max-width: 390px) {
