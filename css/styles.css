@@ -1952,6 +1952,58 @@ h2 {
   #menu .office-delivery-note { padding: 15px; font-size: 11px; }
 }
 
+/* ============================================================
+ * МОБИЛЬНЫЕ ИСПРАВЛЕНИЯ (ТОЛЬКО ДЛЯ ТЕЛЕФОНОВ)
+ * ============================================================ */
+@media (max-width: 760px) {
+  
+  /* 1. Уменьшаем блок "Почему выбирают нас" */
+  .why-us-section {
+    padding-top: 30px;
+    padding-bottom: 40px;
+  }
+  
+  .why-us-grid {
+    gap: 10px; /* Уменьшаем расстояние между карточками */
+  }
+
+  .why-us-card {
+    padding: 16px; /* Уменьшаем внутренние отступы */
+    min-height: auto; /* Убираем жесткую высоту, чтобы не было пустоты */
+  }
+
+  .why-us-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    margin-bottom: 10px; /* Иконка ближе к тексту */
+  }
+
+  .why-us-card h3 {
+    font-size: 14px; /* Чуть меньше заголовок */
+    margin-bottom: 6px;
+  }
+
+  .why-us-card p {
+    font-size: 11px; /* Чуть меньше текст */
+    line-height: 1.5;
+  }
+
+  /* 2. Текст на карточках категорий (Завтраки, Обеды...) */
+  #menu .category-name {
+    position: absolute;
+    bottom: 15px; /* Прижимаем к низу */
+    left: 0;
+    right: 0;
+    text-align: center; /* Выравниваем по центру */
+    font-size: 18px; /* Чуть больше и заметнее */
+    font-weight: 900;
+    padding: 0 10px; /* Чтобы текст не прилипал к краям */
+    margin: 0;
+    min-height: auto;
+  }
+}
+
 @media (max-width: 390px) {
   .brand { font-size: 14px; }
   .brand-mark { width: 31px; height: 31px; }
