@@ -1,23 +1,18 @@
-/* ============================================================
- * Стили для страницы Заказов
- * ============================================================ */
-
-/* Контейнер списка заказов */
-.orders-list { 
-  display: flex; 
-  flex-direction: column; 
-  gap: 0; /* Убираем расстояние между карточками в списке */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   width: 100%;
   max-width: 900px;
-  margin: 0 auto; 
+  margin: 0 auto;
 }
 
-/* Старая карточка (оставил на всякий случай, если где-то используется) */
-.order-card { 
-  background: rgba(255, 255, 255, 0.02); 
-  border: 1px solid rgba(220, 204, 255, 0.1); 
-  border-radius: 24px; 
-  padding: 28px; 
+
+.order-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(220, 204, 255, 0.1);
+  border-radius: 24px;
+  padding: 28px;
   width: 100%;
   box-sizing: border-box;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -28,49 +23,49 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-.order-header { 
-  display: flex; 
-  justify-content: space-between; 
+.order-header {
+  display: flex;
+  justify-content: space-between;
   align-items: flex-start;
-  border-bottom: 1px dashed rgba(220, 204, 255, 0.2); 
-  padding-bottom: 20px; 
-  margin-bottom: 20px; 
+  border-bottom: 1px dashed rgba(220, 204, 255, 0.2);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
 }
 
-.order-number { 
-  font-weight: 800; 
-  color: #f6f1ff; 
-  font-size: 22px; 
+.order-number {
+  font-weight: 800;
+  color: #f6f1ff;
+  font-size: 22px;
   font-family: 'Space Grotesk', sans-serif;
   letter-spacing: -0.02em;
 }
 
-.order-date { 
-  color: #a49ab8; 
-  font-size: 14px; 
+.order-date {
+  color: #a49ab8;
+  font-size: 14px;
   margin-top: 6px;
 }
 
-.order-status { 
-  color: #b7ff70; 
-  font-size: 12px; 
-  font-weight: 700; 
-  background: rgba(183, 255, 112, 0.1); 
-  padding: 8px 16px; 
-  border-radius: 20px; 
+.order-status {
+  color: #b7ff70;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(183, 255, 112, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
   border: 1px solid rgba(183, 255, 112, 0.2);
 }
 
-.order-items { 
-  color: #a49ab8; 
-  font-size: 15px; 
-  line-height: 1.6; 
-  margin-bottom: 24px; 
+.order-items {
+  color: #a49ab8;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 24px;
 }
 
 .order-bottom {
-  display: flex; 
-  justify-content: space-between; 
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   border-top: 1px solid rgba(220, 204, 255, 0.1);
   padding-top: 20px;
@@ -81,27 +76,25 @@
   color: #a49ab8;
 }
 
-.order-total { 
-  text-align: right; 
-  font-size: 26px; 
-  font-weight: 800; 
-  color: #a879ff; 
+.order-total {
+  text-align: right;
+  font-size: 26px;
+  font-weight: 800;
+  color: #a879ff;
   font-family: 'Space Grotesk', sans-serif;
 }
 
-/* ============================================================
- * Сворачиваемые карточки заказов (ДЛЯ ПОЛЬЗОВАТЕЛЯ)
- * ============================================================ */
+
 .user-order-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(220, 204, 255, 0.1);
   border-radius: 16px;
-  margin-bottom: 4px; /* Минимальный отступ (почти вплотную) */
+  margin-bottom: 4px;
   overflow: hidden;
   transition: border-color 0.2s, background 0.2s;
 }
 
-/* Убираем отступ у самой последней карточки */
+
 .user-order-card:last-child {
   margin-bottom: 0;
 }
@@ -154,7 +147,7 @@
   transform: rotate(180deg);
 }
 
-/* Анимация раскрытия */
+
 .user-order-details {
   display: grid;
   grid-template-rows: 0fr;
@@ -187,9 +180,7 @@
   color: #a49ab8;
 }
 
-/* ============================================================
- * Кнопка очистки (сверху)
- * ============================================================ */
+
 #clearOrdersBtn {
   background: rgba(255, 109, 120, 0.08);
   border: 1px solid rgba(255, 109, 120, 0.3);
@@ -200,7 +191,7 @@
   font-weight: 700;
   font-size: 13px;
   transition: all 0.2s;
-  /* Убрали margin-top, так как она теперь сверху */
+
 }
 
 #clearOrdersBtn:hover {
@@ -208,9 +199,7 @@
   transform: translateY(-2px);
 }
 
-/* ============================================================
- * Кастомная модалка очистки
- * ============================================================ */
+
 .confirm-overlay {
   position: fixed; inset: 0; z-index: 9999;
   background: rgba(10, 8, 16, 0.8); backdrop-filter: blur(8px);
@@ -235,3 +224,341 @@
 .confirm-cancel:hover { background: rgba(255, 255, 255, 0.1); color: #f6f1ff; }
 .confirm-delete { background: linear-gradient(135deg, #ff6d78, #e53935); color: #fff; box-shadow: 0 4px 15px rgba(255, 109, 120, 0.3); }
 .confirm-delete:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 109, 120, 0.5); }
+
+.orders-list {
+  display: grid;
+  gap: 12px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.user-order-card {
+  border: 1px solid rgba(167, 116, 255, .18);
+  border-radius: 20px;
+  background:
+    radial-gradient(600px 240px at 0% 0%, rgba(168, 121, 255, .09), transparent 70%),
+    linear-gradient(160deg, rgba(34, 23, 52, .78), rgba(13, 10, 21, .94));
+  box-shadow: 0 16px 38px rgba(0, 0, 0, .26);
+  margin-bottom: 0;
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+}
+
+.user-order-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(168, 121, 255, .42);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, .34);
+}
+
+.user-order-card.open {
+  border-color: rgba(169, 119, 255, .6);
+  box-shadow: 0 24px 54px rgba(0, 0, 0, .38), 0 0 30px rgba(139, 76, 255, .12);
+  background:
+    radial-gradient(600px 240px at 0% 0%, rgba(168, 121, 255, .14), transparent 70%),
+    linear-gradient(160deg, rgba(38, 26, 58, .85), rgba(14, 11, 22, .96));
+}
+
+.user-order-header {
+  padding: 20px 22px;
+  gap: 14px;
+  transition: background .3s ease;
+}
+
+.user-order-title {
+  min-width: 0;
+}
+
+.user-order-title h3 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 5px;
+  font-size: 17px;
+  letter-spacing: -.01em;
+}
+
+.user-order-num {
+  color: #f6f1ff;
+}
+
+.user-order-status {
+  padding: 3px 9px;
+  border: 1px solid rgba(183, 255, 112, .28);
+  border-radius: 999px;
+  background: rgba(183, 255, 112, .08);
+  color: #b7ff70;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.user-order-date {
+  color: #9c8fb4;
+  font-size: 12px;
+}
+
+.user-order-total {
+  gap: 10px;
+  padding: 7px 13px;
+  border: 1px solid rgba(168, 121, 255, .22);
+  border-radius: 12px;
+  background: rgba(168, 121, 255, .1);
+  color: #d9c2ff;
+  font-size: 17px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.user-order-total .arrow {
+  color: #9c8fb4;
+  font-size: 10px;
+}
+
+.user-order-details {
+  transition: grid-template-rows .35s cubic-bezier(.2, .8, .2, 1);
+}
+
+.user-order-items {
+  padding: 0 22px 14px;
+}
+
+.user-order-items-title {
+  display: block;
+  margin-bottom: 10px;
+  color: #9c8fb4;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.order-item-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px dashed rgba(220, 204, 255, .1);
+}
+
+.order-item-row:last-child {
+  border-bottom: 0;
+}
+
+.order-item-name {
+  color: #e6dcf6;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.order-item-qty {
+  color: #9c8fb4;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.order-item-price {
+  color: #a879ff;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.user-order-footer {
+  padding: 14px 22px 18px;
+  border-top: 1px solid rgba(220, 204, 255, .08);
+}
+
+.user-order-client {
+  color: #a99dbe;
+  font-size: 12.5px;
+}
+
+.user-order-client strong {
+  color: #e6dcf6;
+}
+
+.user-order-repeat {
+  padding: 8px 16px;
+  font-size: 12.5px;
+  border: 1px solid rgba(168, 121, 255, .32);
+  color: #c6a6ff;
+  transition: background .25s ease, border-color .25s ease, color .25s ease, transform .25s ease;
+}
+
+.user-order-repeat:hover {
+  background: rgba(168, 121, 255, .14);
+  border-color: rgba(183, 255, 112, .4);
+  color: #b7ff70;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 560px) {
+  .user-order-header {
+    padding: 16px 18px;
+  }
+
+  .user-order-total {
+    font-size: 15px;
+  }
+
+  .user-order-items {
+    padding: 0 18px 12px;
+  }
+
+  .user-order-footer {
+    padding: 12px 18px 16px;
+  }
+}
+
+.orders-empty {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 44px 36px 36px;
+  border: 1px solid rgba(167, 116, 255, .2);
+  border-radius: 26px;
+  background:
+    radial-gradient(520px 260px at 50% -10%, rgba(168, 121, 255, .18), transparent 70%),
+    linear-gradient(160deg, rgba(34, 23, 52, .8), rgba(12, 9, 20, .95));
+  box-shadow: 0 28px 64px rgba(0, 0, 0, .38);
+  text-align: center;
+  overflow: hidden;
+}
+
+.orders-empty::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(168, 121, 255, .8) 35%, rgba(183, 255, 112, .6) 72%, transparent);
+}
+
+.orders-empty-glow {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  width: 380px;
+  height: 260px;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 121, 255, .28), transparent 65%);
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.orders-empty-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  margin: 0 auto 18px;
+  border: 1px solid rgba(168, 121, 255, .28);
+  border-radius: 24px;
+  background: rgba(168, 121, 255, .12);
+  color: #c6a6ff;
+  box-shadow: 0 18px 40px rgba(124, 58, 237, .28);
+}
+
+.orders-empty-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.orders-empty h3 {
+  position: relative;
+  margin: 0 0 10px;
+  color: #f6f1ff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  letter-spacing: -.02em;
+}
+
+.orders-empty p {
+  position: relative;
+  max-width: 46ch;
+  margin: 0 auto 22px;
+  color: #b3a7c6;
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.orders-empty-actions {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.orders-empty-list {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  margin: 26px auto 0;
+  padding: 20px 22px;
+  max-width: 420px;
+  list-style: none;
+  text-align: left;
+  border: 1px solid rgba(220, 204, 255, .1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .025);
+}
+
+.orders-empty-list li {
+  position: relative;
+  padding-left: 24px;
+  color: #bdb1d1;
+  font-size: 12.5px;
+}
+
+.orders-empty-list li::before {
+  content: '';
+  position: absolute;
+  top: .55em;
+  left: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a879ff, #b7ff70);
+  box-shadow: 0 0 10px rgba(168, 121, 255, .55);
+}
+
+#clearOrdersBtn {
+  padding: 9px 18px;
+  border: 1px solid rgba(255, 109, 120, .28);
+  border-radius: 12px;
+  background: rgba(255, 109, 120, .08);
+  color: #ff8d96;
+  font-size: 12.5px;
+  transition: background .25s ease, border-color .25s ease, color .25s ease, transform .25s ease;
+}
+
+#clearOrdersBtn:hover {
+  background: rgba(255, 109, 120, .16);
+  border-color: rgba(255, 109, 120, .45);
+  color: #ffb0b6;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 560px) {
+  .orders-empty {
+    padding: 32px 20px 26px;
+    border-radius: 22px;
+  }
+
+  .orders-empty h3 {
+    font-size: 20px;
+  }
+
+  .orders-empty-actions {
+    flex-direction: column;
+  }
+
+  .orders-empty-actions .button {
+    width: 100%;
+  }
+}

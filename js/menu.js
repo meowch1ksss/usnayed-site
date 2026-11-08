@@ -1,6 +1,5 @@
-// js/menu.js
 document.addEventListener('DOMContentLoaded', () => {
-  // Проверка, что все зависимости загружены
+
   if (typeof ProductCard === 'undefined') {
     console.error('❌ КРИТИЧЕСКАЯ ОШИБКА: ProductCard не найден. Проверьте подключение js/ui/product-card.js в menu.html');
     return;
@@ -55,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     menuGrid.innerHTML = items.map(it => ProductCard.render(it)).join('');
   }
 
-  // Навешиваем обработчики
+
   ProductCard.bind(menuGrid, {
     onAdd:    (id, p) => ProductCard.defaultAdd(menuGrid, id, p),
     onPlus:   (id, p) => ProductCard.defaultAdd(menuGrid, id, p),
@@ -64,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     onFavorite: (id, p) => ProductCard.defaultFavorite(menuGrid, id, p),
   });
 
-  // Категории
+
   document.querySelectorAll('#categorySwitcher .category-switch').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.category.toLowerCase() === currentCategory.toLowerCase());
   });
@@ -88,6 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMenu(currentCategory, currentDay);
   });
 
-  // Первая отрисовка
+
   renderMenu(currentCategory, currentDay);
 });

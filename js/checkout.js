@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function parseWeight(w) {
       if (!w) return 0;
-      const num = parseFloat(String(w).replace(/[^\d.,]/g, '').replace(',', '.'));
+      const num = parseFloat(String(w).replace(/[^d.,]/g, '').replace(',', '.'));
       return isNaN(num) ? 0 : num;
     }
 
@@ -28,11 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
       tbody.innerHTML = cart.map(item => {
         const p = products.find(x => String(x.id) === String(item.id));
         if (!p) return '';
-        
+
         const sum = p.price * item.qty;
         totalSum += sum;
         totalWeightGrams += parseWeight(p.weight) * item.qty;
-        
+
         return `
           <tr>
             <td>${p.name}</td>
@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }).join('');
     }
 
-    let formattedWeight = totalWeightGrams >= 1000 
-      ? `${(totalWeightGrams / 1000).toFixed(2)} кг` 
+    let formattedWeight = totalWeightGrams >= 1000
+      ? `${(totalWeightGrams / 1000).toFixed(2)} кг`
       : `${totalWeightGrams} г`;
 
     if (totalPriceEl) totalPriceEl.textContent = `${totalSum} ₽`;
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentUser) {
       const nameInput = document.querySelector('input[name="fullName"]');
       const emailInput = document.querySelector('input[name="email"]');
-      
+
       if (nameInput && !nameInput.value) {
         nameInput.value = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim();
       }
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function initCustomSelect(dropdownId, onChange) {
     const dropdown = document.getElementById(dropdownId);
     if (!dropdown) return null;
-    
+
     const trigger = dropdown.querySelector('.custom-dropdown-trigger');
     const options = dropdown.querySelectorAll('.custom-option');
     const input = dropdown.querySelector('input[type="hidden"]');
@@ -96,14 +96,14 @@ document.addEventListener('DOMContentLoaded', () => {
       option.onclick = () => {
         const value = option.dataset.value;
         const text = option.textContent.trim();
-        
+
         input.value = value;
         if (selectedText) selectedText.textContent = text;
-        
+
         options.forEach(o => o.classList.remove('selected'));
         option.classList.add('selected');
         dropdown.classList.remove('open');
-        
+
         sessionStorage.setItem(`${SAVE_PREFIX}${input.name}`, value);
         if (onChange) onChange(value);
       };
@@ -182,16 +182,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const paymentInput = document.getElementById('paymentInput');
         const paymentTriggerText = document.querySelector('#paymentDropdown .selected-text');
         const paymentOptions = document.querySelectorAll('#paymentDropdown .custom-option');
-        
+
         if (type === 'jur') {
           if (payerSwitch) payerSwitch.classList.add('jur-active');
           if (fieldsPhys) fieldsPhys.classList.add('hidden');
           if (fieldsJur) fieldsJur.classList.remove('hidden');
-          
+
           paymentOptions.forEach(opt => {
             opt.style.display = (opt.dataset.value === 'bank') ? 'flex' : 'none';
           });
-          
+
           if (paymentInput) paymentInput.value = 'bank';
           if (paymentTriggerText) paymentTriggerText.textContent = '🏦 Банковский перевод';
           if (paymentHint) paymentHint.textContent = 'Вы можете оплатить заказ в любом отделении Сбербанка...';
@@ -199,9 +199,9 @@ document.addEventListener('DOMContentLoaded', () => {
           if (payerSwitch) payerSwitch.classList.remove('jur-active');
           if (fieldsPhys) fieldsPhys.classList.remove('hidden');
           if (fieldsJur) fieldsJur.classList.add('hidden');
-          
+
           paymentOptions.forEach(opt => opt.style.display = 'flex');
-          
+
           if (paymentInput) paymentInput.value = 'cash';
           if (paymentTriggerText) paymentTriggerText.textContent = '💵 Наличные курьеру';
           if (paymentHint) paymentHint.textContent = 'Оплата наличными при получении заказа курьеру.';
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   try {
     const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
-    
+
     inputs.forEach(input => {
       if (input.id === 'deliveryTimeInput') return;
 
@@ -287,13 +287,23 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const totals = window._checkoutTotals || { totalSum: 0, formattedWeight: '0 г' };
     const isJur = document.querySelector('.payer-btn.active')?.dataset.type === 'jur';
-    
+
     if (!cart.length) return window.showToast && window.showToast('Корзина пуста!', 'error');
 
-    // Получаем значения из скрытых полей!
+
+    const consent = document.getElementById('checkoutConsent');
+    if (consent && !consent.checked) {
+      const field = consent.closest('.consent-field');
+      field?.classList.add('consent-field--error');
+      consent.addEventListener('change', () => field?.classList.remove('consent-field--error'), { once: true });
+      consent.focus();
+      return window.showToast && window.showToast('Подтвердите согласие на обработку персональных данных', 'error');
+    }
+
+
     const deliveryTime = document.getElementById('deliveryTimeInput').value;
     const cityValue = document.getElementById('cityInput').value;
-    
+
     if (!deliveryTime) return window.showToast && window.showToast('Выберите время доставки!', 'error');
     if (!cityValue) return window.showToast && window.showToast('Выберите город!', 'error');
 
@@ -305,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
       email = document.querySelector('input[name="jurEmail"]').value;
       phone = document.querySelector('input[name="jurPhone"]').value;
       if (!name || !phone) return window.showToast && window.showToast('Заполните название компании и телефон!', 'error');
-      
+
       companyData = {
         legalAddress: document.querySelector('input[name="legalAddress"]')?.value || '—',
         inn: document.querySelector('input[name="inn"]')?.value || '—',
@@ -359,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (window.showToast) window.showToast('Заказ успешно оформлен! Спасибо!', 'success');
       Store.clearCart();
-      
+
       const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
       inputs.forEach(input => sessionStorage.removeItem(`${SAVE_PREFIX}${input.name}`));
       sessionStorage.removeItem(`${SAVE_PREFIX}city`);
@@ -389,23 +399,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
       confirmDelete.onclick = () => {
         confirmOverlay.classList.remove('open');
-        
+
         const inputs = form.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), textarea');
         inputs.forEach(input => sessionStorage.removeItem(`${SAVE_PREFIX}${input.name}`));
         sessionStorage.removeItem(`${SAVE_PREFIX}city`);
         sessionStorage.removeItem(`${SAVE_PREFIX}payment`);
-        
+
         form.reset();
-        
+
         document.querySelector('#cityDropdown .selected-text').textContent = 'Выберите город...';
         document.getElementById('cityInput').value = '';
         document.querySelectorAll('#cityDropdown .custom-option').forEach(o => o.classList.remove('selected'));
-        
+
         document.querySelector('#paymentDropdown .selected-text').textContent = '💵 Наличные курьеру';
         document.getElementById('paymentInput').value = 'cash';
         document.querySelectorAll('#paymentDropdown .custom-option').forEach(o => o.classList.remove('selected'));
         document.querySelector('#paymentDropdown .custom-option[data-value="cash"]').classList.add('selected');
-        
+
         if (document.querySelector('#deliveryTimeInput')._flatpickr) {
           document.querySelector('#deliveryTimeInput')._flatpickr.clear();
         }

@@ -1,4 +1,3 @@
-// js/favorites.js
 document.addEventListener('DOMContentLoaded', () => {
   const grid = document.getElementById('favoritesGrid');
   const products = window.LUNCH_DATA?.products ?? [];
@@ -27,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     onMinus: (id, p) => ProductCard.defaultMinus(grid, id, p),
     onInput: (id, p, el) => ProductCard.defaultInput(grid, id, p, el),
 
-    // Специфично для избранного: удалить карточку + перерисовать
+
     onRemoveFavorite: (id, p) => {
       Store.toggleFavorite(id);
       renderFavorites();

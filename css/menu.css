@@ -1,13 +1,10 @@
-/* ============================================================
- * Стили для страницы Меню (menu.html)
- * ============================================================ */
 .menu-controls-wrapper {
   max-width: var(--content);
   margin: 0 auto 30px;
   padding: 0 28px;
 }
 
-/* Кнопки категорий */
+
 .category-switcher {
   display: flex; gap: 12px; overflow-x: auto; padding-bottom: 16px; scrollbar-width: none;
 }
@@ -20,7 +17,7 @@
 .category-switch:hover { border-color: rgba(168, 121, 255, 0.5); color: #fff; }
 .category-switch.active { background: #a879ff; border-color: #a879ff; color: #1a1027; box-shadow: 0 0 20px rgba(168, 121, 255, 0.3); }
 
-/* Табы дней */
+
 .category-day-tabs {
   display: flex; gap: 8px; flex-wrap: wrap; padding: 10px; border-radius: 16px;
   background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(220, 204, 255, 0.05);
@@ -32,14 +29,31 @@
 .day-tab:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
 .day-tab.active { background: rgba(168, 121, 255, 0.15); color: #c6a6ff; }
 
-/* ============================================================
- * Карточка товара
- * ============================================================ */
+
 .product-card {
   user-select: none;
   -webkit-user-drag: none;
   display: flex;
   flex-direction: column;
+}
+
+
+.skeleton-card {
+  aspect-ratio: 1 / 1.32;
+  border: 1px solid rgba(220, 204, 255, .08);
+  border-radius: 16px;
+  background: linear-gradient(100deg, #1c142b 30%, #251b38 50%, #1c142b 70%);
+  background-size: 220% 100%;
+  animation: skeleton-shimmer 1.2s linear infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from { background-position: 130% 0; }
+  to { background-position: -30% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-card { animation: none; }
 }
 
 .product-image-wrap {
@@ -52,7 +66,7 @@
 }
 
 .product-image-wrap img {
-  display: block; /* ВАЖНО: Показываем картинку обратно */
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -63,7 +77,7 @@
   transform: scale(1.055);
 }
 
-/* Кнопка избранного */
+
 .favorite-button {
   position: absolute;
   top: 10px;
@@ -86,57 +100,17 @@
   height: 18px;
 }
 
-/* ============================================================
- * Счетчик количества (Плюс / Минус) и Кнопка добавления
- * ============================================================ */
+
 .card-action-container {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  min-width: 38px; /* Чтобы при появлении плюс/минуса карточка не прыгала */
+  min-width: 38px;
 }
 
-.qty-counter {
-  display: flex;
-  align-items: center;
-  background: rgba(168, 121, 255, 0.1);
-  border: 1px solid rgba(168, 121, 255, 0.3);
-  border-radius: 10px;
-  overflow: hidden;
-  height: 38px;
-}
 
-.qty-btn {
-  background: transparent;
-  border: none;
-  color: #f6f1ff;
-  width: 34px;
-  height: 100%;
-  font-size: 20px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
 
-.qty-btn:hover {
-  background: rgba(168, 121, 255, 0.3);
-  color: #a879ff;
-}
 
-.qty-value {
-  min-width: 30px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 800;
-  color: #f6f1ff;
-  pointer-events: none;
-}
-
-/* Кнопка добавления (когда товара нет) */
 .add-cart {
   width: 38px;
   height: 38px;
@@ -161,24 +135,22 @@
   height: 18px;
 }
 
-/* ============================================================
- * Галерея столовой (если она на этой же странице)
- * ============================================================ */
-.gallery-grid { 
-  display: grid; 
-  grid-template-columns: repeat(6, minmax(0, 1fr)); 
-  gap: 16px; 
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
 }
 
-.gallery-grid figure { 
-  position: relative; 
-  grid-column: span 2; 
-  margin: 0; 
-  min-height: 210px; 
-  overflow: hidden; 
-  border: 1px solid rgba(183,145,255,.22); 
-  border-radius: 18px; 
-  background-color: #1a1128; 
+.gallery-grid figure {
+  position: relative;
+  grid-column: span 2;
+  margin: 0;
+  min-height: 210px;
+  overflow: hidden;
+  border: 1px solid rgba(183,145,255,.22);
+  border-radius: 18px;
+  background-color: #1a1128;
   box-shadow: 0 15px 40px rgba(0,0,0,.2);
   transition: transform 0.5s ease;
 }
@@ -188,13 +160,13 @@
 
 .gallery-grid figure:hover { transform: scale(1.03); }
 
-.gallery-grid figcaption { 
-  position: absolute; 
-  right: 0; bottom: 0; left: 0; 
-  padding: 30px 16px 14px; 
-  background: linear-gradient(transparent, rgba(16,8,28,.95)); 
-  font-size: 11px; font-weight: 800; 
-  color: #f6efff; letter-spacing: .06em; 
+.gallery-grid figcaption {
+  position: absolute;
+  right: 0; bottom: 0; left: 0;
+  padding: 30px 16px 14px;
+  background: linear-gradient(transparent, rgba(16,8,28,.95));
+  font-size: 11px; font-weight: 800;
+  color: #f6efff; letter-spacing: .06em;
   z-index: 2; pointer-events: none;
 }
 
@@ -203,7 +175,7 @@
   .gallery-grid figure, .gallery-grid figure:nth-child(4), .gallery-grid figure:nth-child(5) { grid-column: auto; min-height: 160px; }
 }
 
-/* Кнопка избранного на карточке */
+
 .favorite-button {
   position: absolute;
   top: 10px;

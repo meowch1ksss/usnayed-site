@@ -1,6 +1,3 @@
-/* ============================================================
- * Стили для страницы Профиля
- * ============================================================ */
 .profile-container {
   max-width: 400px;
   margin: 0 auto;
@@ -78,7 +75,7 @@
   box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
 }
 
-/* Соцсети */
+
 .social-login-separator {
   display: flex;
   align-items: center;
@@ -129,7 +126,7 @@
   height: 18px;
 }
 
-/* Форма в 2 колонки */
+
 .form-row {
   display: flex;
   gap: 10px;
@@ -138,7 +135,7 @@
   flex: 1;
 }
 
-/* Капча */
+
 .captcha-wrapper {
   display: flex;
   align-items: center;
@@ -166,9 +163,7 @@
   border-color: #a879ff;
 }
 
-/* ============================================================
- * Кастомные уведомления (Тосты)
- * ============================================================ */
+
 .toast-container {
   position: fixed;
   bottom: 24px;
@@ -241,7 +236,7 @@
   to { opacity: 0; transform: translateX(50px) scale(0.9); }
 }
 
-/* Стили для формы редактирования */
+
 #editProfileForm {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 16px;
@@ -271,9 +266,7 @@
   border-color: #a879ff;
 }
 
-/* ============================================================
- * Быстрые ссылки в профиле
- * ============================================================ */
+
 .profile-quick-links {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -316,7 +309,7 @@
   text-align: center;
 }
 
-/* Плавное раскрытие формы отзыва */
+
 .profile-review-wrapper {
   display: grid;
   grid-template-rows: 0fr;
@@ -332,4 +325,232 @@
 }
 .profile-review-wrapper.open form {
   opacity: 1;
+}
+
+@keyframes prof-in {
+  from { opacity: 0; transform: translateY(18px) scale(.992); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes prof-halo {
+  0%, 100% { transform: scale(1); opacity: .55; }
+  50%      { transform: scale(1.06); opacity: .95; }
+}
+
+.profile-container {
+  max-width: 460px;
+  padding: 34px 32px;
+  border: 1px solid rgba(220, 204, 255, .14);
+  border-radius: 26px;
+  background:
+    radial-gradient(520px 260px at 50% -20%, rgba(168, 121, 255, .16), transparent 70%),
+    linear-gradient(160deg, rgba(36, 23, 58, .82), rgba(13, 10, 21, .94));
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, .45),
+    inset 0 1px 0 rgba(255, 255, 255, .06);
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-container::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(168, 121, 255, .8) 30%, rgba(183, 255, 112, .55) 70%, transparent);
+  opacity: .8;
+  pointer-events: none;
+}
+
+.auth-box {
+  animation: prof-in .6s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+.auth-box h3 {
+  margin: 0 0 22px;
+  font-size: 23px;
+  letter-spacing: -.02em;
+  background: linear-gradient(115deg, #fff, #d9c7ff 55%, #b7ff70);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.input-group {
+  margin-bottom: 16px;
+  gap: 7px;
+}
+
+.input-group label {
+  color: #9d90b4;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.input-group input {
+  padding: 13px 15px;
+  border: 1px solid rgba(220, 204, 255, .14);
+  border-radius: 13px;
+  background: rgba(9, 6, 16, .6);
+  transition: border-color .25s ease, box-shadow .25s ease, background .25s ease;
+}
+
+.input-group input:hover {
+  border-color: rgba(168, 121, 255, .38);
+}
+
+.input-group input:focus {
+  border-color: #a879ff;
+  background: rgba(17, 12, 29, .9);
+  box-shadow: 0 0 0 3px rgba(168, 121, 255, .15), 0 0 26px rgba(168, 121, 255, .2);
+}
+
+.auth-box .button {
+  transition: transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
+}
+
+.auth-box .button[type="submit"] {
+  position: relative;
+  overflow: hidden;
+  border-radius: 13px;
+  box-shadow: 0 14px 30px rgba(124, 58, 237, .32);
+}
+
+.auth-box .button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(124, 58, 237, .42);
+}
+
+.auth-box .button[type="submit"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, .5) 50%, transparent 65%);
+  translate: -130% 0;
+  transition: translate .7s ease;
+  pointer-events: none;
+}
+
+.auth-box .button[type="submit"]:hover::after {
+  translate: 130% 0;
+}
+
+.auth-switch a {
+  position: relative;
+  transition: color .2s ease;
+}
+
+.auth-switch a:hover {
+  color: #b7ff70;
+}
+
+.social-btn {
+  border-radius: 13px;
+  transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(168, 121, 255, .4);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, .3);
+}
+
+.avatar-large {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin-bottom: 18px;
+  font-size: 36px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #b892ff, #7c3aed 60%, #5b21b6);
+  box-shadow:
+    0 18px 40px rgba(124, 58, 237, .42),
+    inset 0 0 0 1px rgba(255, 255, 255, .22),
+    inset 0 -10px 22px rgba(0, 0, 0, .25);
+}
+
+.avatar-large::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(183, 255, 112, .35);
+  animation: prof-halo 3.4s ease-in-out infinite;
+}
+
+.profile-quick-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.profile-link-card {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  border-radius: 15px;
+  border: 1px solid rgba(220, 204, 255, .12);
+  background: linear-gradient(160deg, rgba(168, 121, 255, .09), rgba(255, 255, 255, .02));
+  color: #d8cdf0;
+  font-size: 12px;
+  text-decoration: none;
+  transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease, color .3s ease;
+}
+
+.profile-link-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(168, 121, 255, .45);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, .35), 0 0 24px rgba(168, 121, 255, .14);
+  color: #fff;
+}
+
+.profile-link-card svg {
+  width: 22px;
+  height: 22px;
+  color: #b391ff;
+  transition: color .3s ease, transform .3s ease;
+}
+
+.profile-link-card:hover svg {
+  color: #b7ff70;
+  transform: scale(1.08);
+}
+
+#editProfileForm:not(.hidden) {
+  animation: prof-in .45s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 26px 20px;
+    border-radius: 22px;
+  }
+
+  .avatar-large {
+    width: 84px;
+    height: 84px;
+    font-size: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar-large::after,
+  .auth-box {
+    animation: none;
+  }
+}
+
+.social-btn.gmail {
+  background: rgba(255, 255, 255, .05);
+  border-color: rgba(234, 67, 53, .3);
+  box-shadow: none;
+}
+
+.social-btn.gmail:hover {
+  background: rgba(255, 255, 255, .09);
+  border-color: rgba(234, 67, 53, .5);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, .32), 0 0 20px rgba(234, 67, 53, .16);
 }

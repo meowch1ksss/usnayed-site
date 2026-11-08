@@ -2,17 +2,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const list = document.getElementById('ordersList');
   const clearBtn = document.getElementById('clearOrdersBtn');
   const clearWrapper = document.getElementById('clearOrdersWrapper');
-  
+
   const currentUser = Store.getUser();
 
   if (!currentUser) {
     if (clearWrapper) clearWrapper.style.display = 'none';
     if (list) {
       list.innerHTML = `
-        <div class="empty-cart" style="max-width: 600px; margin: 0 auto;">
-          <h3>История заказов доступна только авторизованным</h3>
-          <p>Пожалуйста, войдите в свой профиль, чтобы видеть историю заказов и повторять их.</p>
-          <a href="profile.html" class="button button-primary">Перейти в профиль</a>
+        <div class="orders-empty">
+          <span class="orders-empty-glow" aria-hidden="true"></span>
+          <span class="orders-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h5"/><path d="M15 3v4h4"/>
+            </svg>
+          </span>
+          <h3>Здесь будет история ваших обедов</h3>
+          <p>Войдите в личный кабинет — и увидите все прошлые заказы, сможете повторить любой из них в один клик и не вводить адрес заново.</p>
+          <div class="orders-empty-actions">
+            <a href="profile.html" class="button button-primary">Войти в профиль <span aria-hidden="true">↗</span></a>
+            <a href="menu.html" class="button button-quiet">Собрать обед</a>
+          </div>
+          <ul class="orders-empty-list">
+            <li>Все заказы с составом и суммой</li>
+            <li>Повтор заказа в один клик</li>
+            <li>Дата и время каждой доставки</li>
+          </ul>
         </div>
       `;
     }
@@ -37,28 +51,26 @@ document.addEventListener('DOMContentLoaded', () => {
       if (clearWrapper) clearWrapper.style.display = 'block';
 
       list.innerHTML = orders.map(order => {
-        const date = new Date(order.date).toLocaleString('ru-RU', { 
-          day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+        const date = new Date(order.date).toLocaleString('ru-RU', {
+          day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
         });
-        
+
+        const totalQty = order.items.reduce((sum, i) => sum + Number(i.qty), 0);
+
         const itemsHtml = order.items.map(i => `
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed rgba(220, 204, 255, 0.1);">
-            <div style="flex: 1; padding-right: 15px;">
-              <div style="color: #f6f1ff; font-weight: 600; font-size: 15px; line-height: 1.4;">${i.name}</div>
-              <div style="color: #a49ab8; font-size: 13px; margin-top: 4px;">${i.qty} шт.</div>
-            </div>
-            <div style="font-weight: 700; color: #a879ff; font-size: 16px; white-space: nowrap;">
-              ${Number(i.price) * Number(i.qty)} ₽
-            </div>
+          <div class="order-item-row">
+            <span class="order-item-name">${i.name}</span>
+            <span class="order-item-qty">${i.qty} шт.</span>
+            <span class="order-item-price">${Number(i.price) * Number(i.qty)} ₽</span>
           </div>
         `).join('');
-        
+
         return `
           <article class="user-order-card" id="order-${order.number}">
             <div class="user-order-header" onclick="document.getElementById('order-${order.number}').classList.toggle('open')">
               <div class="user-order-title">
-                <h3>Заказ ${order.number}</h3>
-                <span class="user-order-date">${date}</span>
+                <h3><span class="user-order-num">Заказ №${order.number}</span><span class="user-order-status">выполнен</span></h3>
+                <span class="user-order-date">${date} · ${totalQty} шт.</span>
               </div>
               <div class="user-order-total">
                 ${order.total} ₽ <span class="arrow">▼</span>
@@ -68,16 +80,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="user-order-details">
               <div class="user-order-details-inner">
                 <div class="user-order-items">
-                  <small style="color: #a49ab8; display: block; margin-bottom: 8px;">Состав заказа:</small>
+                  <small class="user-order-items-title">Состав заказа</small>
                   ${itemsHtml}
                 </div>
-                
+
                 <div class="user-order-footer">
                   <div class="user-order-client">
                     <strong>${order.name || 'Покупатель'}</strong> · ${order.city || 'Город не указан'}
                   </div>
-                  <button onclick='window.repeatOrder(${JSON.stringify(order).replace(/'/g, "&#39;")})' class="button button-quiet" style="padding: 8px 16px; font-size: 13px; border: 1px solid rgba(168, 121, 255, 0.3); color: #c6a6ff;">
-                    🔄 Повторить
+                  <button onclick='window.repeatOrder(${JSON.stringify(order).replace(/'/g, "&#39;")})' class="button button-quiet user-order-repeat">
+                    ↻ Повторить
                   </button>
                 </div>
               </div>
@@ -85,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </article>
         `;
       }).join('');
-      
+
     } catch (err) {
       console.error(err);
       list.innerHTML = `<p style="text-align: center; color: #ff6d78; padding: 40px 0;">Ошибка загрузки истории заказов.</p>`;
@@ -99,8 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmOverlay.classList.add('open');
         document.getElementById('confirmDelete').onclick = async () => {
           confirmOverlay.classList.remove('open');
-          
-          // Если нужно чистить локально (в базе мы чистим только через админку)
+
+
           Store.clearOrders();
           if (list) list.innerHTML = `<p style="text-align: center; color: #a49ab8; padding: 40px 0;">История очищена.</p>`;
           if (clearWrapper) clearWrapper.style.display = 'none';
@@ -114,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!order || !order.items) return;
     const newCart = order.items.map(i => ({ id: i.id, qty: i.qty }));
     Store.saveCart(newCart);
-    
+
     if (window.showToast) window.showToast('Заказ добавлен в корзину!', 'success');
     setTimeout(() => location.href = 'cart.html', 500);
   };

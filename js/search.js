@@ -1,4 +1,3 @@
-// js/search.js
 document.addEventListener('DOMContentLoaded', () => {
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
@@ -29,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="search-result-item">
             <a href="menu.html?search=${encodeURIComponent(q)}" class="search-result-link">
               <img src="${ProductCard.esc(item.image)}" alt="${ProductCard.esc(item.name)}"
-                   onerror="this.src='https://placehold.co/100x100/21182e/c8a9ff?text=Фото'">
+                   onerror="this.onerror=null;this.src='images/placeholder.svg'">
               <div class="search-result-info">
                 <div class="search-result-name">${ProductCard.esc(item.name)}</div>
                 <div class="search-result-price">${item.price} ₽ <span>· ${ProductCard.esc(item.weight || '')}</span></div>
@@ -46,9 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
       `<a href="menu.html?search=${encodeURIComponent(q)}" class="search-all-btn">Показать все результаты →</a>`;
     }
     dropdown.classList.remove('hidden');
+    ProductCard.pulseChanged?.(dropdown);
   }
 
-  searchInput.addEventListener('input', updateDropdown);
+
+  let searchTimer;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(updateDropdown, 120);
+  });
 
   ProductCard.bind(dropdown, {
     onAdd:   (id, p) => { ProductCard.defaultAdd(dropdown, id, p); updateDropdown(); },

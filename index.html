@@ -3,20 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#100b1c">
-  <meta name="description" content="У нас обед — домашние обеды, доставка в офисы Ростова.">
   <title>У нас обед — вкусная столовая</title>
+
+  <meta name="description" content="Домашние обеды с доставкой в офисы Ростова-на-Дону, Аксая и Батайска. Комплексные обеды, завтраки, банкеты и фуршеты. Заказ до 13:30 — привезём к обеду.">
+  <link rel="canonical" href="https://usnayed-site.pages.dev/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="У нас обед">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="У нас обед — вкусная столовая">
+  <meta property="og:description" content="Домашние обеды с доставкой в офисы Ростова-на-Дону, Аксая и Батайска. Комплексные обеды, завтраки, банкеты и фуршеты. Заказ до 13:30 — привезём к обеду.">
+  <meta property="og:url" content="https://usnayed-site.pages.dev/">
+  <meta property="og:image" content="https://usnayed-site.pages.dev/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="У нас обед — доставка обедов в офисы Ростова-на-Дону">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="У нас обед — вкусная столовая">
+  <meta name="twitter:description" content="Домашние обеды с доставкой в офисы Ростова-на-Дону, Аксая и Батайска. Комплексные обеды, завтраки, банкеты и фуршеты. Заказ до 13:30 — привезём к обеду.">
+  <meta name="twitter:image" content="https://usnayed-site.pages.dev/images/og-image.png">
+  <meta name="theme-color" content="#100b1c">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+  <link rel="preload" as="image" href="images/site/categories/breakfasts.webp" fetchpriority="high">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Restaurant","@id":"https://usnayed-site.pages.dev/#restaurant","name":"У нас обед","description":"Домашняя столовая в Батайске: комплексные обеды с доставкой в офисы Ростова-на-Дону, Аксая и Батайска.","url":"https://usnayed-site.pages.dev/","image":"https://usnayed-site.pages.dev/images/og-image.png","logo":"https://usnayed-site.pages.dev/images/icon-512.png","telephone":"+7-918-564-72-12","priceRange":"₽₽","servesCuisine":["Русская","Домашняя кухня"],"address":{"@type":"PostalAddress","streetAddress":"Производственная ул., 8","addressLocality":"Батайск","addressRegion":"Ростовская область","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":47.1367,"longitude":39.7536},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"08:30","closes":"15:00"}],"areaServed":["Ростов-на-Дону","Батайск","Аксай"],"hasMenu":"https://usnayed-site.pages.dev/menu.html","sameAs":["https://eda.yandex.ru","https://www.delivery-club.ru"]},{"@type":"WebSite","@id":"https://usnayed-site.pages.dev/#website","url":"https://usnayed-site.pages.dev/","name":"У нас обед","inLanguage":"ru-RU","publisher":{"@id":"https://usnayed-site.pages.dev/#restaurant"}}]}</script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/sections.css">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/effects.css">
+  <script>document.documentElement.classList.add('anim-ready');setTimeout(function(){if(!window.__dshAnim)document.documentElement.classList.remove('anim-ready');},2500);</script>
   <script src="js/config.js" defer></script>
   <script src="js/store.js" defer></script>
   <script src="js/data.js" defer></script>
   <script src="js/site.js" defer></script>
   <script src="js/search.js" defer></script>
   <script src="js/ui/product-card.js" defer></script>
+  <script src="js/effects.js" defer></script>
 </head>
 <body>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
@@ -38,27 +66,24 @@
       <a href="index.html#home">Главная</a><a href="menu.html">Меню</a><a href="index.html#reviews">Отзывы</a><a href="index.html#faq">FAQ</a><a href="contacts.html">Контакты</a>
     </nav>
     <nav class="header-actions" aria-label="Основная навигация">
-      <!-- Избранное -->
+
       <a href="favorites.html" class="icon-button nav-fav" aria-label="Избранное" title="Избранное" style="text-decoration: none;">
         <svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>
         <span class="count-badge" id="favorite-count">0</span>
       </a>
-      
-      <!-- Заказы -->
+
       <a href="orders.html" class="icon-button" aria-label="Заказы" title="Заказы" style="text-decoration: none;">
         <svg viewBox="0 0 24 24"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
       </a>
-      
-      <!-- Корзина -->
+
       <a href="cart.html" class="icon-button cart-trigger" aria-label="Корзина" title="Корзина" style="text-decoration: none;">
         <svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
         <span class="count-badge" id="cart-count">0</span>
       </a>
-      
-      <!-- Профиль -->
+
       <a href="profile.html" class="profile-trigger" style="text-decoration: none;">
         <span class="avatar" style="background: transparent; padding: 0; display: flex; align-items: center; justify-content: center;">
-            <img src="rimgs/376867_user_square_vfd729aaac2.png" alt="Профиль" style="width: 24px; height: 24px; object-fit: contain; filter: brightness(0) invert(1);">
+            <img loading="lazy" src="rimgs/376867_user_square_vfd729aaac2.png" alt="Профиль" style="width: 24px; height: 24px; object-fit: contain; filter: brightness(0) invert(1);">
         </span>
         <span class="profile-label">Профиль</span>
       </a>
@@ -67,17 +92,33 @@
 
   <main id="app-main">
     <section class="hero page-section" id="home">
+      <div class="hero-atmosphere" aria-hidden="true">
+        <span class="hero-glow"></span>
+        <span class="hero-mote"></span>
+        <span class="hero-mote"></span>
+        <span class="hero-mote"></span>
+        <span class="hero-mote"></span>
+        <span class="hero-mote"></span>
+        <span class="hero-mote"></span>
+        <span class="hero-mote"></span>
+        <span class="hero-mote"></span>
+      </div>
+
       <div class="hero-copy">
         <div class="eyebrow"><span class="pulse"></span> ТВОЯ НОВАЯ ТОЧКА ПРИТЯЖЕНИЯ</div>
         <h1>Доставка обедов в<br>офисы <br><span class="gradient-text">Ростова.</span></h1>
+        <p class="hero-typing">
+          <span class="hero-typing-prefix">Сейчас в меню:</span>
+          <span class="hero-typing-text" id="heroTyping" aria-hidden="true"></span><span class="hero-typing-caret" aria-hidden="true"></span>
+        </p>
         <p>«Наваристый бульон, томлёная подлива и десерт, от которого теплеет на душе. Всё, как в детстве у бабушки, только без очереди и с комфортом.»</p>
         <div class="hero-buttons"><a class="button button-primary" id="explore-button" href="#menu">Исследовать меню <span>↗</span></a><a class="button button-quiet" href="delivery.html">Доставка и оплата <span>→</span></a></div>
         <div class="delivery-partners">
           <a href="https://eda.yandex.ru" target="_blank" class="partner-btn partner-yandex">
-            <img src="images/yandex-eda.png" alt="Яндекс Еда" class="partner-logo">
+            <img loading="lazy" decoding="async" width="1200" height="675" src="images/site/partners/yandex-eda.webp" alt="Яндекс Еда" class="partner-logo">
           </a>
           <a href="https://www.delivery-club.ru" target="_blank" class="partner-btn partner-delivery">
-            <img src="images/delivery.jpg" alt="Delivery Club" class="partner-logo">
+            <img loading="lazy" decoding="async" width="1024" height="576" src="images/site/partners/delivery-club.webp" alt="Delivery Club" class="partner-logo">
           </a>
         </div>
         <div class="hero-proof"><div class="proof-avatars"><span>А</span><span>М</span><span>К</span><span>+</span></div><div><strong>12 000+</strong><small>клиентов</small></div><div class="proof-divider"></div><div><strong>4.6 <span class="star">★</span></strong><small>средняя оценка</small></div><div class="proof-divider"></div><div><strong>более 2700+ <span class="star">★</span></strong><small>отзывов</small></div></div>
@@ -85,90 +126,38 @@
       <div class="hero-art" aria-label="Наши блюда">
         <div class="orb orb-large"></div><div class="orb orb-small"></div>
         <div class="hero-tag tag-top"><span class="tag-dot"></span>ВКУСНЫЕ<b>ЗАВТРАКИ</b></div>
-        <div class="hero-product hero-product-back"><img src="images/our-menu-1.jpg" alt="Завтрак в нашей столовой"></div>
-        <div class="hero-product hero-product-front"><img src="images/our-menu-2.jpg" alt="Готовый обед"></div>
+        <div class="hero-product hero-product-back"><img loading="eager" fetchpriority="high" decoding="async" width="330" height="250" src="images/site/categories/breakfasts.webp" alt="Завтрак в нашей столовой"></div>
+        <div class="hero-product hero-product-front"><img loading="eager" fetchpriority="high" decoding="async" width="330" height="250" src="images/site/categories/office-lunches.webp" alt="Готовый обед"></div>
         <div class="floating-price"><small>ДОМАШНЯЯ ЕДА</small><strong>Сытно, быстро и вкусно</strong><span>Выбирайте нас<b>↗</b></span></div>
         <div class="hero-tag tag-bottom"><span class="tag-dot"></span>ВКУСНЫЕ<b>ОБЕДЫ</b></div>
       </div>
-
-        <!-- Параллакс элементы -->
-        <div id="scene" class="scene">
-          
-          <!-- Чек -->
-          <div data-depth="0.4" class="check-1">
-            <img src="images/layer-2.png" alt="Чек">
-          </div>
-
-          <!-- Чек -->
-          <div data-depth="0.4" class="check-2">
-            <img src="images/layer-2.png" alt="Чек">
-          </div>
-
-          <!-- Помидорка 1 -->
-          <div data-depth="0.4" class="tomato tomato-1">
-            <img src="images/layer-3.png" alt="Помидор">
-          </div>
-
-          <!-- Помидорка 2 -->
-          <div data-depth="0.35" class="tomato tomato-2">
-            <img src="images/layer-3.png" alt="Помидор">
-          </div>
-
-          <!-- Листик 1 -->
-          <div data-depth="0.4" class="leaf leaf-1">
-            <img src="images/layer-4.png" alt="Лист">
-          </div>
-
-          <!-- Листик 2 -->
-          <div data-depth="0.3" class="leaf leaf-2">
-            <img src="images/layer-4.png" alt="Лист">
-          </div>
-          
-          <!-- Листик 3 -->
-          <div data-depth="0.5" class="leaf leaf-3">
-            <img src="images/layer-4.png" alt="Лист">
-          </div>
-
-          <!-- Тень -->
-          <div data-depth="0.3" class="leaf-shadow-1">
-            <img src="images/layer-1.png" alt="Тень">
-          </div>
-
-          <!-- Тень -->
-          <div data-depth="0.3" class="leaf-shadow-2">
-            <img src="images/layer-1.png" alt="Тень">
-          </div>
-
-        </div>
     </section>
 
-    <!-- КАТЕГОРИИ -->
     <section id="menu" class="reveal">
       <div class="section-header">
         <h2 class="page-title">Комплексное питание с доставкой <span class="typewriter">✦ выберите категорию ✦</span></h2>
       </div>
       <div class="categories-grid" id="categoriesGrid">
-        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Завтраки')" class="category-card" data-category="Завтраки" style="background-image: linear-gradient(rgba(16,11,28,0.1), rgba(16,11,28,0.5)), url('images/our-menu-1.jpg');">
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Завтраки')" class="category-card" data-category="Завтраки" style="background-image: linear-gradient(rgba(16,11,28,0.1), rgba(16,11,28,0.5)), url('images/site/categories/breakfasts.webp');">
             <h3 class="category-name"><strong>ЗАВТРАКИ</strong></h3>
         </a>
-        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Обеды в офис')" class="category-card" data-category="Обеды в офис" style="background-image: linear-gradient(rgba(16,11,28,0.1), rgba(16,11,28,0.5)), url('images/our-menu-2.jpg');">
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Обеды в офис')" class="category-card" data-category="Обеды в офис" style="background-image: linear-gradient(rgba(16,11,28,0.1), rgba(16,11,28,0.5)), url('images/site/categories/office-lunches.webp');">
             <h3 class="category-name"><strong>ОБЕДЫ В ОФИС</strong></h3>
         </a>
-        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Комплексные обеды')" class="category-card" data-category="Комплексные обеды" style="background-image: linear-gradient(rgba(16,11,28,0.1), rgba(16,11,28,0.5)), url('images/our-menu-3.jpg');">
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Комплексные обеды')" class="category-card" data-category="Комплексные обеды" style="background-image: linear-gradient(rgba(16,11,28,0.1), rgba(16,11,28,0.5)), url('images/site/categories/complex-lunches.webp');">
             <h3 class="category-name"><strong>КОМПЛЕКСНЫЕ ОБЕДЫ</strong></h3>
         </a>
-        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Банкеты и фуршеты')" class="category-card" data-category="Банкеты и фуршеты" style="background-image: linear-gradient(rgba(16,11,28,0.1), rgba(16,11,28,0.5)), url('images/our-menu-4.jpg');">
+        <a href="menu.html" onclick="localStorage.setItem('currentCategory', 'Банкеты и фуршеты')" class="category-card" data-category="Банкеты и фуршеты" style="background-image: linear-gradient(rgba(16,11,28,0.1), rgba(16,11,28,0.5)), url('images/site/categories/banquets.webp');">
             <h3 class="category-name"><strong>БАНКЕТЫ И ФУРШЕТЫ</strong></h3>
         </a>
       </div>
       <div class="office-delivery-note" id="officeDeliveryNote">Особенно удобна доставка обедов для коллективов, работающих в одном ритме и над одной задачей, которые могут заказывать комплексные обеды с доставкой. Можно выбирать обеды в офис с одинаковыми меню из предлагаемых вариантов, а можно несколько любых, предлагаемых меню, в количестве более 5 комплексных обедов. В таких случаях доставка обедов в офисы позволяет сотрудникам сэкономить время на прием пищи, и ускорить решение поставленных задач.</div>
     </section>
 
-    <!-- Блок ДОСТАВКА И ОПЛАТА -->
     <div class="delivery-custom-section">
       <div class="delivery-steps-banner">
         <div class="delivery-step-item">
-          <div class="delivery-step-icon"><img src="images/deliver-item.png" alt="Выберите блюда"></div>
+          <div class="delivery-step-icon"><img loading="lazy" decoding="async" width="150" height="150" src="images/site/delivery/step-1-choose-dish.webp" alt="Выберите блюда"></div>
           <div class="delivery-step-text">
             <p>Выберите блюда</p>
             <strong>из каталога</strong>
@@ -176,7 +165,7 @@
           </div>
         </div>
         <div class="delivery-step-item">
-          <div class="delivery-step-icon"><img src="images/deliver-item-1.png" alt="Оформите заказ"></div>
+          <div class="delivery-step-icon"><img loading="lazy" decoding="async" width="150" height="150" src="images/site/delivery/step-2-place-order.webp" alt="Оформите заказ"></div>
           <div class="delivery-step-text">
             <p>Оформите заказ</p>
             <strong>на сайте или по телефону</strong>
@@ -184,7 +173,7 @@
           </div>
         </div>
         <div class="delivery-step-item">
-          <div class="delivery-step-icon"><img src="images/deliver-item-2.png" alt="Успейте заказать"></div>
+          <div class="delivery-step-icon"><img loading="lazy" decoding="async" width="150" height="150" src="images/site/delivery/step-3-in-time.webp" alt="Успейте заказать"></div>
           <div class="delivery-step-text">
             <p>Успейте совершить</p>
             <strong>заказ до 13:30</strong>
@@ -220,7 +209,7 @@
       <div class="why-us-grid">
         <article class="why-us-card">
           <div class="why-us-icon">
-            <img src="rimgs/icon-376354.png" alt="Свежая готовка" style="width: 24px; height: 24px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
+            <img loading="lazy" src="rimgs/icon-376354.png" alt="Свежая готовка" style="width: 24px; height: 24px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
           </div>
           <h3>Свежая готовка</h3>
           <p>Готовим блюда для заказов, чтобы обед приехал свежим и готовым к подаче.</p>
@@ -228,7 +217,7 @@
 
         <article class="why-us-card">
           <div class="why-us-icon">
-            <img src="rimgs/icon-373814.png" alt="Понятное меню" style="width: 24px; height: 24px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
+            <img loading="lazy" src="rimgs/icon-373814.png" alt="Понятное меню" style="width: 24px; height: 24px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
           </div>
           <h3>Понятное меню</h3>
           <p>У каждого блюда можно посмотреть описание, стоимость и вес порции.</p>
@@ -236,7 +225,7 @@
 
         <article class="why-us-card">
           <div class="why-us-icon">
-            <img src="rimgs/icon-151030.png" alt="Доставка в офис" style="width: 24px; height: 24px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
+            <img loading="lazy" src="rimgs/icon-151030.png" alt="Доставка в офис" style="width: 24px; height: 24px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
           </div>
           <h3>Доставка в офис</h3>
           <p>Получайте горячие комплексные обеды прямо на рабочем месте.</p>
@@ -244,7 +233,7 @@
 
         <article class="why-us-card">
           <div class="why-us-icon">
-            <img src="rimgs/icon-151303.png" alt="Удобный заказ" style="width: 24px; height: 24px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
+            <img loading="lazy" src="rimgs/icon-151303.png" alt="Удобный заказ" style="width: 24px; height: 24px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
           </div>
           <h3>Удобный заказ</h3>
           <p>Заказывайте заранее и выбирайте удобный способ оформления заказа.</p>
@@ -258,9 +247,9 @@
         <h2>Что говорят гости</h2>
         <p class="section-subtitle">✦ честные слова ✦</p>
       </div>
-      
+
       <div class="reviews-grid" id="reviewsGrid">
-        <!-- 8 ВИДИМЫХ ОТЗЫВОВ -->
+
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
           <blockquote>Все очень вкусно! Оперативно! Поднесли еду прям к вагону, накормили группу из 18 человек. Работают даже в 21 часов, что было очень удобно. Поезд стоял всего 20 минут, сработали оперативно! Обратимся ещё.  С ув. Ваша «Культурная революция» г. Керчь</blockquote>
@@ -301,37 +290,26 @@
           <blockquote>Второй день заказываю еду очень вкусно буду заказывать еще! Большое спасибо!</blockquote>
           <strong>— Анжелика</strong>
         </article>
-
-        <!-- СКРЫТЫЕ ОТЗЫВЫ (появятся при клике) -->
-        <div id="hiddenReviews" style="display: none; grid-column: 1 / -1;">
-          <div class="reviews-grid">
-            
-            <!-- ТУТ ВСТАВЛЯЙ СВОИ ОСТАЛЬНЫЕ ОТЗЫВЫ -->
-            <!-- Пример:
-            <article class="review-card">
-              <div class="review-stars">★★★★★</div>
-              <blockquote>«Текст отзыва...»</blockquote>
-              <strong>— Имя</strong>
-            </article>
-            -->
-            
-          </div>
-        </div>
       </div>
 
-      <!-- Кнопка "Показать все" -->
-      <div style="text-align: center; margin-top: 40px;" id="showMoreWrapper">
-        <button id="showMoreReviewsBtn" class="button button-quiet" style="border: 1px solid rgba(168, 121, 255, 0.3); color: #a879ff; padding: 12px 24px; border-radius: 12px;">
-          Показать все отзывы ↓
+      <p class="reviews-hint" aria-hidden="true">листайте отзывы →</p>
+
+      <div class="reviews-more" id="showMoreWrapper" hidden>
+        <button id="toggleReviewsBtn" class="button button-quiet reviews-toggle" type="button"
+                aria-expanded="false" aria-controls="reviewsGrid">
+          Показать все отзывы
         </button>
       </div>
 
-      <!-- Форма для отзыва (появится вместе со скрытыми) -->
       <div id="addReviewFormWrapper" class="hidden" style="max-width: 600px; margin: 40px auto 0; text-align: left;">
         <h3 style="text-align: center; margin-bottom: 20px; color: #f6f1ff;">Оставить отзыв</h3>
         <form id="addReviewForm" class="info-panel" style="display: flex; flex-direction: column; gap: 15px;">
           <input type="text" id="reviewName" placeholder="Ваше имя" required style="width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(220,204,255,0.1); border-radius: 12px; color: #fff; outline: none;">
           <textarea id="reviewText" placeholder="Ваш отзыв..." rows="4" required style="width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(220,204,255,0.1); border-radius: 12px; color: #fff; outline: none; resize: vertical;"></textarea>
+          <label class="consent-field" style="margin: 0;">
+            <input type="checkbox" id="reviewConsent" required>
+            <span>Согласен с <a href="privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a> и на обработку персональных данных</span>
+          </label>
           <button type="submit" class="button button-primary" style="width: 100%;">Отправить отзыв</button>
         </form>
       </div>
@@ -344,19 +322,19 @@
         <p class="section-subtitle">✦ пять моментов нашей столовой ✦</p>
       </div>
       <div class="gallery-grid">
-        <figure style="background-image: url('images/gallery/canteen-1.jpg'); background-size: cover; background-position: center;">
+        <figure style="background-image: url('images/site/gallery/canteen-1.webp'); background-size: cover; background-position: center;">
           <figcaption>Наша столовая · 01</figcaption>
         </figure>
-        <figure style="background-image: url('images/gallery/canteen-2.jpg'); background-size: cover; background-position: center;">
+        <figure style="background-image: url('images/site/gallery/canteen-2.webp'); background-size: cover; background-position: center;">
           <figcaption>Наша столовая · 02</figcaption>
         </figure>
-        <figure style="background-image: url('images/gallery/canteen-3.jpg'); background-size: cover; background-position: center;">
+        <figure style="background-image: url('images/site/gallery/canteen-3.webp'); background-size: cover; background-position: center;">
           <figcaption>Наша столовая · 03</figcaption>
         </figure>
-        <figure style="background-image: url('images/gallery/canteen-4.jpg'); background-size: cover; background-position: center;">
+        <figure style="background-image: url('images/site/gallery/canteen-4.webp'); background-size: cover; background-position: center;">
           <figcaption>Наша столовая · 04</figcaption>
         </figure>
-        <figure style="background-image: url('images/gallery/canteen-5.jpg'); background-size: cover; background-position: center;">
+        <figure style="background-image: url('images/site/gallery/canteen-5.webp'); background-size: cover; background-position: center;">
           <figcaption>Наша столовая · 05</figcaption>
         </figure>
       </div>
@@ -377,7 +355,7 @@
           <button class="faq-question">Работаете ли вы в выходные?</button>
           <div class="faq-answer">
             <div class="faq-answer-content">
-              <p>Мы работаем с понедельника по пятницу 08:00-15:00. В воскресенье и субботу — выходной.</p>
+              <p>Мы работаем с понедельника по пятницу 08:30-15:00. В воскресенье и субботу — выходной.</p>
             </div>
           </div>
         </div>
@@ -401,7 +379,7 @@
           <button class="faq-question">За сколько дней оформлять заказ?</button>
           <div class="faq-answer">
             <div class="faq-answer-content">
-              <p>Срочный заказ — до 8:00 день в день. Обычный — до 13:30 на следующий день. Предварительный — за 3 дня.</p>
+              <p>Срочный заказ — до 8:30 день в день. Обычный — до 13:30 на следующий день. Предварительный — за 3 дня.</p>
             </div>
           </div>
         </div>
@@ -424,7 +402,7 @@
       </div>
     </section>
 
-    <section class="hours-section page-section" id="hours"><div class="section-center"><span class="eyebrow section-pill">✦ ГРАФИК ✦</span><h2>Режим работы</h2><p class="section-subtitle">✦ всегда открыты для вас ✦</p></div><div class="hours-grid"><article><h3>Понедельник — пятница</h3><strong>8:00 — 15:00</strong><p>● работаем</p></article><article><h3>Суббота</h3><strong>Выходной</strong><p>● закрыто</p></article><article><h3>Воскресенье</h3><strong>Выходной</strong><p>● закрыто</p></article><article><h3>Заказы принимаются до</h3><strong>13:30</strong><p>● по городу</p></article></div></section>
+    <section class="hours-section page-section" id="hours"><div class="section-center"><span class="eyebrow section-pill">✦ ГРАФИК ✦</span><h2>Режим работы</h2><p class="section-subtitle">✦ всегда открыты для вас ✦</p></div><div class="hours-grid"><article><h3>Понедельник — пятница</h3><strong>8:30 — 15:00</strong><p>● работаем</p></article><article><h3>Суббота</h3><strong>Выходной</strong><p>● закрыто</p></article><article><h3>Воскресенье</h3><strong>Выходной</strong><p>● закрыто</p></article><article><h3>Заказы принимаются до</h3><strong>13:30</strong><p>● по городу</p></article></div></section>
 
     <main class="page-section page-shell">
       <div class="section-center">
@@ -432,28 +410,28 @@
       <h2>Контакты</h2>
       <p class="section-subtitle">✦ всегда на связи ✦</p>
       </div>
-      
+
       <div class="contacts-layout">
       <article class="info-panel">
         <p>
-          <span><img src="rimgs/icon-375237.png" alt="Адрес" style="width: 16px; height: 16px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);"></span>
+          <span><img loading="lazy" src="rimgs/icon-375237.png" alt="Адрес" style="width: 16px; height: 16px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);"></span>
           <strong>Производственная ул., 8, Батайск</strong>
         </p>
         <p>
-          <span><img src="rimgs/icon-151154.png" alt="Телефон" style="width: 16px; height: 16px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);"></span>
+          <span><img loading="lazy" src="rimgs/icon-151154.png" alt="Телефон" style="width: 16px; height: 16px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);"></span>
           <a href="tel:+79185647212">8 (918) 564-72-12</a>
         </p>
         <p>
-          <span><img src="rimgs/icon-151154.png" alt="Телефон" style="width: 16px; height: 16px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);"></span>
+          <span><img loading="lazy" src="rimgs/icon-151154.png" alt="Телефон" style="width: 16px; height: 16px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);"></span>
           <a href="tel:+78633113212">8 (863) 311-32-12</a>
         </p>
         <p>
-          <span><img src="rimgs/icon-151216.png" alt="Email" style="width: 16px; height: 16px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);"></span>
+          <span><img loading="lazy" src="rimgs/icon-151216.png" alt="Email" style="width: 16px; height: 16px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);"></span>
           <a href="mailto:kolibri831@yandex.ru">kolibri831@yandex.ru</a>
         </p>
         <p>
-          <span><img src="rimgs/icon-374906.png" alt="Часы" style="width: 16px; height: 16px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);"></span>
-          <strong>Пн–Пт 8:00 — 15:00</strong>
+          <span><img loading="lazy" src="rimgs/icon-374906.png" alt="Часы" style="width: 16px; height: 16px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);"></span>
+          <strong>Пн–Пт 8:30 — 15:00</strong>
         </p>
         <a class="button button-primary" href="index.html" style="margin-top: 20px;">← Вернуться на главную</a>
       </article>
@@ -467,61 +445,101 @@
   <main id="view-main" class="view-main" hidden></main>
 
   <footer class="site-footer">
-    <div class="footer-column footer-brand-column">
-      <a class="brand footer-brand line-logo" href="index.html" aria-label="У нас обед — главная">
-        <svg class="footer-logo" viewBox="0 0 49 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <span class="ft-glow" aria-hidden="true"></span>
+
+    <div class="ft-main">
+      <div class="ft-brand">
+        <a class="brand footer-brand" href="index.html" aria-label="У нас обед — главная">
+          <svg class="ft-logo" viewBox="0 0 49 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M48.4734 25.3728C48.4734 12.6485 38.9302 3.55976 26.8118 2.49941C26.8118 -0.833136 21.813 -0.833136 21.813 2.49941C9.54319 3.55976 0 12.497 0 25.2213C0 29.4627 48.4734 29.4627 48.4734 25.3728Z" fill="#FE0000"/>
             <path d="M22.7219 5.98346C18.4805 6.58938 14.6935 8.71009 12.1184 11.7397C9.54321 14.7693 8.33137 18.8592 8.63433 22.6462C8.63433 24.6154 5.30179 24.6154 5.30179 22.6462C5.60475 18.1018 7.57398 13.5574 10.9065 10.5278C14.2391 7.49825 18.4805 5.98346 22.7219 5.98346Z" fill="white"/>
             <path d="M45.4438 31.5834C45.4438 40.2177 35.2947 50.3668 24.2367 50.3668C13.1787 50.3668 3.02959 40.2177 3.02959 31.5834C3.02959 28.7053 0 28.7053 0 31.5834C0 48.2461 20.9041 64 24.2367 64C27.5692 64 48.4734 48.0947 48.4734 31.5834C48.4734 28.8568 45.4438 28.8568 45.4438 31.5834Z" fill="#FFAA00"/>
             <path d="M31.0533 37.0367C31.0533 27.9479 17.5716 27.9479 17.5716 37.0367C17.4201 49.155 31.0533 49.155 31.0533 37.0367Z" fill="#FFAA00"/>
-        </svg>
-        <span>У нас обед<span class="brand-dot">.</span><small>Столовая</small></span>
-      </a>
-      <p class="line-copy-1">ООО «У нас обед»</p>
-      <p class="line-copy-2">Все права защищены, 2026 ©</p>
-      <a class="footer-policy line-copy-3" href="privacy.html">Политика конфиденциальности</a>
-    </div>
+          </svg>
+          <span>У нас обед<span class="brand-dot">.</span><small>Столовая</small></span>
+        </a>
 
-    <nav class="footer-links footer-pages" aria-label="Информация">
-      <a class="line-nav-1" href="index.html#home">Главная</a>
-      <a class="line-nav-2" href="organizations.html">Организациям</a>
-      <a class="line-nav-3" href="delivery.html">Доставка и оплата</a>
-      <a class="line-nav-4" href="about.html">О компании</a>
-      <a class="line-nav-5" href="privacy.html">Политика конфиденциальности</a>
-      <a class="line-nav-6" href="contacts.html">Контакты</a>
-    </nav>
+        <p class="ft-tagline">
+          Домашние обеды в офисы Ростова, Аксая и Батайска.
+          Готовим каждое утро — привозим к обеду.
+        </p>
 
-    <div class="footer-hours">
-      <strong class="line-hours-title">Часы работы:</strong>
-      <p class="line-hours-1">Пн–Пт: 8:00 — 15:00</p>
-      <p class="line-hours-2">Без обеда и выходных</p>
-      <strong class="line-hours-title-2">Заказы принимаются до 13:30</strong>
-    </div>
-
-    <div class="footer-contact">
-      <div class="email-picker line-email" style="width: 100%; max-width: 100%; margin-bottom: 10px;">
-        <button class="footer-email email-picker-trigger" type="button" aria-expanded="false" aria-controls="email-provider-list" style="width: 100%; display: flex; justify-content: center; padding: 14px;">✉ &nbsp; kolibri831@yandex.ru <span class="email-chevron" style="margin-left: 8px;">▾</span></button>
-        <div class="email-provider-list" id="email-provider-list" hidden>
-          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot gmail"></i><span>Gmail<small>@gmail.com</small></span></a>
-          <a href="https://outlook.live.com/mail/0/deeplink/compose?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot outlook"></i><span>Outlook / Hotmail<small>@outlook.com · @hotmail.com</small></span></a>
-          <a href="https://compose.mail.yahoo.com/?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yahoo"></i><span>Yahoo Mail<small>@yahoo.com</small></span></a>
-          <a href="https://www.icloud.com/mail/" target="_blank" rel="noopener noreferrer"><i class="mail-dot icloud"></i><span>iCloud Mail<small>@icloud.com</small></span></a>
-          <a href="https://mail.proton.me/u/0/inbox" target="_blank" rel="noopener noreferrer"><i class="mail-dot proton"></i><span>Proton Mail<small>@proton.me · @protonmail.com</small></span></a>
-          <a href="https://mail.zoho.com/" target="_blank" rel="noopener noreferrer"><i class="mail-dot zoho"></i><span>Zoho Mail<small>@zoho.com</small></span></a>
-          <a href="https://mail.yandex.ru/compose?mailto=kolibri831@yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yandex"></i><span>Яндекс Почта<small>@yandex.ru</small></span></a>
-          <a href="https://e.mail.ru/compose/" target="_blank" rel="noopener noreferrer"><i class="mail-dot mailru"></i><span>Mail.ru<small>@mail.ru</small></span></a>
-          <a href="https://mail.rambler.ru/" target="_blank" rel="noopener noreferrer"><i class="mail-dot rambler"></i><span>Rambler<small>@rambler.ru</small></span></a>
-        </div>
+        <a class="ft-cta" href="menu.html">
+          Собрать обед
+          <span aria-hidden="true">↗</span>
+        </a>
       </div>
 
-      <a href="tel:+79185647212" class="line-phone-1" style="display: flex; align-items: center; gap: 8px;">
-        <img src="rimgs/icon-151154.png" alt="Телефон" style="width: 14px; height: 14px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
-        8 (918) 564-72-12
-      </a>
-      <a href="tel:+78633113212" class="line-phone-2" style="display: flex; align-items: center; gap: 8px;">
-        <img src="rimgs/icon-151154.png" alt="Телефон" style="width: 14px; height: 14px; object-fit: contain; filter: invert(57%) sepia(60%) saturate(3000%) hue-rotate(230deg) brightness(100%) contrast(100%);">
-        8 (863) 311-32-12
-      </a>
+      <nav class="ft-col" aria-label="Меню">
+        <h3 class="ft-title">Меню</h3>
+        <a href="menu.html">Завтраки</a>
+        <a href="menu.html">Обеды в офис</a>
+        <a href="menu.html">Комплексные обеды</a>
+        <a href="organizations.html">Банкеты и фуршеты</a>
+      </nav>
+
+      <nav class="ft-col" aria-label="Компания">
+        <h3 class="ft-title">Компания</h3>
+        <a href="about.html">О компании</a>
+        <a href="organizations.html">Организациям</a>
+        <a href="delivery.html">Доставка и оплата</a>
+        <a href="index.html#reviews">Отзывы</a>
+        <a href="contacts.html">Контакты</a>
+      </nav>
+
+      <div class="ft-col ft-contact">
+        <h3 class="ft-title">Связаться</h3>
+
+        <a class="ft-phone" href="tel:+79185647212">
+          <span class="ft-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11.5 11.5 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z"/></svg></span>
+          8 (918) 564-72-12
+        </a>
+
+        <a class="ft-phone" href="tel:+78633113212">
+          <span class="ft-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11.5 11.5 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z"/></svg></span>
+          8 (863) 311-32-12
+        </a>
+
+        <p class="ft-address">
+          <span class="ft-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
+          Производственная ул., 8 · Батайск
+        </p>
+
+        <div class="email-picker line-email">
+          <button class="footer-email email-picker-trigger" type="button"
+                  aria-expanded="false" aria-controls="email-provider-list">
+            <span class="ft-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg></span>
+            <span class="ft-email-text">kolibri831@yandex.ru</span>
+            <span class="email-chevron" aria-hidden="true">▾</span>
+          </button>
+
+          <div class="email-provider-list" id="email-provider-list" hidden>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot gmail"></i><span>Gmail<small>@gmail.com</small></span></a>
+            <a href="https://outlook.live.com/mail/0/deeplink/compose?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot outlook"></i><span>Outlook / Hotmail<small>@outlook.com · @hotmail.com</small></span></a>
+            <a href="https://compose.mail.yahoo.com/?to=kolibri831%40yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yahoo"></i><span>Yahoo Mail<small>@yahoo.com</small></span></a>
+            <a href="https://www.icloud.com/mail/" target="_blank" rel="noopener noreferrer"><i class="mail-dot icloud"></i><span>iCloud Mail<small>@icloud.com</small></span></a>
+            <a href="https://mail.proton.me/u/0/inbox" target="_blank" rel="noopener noreferrer"><i class="mail-dot proton"></i><span>Proton Mail<small>@proton.me · @protonmail.com</small></span></a>
+            <a href="https://mail.zoho.com/" target="_blank" rel="noopener noreferrer"><i class="mail-dot zoho"></i><span>Zoho Mail<small>@zoho.com</small></span></a>
+            <a href="https://mail.yandex.ru/compose?mailto=kolibri831@yandex.ru" target="_blank" rel="noopener noreferrer"><i class="mail-dot yandex"></i><span>Яндекс Почта<small>@yandex.ru</small></span></a>
+            <a href="https://e.mail.ru/compose/" target="_blank" rel="noopener noreferrer"><i class="mail-dot mailru"></i><span>Mail.ru<small>@mail.ru</small></span></a>
+            <a href="https://mail.rambler.ru/" target="_blank" rel="noopener noreferrer"><i class="mail-dot rambler"></i><span>Rambler<small>@rambler.ru</small></span></a>
+          </div>
+        </div>
+
+        <p class="ft-hours">
+          <span class="ft-dot" aria-hidden="true"></span>
+          Пн–Пт 8:30–15:00 · заказ до 13:30
+        </p>
+      </div>
+    </div>
+
+    <div class="ft-bottom">
+      <p class="ft-copy">© 2026 ООО «У нас обед»</p>
+      <a class="ft-policy" href="privacy.html">Политика конфиденциальности</a>
+      <p class="ft-area">Доставка: Ростов-на-Дону · Аксай · Батайск</p>
+      <button class="ft-up" type="button" data-scroll-top aria-label="Вернуться наверх">
+        Наверх <span aria-hidden="true">↑</span>
+      </button>
     </div>
   </footer>
 

@@ -1,6 +1,3 @@
-/* ============================================================
- * Стили страницы Оформления Заказа
- * ============================================================ */
 .checkout-page {
   padding-top: 40px;
   padding-bottom: 100px;
@@ -30,7 +27,7 @@
   font-size: 14px;
 }
 
-/* Шаги */
+
 .checkout-steps {
   display: flex;
   align-items: center;
@@ -55,7 +52,7 @@
 .step.active span { border-color: #f6f1ff; background: #f6f1ff; color: #100b1c; }
 .step-line { width: 40px; height: 1px; background: rgba(255,255,255,0.1); }
 
-/* Переключатель */
+
 .payer-switch {
   position: relative;
   display: flex;
@@ -88,14 +85,14 @@
 .payer-btn.active { color: #100b1c; }
 .payer-switch.jur-active .payer-slider { transform: translateX(100%); }
 
-/* Форма */
+
 .checkout-form {
   display: flex;
   flex-direction: column;
   gap: 30px;
 }
 
-#fieldsPhys, 
+#fieldsPhys,
 #fieldsJur {
   display: flex;
   flex-direction: column;
@@ -107,8 +104,8 @@
 }
 
 .form-group {
-  display: flex; 
-  flex-direction: column; 
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   width: 100%;
 }
@@ -143,7 +140,7 @@
   border-color: #a879ff;
 }
 
-/* Кастомный селект */
+
 .custom-select {
   position: relative;
   width: 100%;
@@ -170,7 +167,7 @@
   pointer-events: none;
 }
 
-/* Таблица товаров */
+
 .order-summary-box {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(220, 204, 255, 0.1);
@@ -208,12 +205,12 @@
   text-align: right;
 }
 
-/* Платежка */
+
 .payment-hint {
   font-size: 12px; color: #7d718e; margin-top: 6px; font-style: italic;
 }
 
-/* Итоги */
+
 .total-summary {
   display: flex; justify-content: space-between;
   background: rgba(255, 255, 255, 0.03);
@@ -230,7 +227,7 @@
   font-size: 24px; color: #f6f1ff; font-family: 'Space Grotesk', sans-serif;
 }
 
-/* Кнопка */
+
 .submit-btn {
   background: #f6f1ff;
   color: #100b1c;
@@ -248,7 +245,7 @@
   box-shadow: 0 10px 30px rgba(246, 241, 255, 0.2);
 }
 
-/* Адаптив */
+
 @media (max-width: 600px) {
   .form-row {
     grid-template-columns: 1fr;
@@ -256,11 +253,9 @@
   }
 }
 
-/* ============================================================
- * ПРЕМИУМ КАЛЕНДАРЬ (Flatpickr)
- * ============================================================ */
 
-/* Общий контейнер календаря */
+
+
 .flatpickr-calendar {
   background: rgba(22, 16, 34, 0.95) !important;
   backdrop-filter: blur(20px) !important;
@@ -272,7 +267,7 @@
   width: 320px !important;
   height: auto !important;
   max-height: none !important;
-  overflow: visible !important; 
+  overflow: visible !important;
   padding-bottom: 0 !important;
 }
 
@@ -280,14 +275,14 @@
   overflow: visible !important;
 }
 
-.flatpickr-calendar.arrowTop:before, 
+.flatpickr-calendar.arrowTop:before,
 .flatpickr-calendar.arrowTop:after,
 .flatpickr-calendar.arrowBottom:before,
 .flatpickr-calendar.arrowBottom:after {
   display: none !important;
 }
 
-/* Шапка */
+
 .flatpickr-months {
   padding: 10px 0 !important;
 }
@@ -307,7 +302,7 @@
   font-size: 16px !important;
 }
 
-/* Год */
+
 .flatpickr-current-month input.cur-year {
   pointer-events: none !important;
   color: #f6f1ff !important;
@@ -328,8 +323,8 @@
   cursor: default !important;
 }
 
-/* Кнопки навигации (Белые) */
-.flatpickr-prev-month, 
+
+.flatpickr-prev-month,
 .flatpickr-next-month {
   padding: 10px !important;
   border-radius: 12px !important;
@@ -338,14 +333,14 @@
   opacity: 0.8;
 }
 
-.flatpickr-prev-month:hover, 
+.flatpickr-prev-month:hover,
 .flatpickr-next-month:hover {
   background: rgba(168, 121, 255, 0.2) !important;
   fill: #c6a6ff !important;
   opacity: 1;
 }
 
-.flatpickr-prev-month svg, 
+.flatpickr-prev-month svg,
 .flatpickr-next-month svg {
   fill: #ffffff !important;
   stroke: #ffffff !important;
@@ -353,13 +348,13 @@
   height: 14px;
 }
 
-.flatpickr-prev-month:hover svg, 
+.flatpickr-prev-month:hover svg,
 .flatpickr-next-month:hover svg {
   fill: #c6a6ff !important;
   stroke: #c6a6ff !important;
 }
 
-/* Дни недели */
+
 .flatpickr-weekdays {
   background: transparent !important;
   margin-bottom: 10px !important;
@@ -373,13 +368,11 @@ span.flatpickr-weekday {
   letter-spacing: 1px;
 }
 
-/* ============================================================
- * Сетка дней (Исправленная, чтобы 7 и 8 не летали)
- * ============================================================ */
+
 
 .flatpickr-days {
   width: 100% !important;
-  height: 250px !important; /* Фиксируем высоту под 6 рядов */
+  height: 250px !important;
   overflow: hidden !important;
   padding-bottom: 0 !important;
 }
@@ -405,7 +398,7 @@ span.flatpickr-weekday {
   transition: all 0.2s ease !important;
 }
 
-.flatpickr-day:hover, 
+.flatpickr-day:hover,
 .flatpickr-day:focus {
   background: rgba(168, 121, 255, 0.2) !important;
   border-color: transparent !important;
@@ -413,11 +406,11 @@ span.flatpickr-weekday {
   transform: scale(1.1);
 }
 
-.flatpickr-day.selected, 
-.flatpickr-day.startRange, 
-.flatpickr-day.endRange, 
-.flatpickr-day.selected.inRange, 
-.flatpickr-day.startRange.inRange, 
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day.selected.inRange,
+.flatpickr-day.startRange.inRange,
 .flatpickr-day.endRange.inRange {
   background: linear-gradient(135deg, #a879ff, #7c3aed) !important;
   border-color: transparent !important;
@@ -436,7 +429,7 @@ span.flatpickr-weekday {
   background: rgba(168, 121, 255, 0.3) !important;
 }
 
-.flatpickr-day.prevMonthDay, 
+.flatpickr-day.prevMonthDay,
 .flatpickr-day.nextMonthDay {
   color: #4a3f5e !important;
 }
@@ -447,24 +440,22 @@ span.flatpickr-weekday {
   opacity: 0.5;
 }
 
-/* ============================================================
- * Блок выбора времени (Поверх всего)
- * ============================================================ */
+
 
 .flatpickr-time {
   position: absolute !important;
-  bottom: 0 !important; 
+  bottom: 0 !important;
   left: 0 !important;
   right: 0 !important;
-  
+
   height: 75px !important;
   margin: 0 !important;
   padding: 15px !important;
-  
+
   background: #1c142b !important;
   border-top: 1px solid rgba(168, 121, 255, 0.2) !important;
   border-radius: 0 0 20px 20px !important;
-  
+
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -472,14 +463,14 @@ span.flatpickr-weekday {
   z-index: 10 !important;
 }
 
-/* Скрываем стандартные стрелочки */
+
 .flatpickr-time .numInputWrapper span {
-  display: none !important; 
+  display: none !important;
 }
 
-/* Контейнер для ввода часов и минут */
+
 .flatpickr-time .numInputWrapper {
-  flex: 0 1 70px !important; 
+  flex: 0 1 70px !important;
   background: rgba(168, 121, 255, 0.08) !important;
   border: 1px solid rgba(168, 121, 255, 0.3) !important;
   border-radius: 12px !important;
@@ -488,7 +479,7 @@ span.flatpickr-weekday {
   justify-content: center !important;
   height: 35px !important;
   transition: all 0.2s ease !important;
-  padding: 0 !important; 
+  padding: 0 !important;
 }
 
 .flatpickr-time .numInputWrapper:hover {
@@ -496,7 +487,7 @@ span.flatpickr-weekday {
   border-color: rgba(168, 121, 255, 0.6) !important;
 }
 
-/* Сами цифры */
+
 .flatpickr-time input {
   color: #f6f1ff !important;
   background: transparent !important;
@@ -512,7 +503,7 @@ span.flatpickr-weekday {
   font-family: 'Space Grotesk', sans-serif !important;
 }
 
-/* Двоеточие */
+
 .flatpickr-time .flatpickr-time-separator {
   color: #a879ff !important;
   font-weight: 800 !important;
@@ -524,9 +515,7 @@ span.flatpickr-weekday {
   padding-bottom: 4px !important;
 }
 
-/* ============================================================
- * Кастомный выпадающий список (Город)
- * ============================================================ */
+
 .custom-dropdown {
   position: relative;
   width: 100%;
@@ -554,7 +543,7 @@ span.flatpickr-weekday {
 }
 
 .custom-dropdown-trigger .select-arrow {
-  width: 18px; 
+  width: 18px;
   height: 18px;
   color: #a879ff;
   transition: transform 0.3s;
@@ -564,7 +553,7 @@ span.flatpickr-weekday {
   transform: rotate(180deg);
 }
 
-/* Само выпадающее меню */
+
 .custom-dropdown-options {
   position: absolute;
   top: calc(100% + 8px);
@@ -576,8 +565,8 @@ span.flatpickr-weekday {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
   padding: 8px;
   z-index: 100;
-  
-  /* Анимация появления */
+
+
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
@@ -590,7 +579,7 @@ span.flatpickr-weekday {
   transform: translateY(0);
 }
 
-/* Пункты меню */
+
 .custom-option {
   padding: 12px 16px;
   border-radius: 10px;
@@ -613,9 +602,7 @@ span.flatpickr-weekday {
   font-weight: 800;
 }
 
-/* ============================================================
- * Выбор службы доставки
- * ============================================================ */
+
 .delivery-methods {
   display: flex;
   flex-direction: column;
@@ -683,9 +670,7 @@ span.flatpickr-weekday {
   font-size: 12px;
 }
 
-/* ============================================================
- * Кастомное уведомление (Модалка удаления)
- * ============================================================ */
+
 .confirm-overlay {
   position: fixed;
   inset: 0;

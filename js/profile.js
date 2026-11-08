@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (adminLink) {
         adminLink.classList.toggle('hidden', !currentUser.isAdmin);
       }
-      
+
       if (editProfileBtn) {
         editProfileBtn.style.display = currentUser.isAdmin ? 'none' : 'block';
       }
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('editLastName').value = currentUser.lastName || '';
       document.getElementById('editEmail').value = currentUser.email || '';
       document.getElementById('editPassword').value = '';
-      
+
       const emailGroup = document.getElementById('editEmail').closest('.input-group');
       if (emailGroup) {
         emailGroup.style.display = currentUser.isAdmin ? 'none' : 'block';
@@ -199,10 +199,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const data = await res.json();
-        
+
         currentUser = { ...currentUser, ...data.user };
         Store.setUser(currentUser);
-        
+
         showToast('Данные профиля успешно обновлены!', 'success');
         editProfileForm.classList.add('hidden');
         updateUI();
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (password !== passwordConfirm) return showToast('Пароли не совпадают', 'error');
       if (password.length < 6) return showToast('Пароль должен быть минимум 6 символов', 'error');
-      
+
       if (captchaInput !== currentCaptchaCode) {
         showToast('Неверный код с картинки', 'error');
         generateCaptcha();
@@ -367,12 +367,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = session.user;
         const email = user.email;
         const name = user.user_metadata.full_name || user.user_metadata.name || 'Пользователь';
-        
+
         const nameParts = name.split(' ');
         const firstName = nameParts[0] || 'Пользователь';
         const lastName = nameParts[1] || '';
 
-        // Отправляем данные на НАШ сервер (Cloudflare Worker), чтобы получить JWT
+
         const res = await fetch(APP_CONFIG.API_BASE + '/api/auth/google', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
           Store.setToken(data.token);
           Store.setUser(data.user);
           currentUser = data.user;
-          
+
           if (window.location.hash.includes('access_token')) {
             showToast('Вы успешно вошли через Google!', 'success');
           }
@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error('Ошибка авторизации через Google на нашем сервере');
           showToast('Ошибка синхронизации профиля Google', 'error');
         }
-        
+
         if (window.location.hash) window.history.replaceState(null, null, window.location.pathname);
       }
     } catch (err) {

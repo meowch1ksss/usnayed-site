@@ -1,4 +1,3 @@
-// js/site.js
 (() => {
   'use strict';
   const $el  = (s, root = document) => root.querySelector(s);
@@ -8,7 +7,7 @@
     const items = $all('.faq-item');
     if (!items.length) return;
 
-    const isMobile = window.innerWidth <= 760; // Проверка на телефон
+    const isMobile = window.innerWidth <= 760;
 
     items.forEach((item) => {
       const btn    = item.querySelector('.faq-question');
@@ -51,7 +50,7 @@
 
     trigger.addEventListener('click', () => {
       const isOpen = trigger.getAttribute('aria-expanded') === 'true';
-      
+
       if (isOpen) {
         trigger.setAttribute('aria-expanded', 'false');
         list.classList.add('email-list-hidden');
@@ -97,41 +96,6 @@
     });
   }
 
-  function initParallax() {
-    const scene = document.getElementById('scene');
-    if (!scene) return;
-    
-    // Отключаем параллакс на телефоне для оптимизации
-    if (window.innerWidth <= 760) return; 
-
-    const layers = Array.from(scene.querySelectorAll('[data-depth]'));
-    let mouseX = 0;
-    let mouseY = 0;
-    let w = window.innerWidth;
-    let h = window.innerHeight;
-
-    window.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX - w / 2) / (w / 2);
-      mouseY = (e.clientY - h / 2) / (h / 2);
-    });
-
-    window.addEventListener('resize', () => {
-      w = window.innerWidth;
-      h = window.innerHeight;
-    });
-
-    function animate() {
-      layers.forEach(layer => {
-        const depth = parseFloat(layer.getAttribute('data-depth')) || 0.2;
-        const moveX = mouseX * depth * 80; 
-        const moveY = mouseY * depth * 80;
-        layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
-      });
-      requestAnimationFrame(animate);
-    }
-    animate();
-  }
-
   function showToast(message, type = 'success', imageUrl = null) {
     let region = document.getElementById('toast-region');
     if (!region) {
@@ -153,18 +117,18 @@
 
     const toast = document.createElement('div');
     toast.className = `toast yandex-toast ${type}`;
-    
+
     toast.style.position = 'absolute';
     toast.style.bottom = '0';
     toast.style.left = '50%';
-    toast.style.transform = 'translateX(-50%) translateY(20px) scale(0.9)'; 
+    toast.style.transform = 'translateX(-50%) translateY(20px) scale(0.9)';
     toast.style.width = 'max-content';
     toast.style.maxWidth = '100%';
     toast.style.display = 'flex';
     toast.style.alignItems = 'center';
     toast.style.gap = '10px';
     toast.style.padding = '10px 14px';
-    toast.style.background = 'rgba(20, 15, 25, 0.95)'; 
+    toast.style.background = 'rgba(20, 15, 25, 0.95)';
     toast.style.backdropFilter = 'blur(20px)';
     toast.style.webkitBackdropFilter = 'blur(20px)';
     toast.style.border = '1px solid rgba(255, 255, 255, 0.15)';
@@ -177,7 +141,7 @@
     toast.style.pointerEvents = 'auto';
     toast.style.transition = 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
     toast.style.opacity = '0';
-    
+
     let iconHtml = '';
     if (imageUrl) {
       iconHtml = `<div style="width: 44px; height: 44px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: #222;"><img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
@@ -193,12 +157,12 @@
       <div style="line-height: 1.4; flex: 1; white-space: normal; word-wrap: break-word;">${message}</div>
       <button class="toast-close" style="background: transparent; border: none; color: #888; font-size: 16px; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; flex-shrink: 0;">✕</button>
     `;
-    
+
     region.appendChild(toast);
 
     function updateStack() {
       const toasts = Array.from(region.querySelectorAll('.yandex-toast')).reverse();
-      
+
       toasts.forEach((t, index) => {
         if (index === 0) {
           t.style.transform = 'translateX(-50%) translateY(0) scale(1)';
@@ -226,7 +190,7 @@
     toast.querySelector('.toast-close').addEventListener('click', (e) => {
       e.stopPropagation();
       toast.remove();
-      updateStack(); 
+      updateStack();
     });
 
     setTimeout(() => {
@@ -243,45 +207,189 @@
     initFaq();
     initEmailPicker();
     initPageFade();
-    initParallax();
+
+
+    if (!document.querySelector('.page-aura')) {
+      const aura = document.createElement('div');
+      aura.className = 'page-aura';
+      aura.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(aura);
+    }
+
+    const galleryGrid = document.querySelector('.gallery-grid');
+    if (galleryGrid) {
+      try {
+        const saved = JSON.parse(localStorage.getItem('usnayed:gallery') || '[]');
+        if (Array.isArray(saved)) {
+          saved.forEach((src, index) => {
+            if (typeof src !== 'string' || !src.startsWith('data:image')) return;
+            const figure = document.createElement('figure');
+            figure.style.backgroundImage = `url('${src}')`;
+            figure.style.backgroundSize = 'cover';
+            figure.style.backgroundPosition = 'center';
+            const caption = document.createElement('figcaption');
+            caption.textContent = `Из галереи · ${String(index + 1).padStart(2, '0')}`;
+            figure.appendChild(caption);
+            galleryGrid.appendChild(figure);
+          });
+        }
+      } catch (error) {
+        /* пустая галерея — не мешаем странице */
+      }
+    }
+
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('a[href^="tel:"]');
+      if (!link) return;
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+      event.preventDefault();
+      const number = (link.getAttribute('href') || '').replace(/^tel:/, '');
+      const pretty = link.textContent.trim() || number;
+
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(number).catch(() => {});
+      }
+
+      showToast(`Позвонить можно только с телефона: ${pretty} — номер скопирован`, 'success');
+    }, true);
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    if (!reduceMotion && finePointer && !document.querySelector('.cursor-glow')) {
+      const glow = document.createElement('div');
+      glow.className = 'cursor-glow';
+      glow.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(glow);
+
+      let targetX = window.innerWidth / 2;
+      let targetY = window.innerHeight * 0.35;
+      let currentX = targetX;
+      let currentY = targetY;
+      let frame = null;
+
+      const tick = () => {
+        currentX += (targetX - currentX) * 0.09;
+        currentY += (targetY - currentY) * 0.09;
+        glow.style.transform = `translate3d(${currentX.toFixed(1)}px, ${currentY.toFixed(1)}px, 0)`;
+        if (Math.abs(targetX - currentX) < 0.4 && Math.abs(targetY - currentY) < 0.4) {
+          frame = null;
+          return;
+        }
+        frame = requestAnimationFrame(tick);
+      };
+
+      glow.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+
+      window.addEventListener('pointermove', (event) => {
+        targetX = event.clientX;
+        targetY = event.clientY;
+        if (!frame) frame = requestAnimationFrame(tick);
+      }, { passive: true });
+    }
+
+
+    document.querySelectorAll('[data-scroll-top]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      });
+    });
 
     const reviewsGrid = document.getElementById('reviewsGrid');
     const toggleReviewsBtn = document.getElementById('toggleReviewsBtn');
+    const showMoreWrapper = document.getElementById('showMoreWrapper');
     const addReviewFormWrapper = document.getElementById('addReviewFormWrapper');
     const addReviewForm = document.getElementById('addReviewForm');
 
-    let allReviews = [];
+    const REVIEWS_VISIBLE_DESKTOP = 8;
+    const MOBILE_BREAKPOINT = 760;
+
+    const REVIEWS_LOOP_LIMIT = 30;
+
+
+    const staticReviews = reviewsGrid
+      ? [...reviewsGrid.querySelectorAll('.review-card')].map((card) => ({
+          name: (card.querySelector('strong')?.textContent || '').replace(/^—\s*/, '').trim(),
+          stars: (card.querySelector('.review-stars')?.textContent || '★★★★★').trim(),
+          text: (card.querySelector('blockquote')?.textContent || '').trim(),
+        }))
+      : [];
+
+    let allReviews = [...staticReviews];
     let isReviewsExpanded = false;
+
+    if (addReviewFormWrapper) addReviewFormWrapper.classList.remove('hidden');
+
+    const isMobileView = () => window.innerWidth <= MOBILE_BREAKPOINT;
+
+    const reviewCardHtml = (rev, cloned) => `
+        <article class="review-card"${cloned ? ' aria-hidden="true"' : ''}>
+          <div class="review-stars">${rev.stars || '★★★★★'}</div>
+          <blockquote>${escapeHTML(rev.text || '')}</blockquote>
+          <strong>— ${escapeHTML(rev.name || 'Гость')}</strong>
+        </article>`;
+
+
+    function setupReviewsLoop() {
+      const count = allReviews.length;
+      const cards = reviewsGrid.querySelectorAll('.review-card');
+
+      if (cards.length < count * 2) {
+        reviewsGrid.onscroll = null;
+        return;
+      }
+
+
+      const step = cards[count].offsetLeft - cards[0].offsetLeft;
+      if (!step) {
+        reviewsGrid.onscroll = null;
+        return;
+      }
+
+      reviewsGrid.onscroll = () => {
+        const x = reviewsGrid.scrollLeft;
+        if (x >= step * 1.5) reviewsGrid.scrollLeft = x - step;
+        else if (x < step * 0.5) reviewsGrid.scrollLeft = x + step;
+      };
+
+
+      reviewsGrid.scrollLeft = step;
+    }
 
     function renderReviews() {
       if (!reviewsGrid) return;
-      
-      const isMobile = window.innerWidth <= 760;
-      
-      reviewsGrid.innerHTML = allReviews.map(rev => `
-        <article class="review-card">
-          <div class="review-stars">★★★★★</div>
-          <blockquote>${escapeHTML(rev.text || '')}</blockquote>
-          <strong>— ${escapeHTML(rev.name || 'Гость')}</strong>
-        </article>
-      `).join('');
 
-      if (isReviewsExpanded) {
-        reviewsGrid.classList.add('show-all');
-        if (addReviewFormWrapper) addReviewFormWrapper.classList.remove('hidden');
-        if (toggleReviewsBtn) toggleReviewsBtn.innerHTML = 'Скрыть отзывы ↑';
-      } else {
-        reviewsGrid.classList.remove('show-all');
-        if (addReviewFormWrapper) addReviewFormWrapper.classList.add('hidden');
-        if (toggleReviewsBtn) toggleReviewsBtn.innerHTML = 'Показать все отзывы ↓';
+      const mobile = isMobileView();
+      const loop = mobile && allReviews.length > 2 && allReviews.length <= REVIEWS_LOOP_LIMIT;
+
+      const base = allReviews.map((rev) => reviewCardHtml(rev, false)).join('');
+      reviewsGrid.innerHTML = loop
+        ? base + allReviews.map((rev) => reviewCardHtml(rev, true)).join('')
+          + allReviews.map((rev) => reviewCardHtml(rev, true)).join('')
+        : base;
+
+
+      const canExpand = !mobile && allReviews.length > REVIEWS_VISIBLE_DESKTOP;
+      reviewsGrid.classList.toggle('show-all', isReviewsExpanded && !mobile);
+
+      if (showMoreWrapper) showMoreWrapper.hidden = !canExpand;
+
+      if (toggleReviewsBtn) {
+        const extra = allReviews.length - REVIEWS_VISIBLE_DESKTOP;
+        toggleReviewsBtn.textContent = isReviewsExpanded
+          ? 'Свернуть отзывы'
+          : `Показать все отзывы (+${extra})`;
+        toggleReviewsBtn.setAttribute('aria-expanded', String(isReviewsExpanded));
       }
 
-      if (isMobile && allReviews.length > 2) {
-        if (toggleReviewsBtn) toggleReviewsBtn.style.display = 'inline-flex';
+      if (loop) {
+
+        requestAnimationFrame(setupReviewsLoop);
       } else {
-        if (toggleReviewsBtn) toggleReviewsBtn.style.display = 'none';
-        if (addReviewFormWrapper) addReviewFormWrapper.classList.remove('hidden');
-        reviewsGrid.classList.add('show-all');
+        reviewsGrid.onscroll = null;
+        reviewsGrid.scrollLeft = 0;
       }
     }
 
@@ -289,36 +397,50 @@
       toggleReviewsBtn.addEventListener('click', () => {
         isReviewsExpanded = !isReviewsExpanded;
         renderReviews();
+        if (!isReviewsExpanded) {
+          document.getElementById('reviews')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+        }
       });
     }
+
+
+    let reviewsResizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(reviewsResizeTimer);
+      reviewsResizeTimer = setTimeout(renderReviews, 150);
+    });
 
     async function loadApprovedReviews() {
       if (!reviewsGrid) return;
 
-      const staticReviews = [
-        { name: 'Кристина', text: 'Все очень вкусно! Оперативно! Поднесли еду прям к вагону, накормили группу из 18 человек...' },
-        { name: 'Виктор Васильевич', text: 'Заказывали в компании проведение корпоратива. Результатом более чем довольны...' }
-      ];
+      const key = (rev) =>
+        `${(rev.name || '').trim().toLowerCase()}|${(rev.text || '').trim().toLowerCase()}`;
+
+      const seen = new Set(staticReviews.map(key));
+      const merged = [...staticReviews];
 
       try {
         const res = await Store.apiFetch(APP_CONFIG.API.reviews);
         if (res.ok) {
           const serverReviews = await res.json();
           if (Array.isArray(serverReviews)) {
-            allReviews = [...staticReviews, ...serverReviews];
-          } else {
-            allReviews = staticReviews;
+            for (const rev of serverReviews) {
+              const k = key(rev);
+              if (seen.has(k)) continue;
+              seen.add(k);
+              merged.push({ name: rev.name, text: rev.text, stars: rev.stars || '★★★★★' });
+            }
           }
-        } else {
-          allReviews = staticReviews;
         }
       } catch (err) {
         console.error('Ошибка загрузки отзывов', err);
-        allReviews = staticReviews;
       }
 
+      allReviews = merged;
       renderReviews();
     }
+
+    loadApprovedReviews();
 
     if (addReviewForm) {
       addReviewForm.addEventListener('submit', async (e) => {
@@ -326,6 +448,16 @@
         const name = document.getElementById('reviewName').value.trim();
         const text = document.getElementById('reviewText').value.trim();
         if (!name || !text) return;
+
+        const consent = document.getElementById('reviewConsent');
+        if (consent && !consent.checked) {
+          const field = consent.closest('.consent-field');
+          field?.classList.add('consent-field--error');
+          consent.addEventListener('change', () => field?.classList.remove('consent-field--error'), { once: true });
+          consent.focus();
+          showToast('Подтвердите согласие на обработку персональных данных', 'error');
+          return;
+        }
 
         const submitBtn = addReviewForm.querySelector('button[type="submit"]');
         const original = submitBtn?.textContent;

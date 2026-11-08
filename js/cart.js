@@ -1,10 +1,10 @@
-// js/cart.js
 document.addEventListener('DOMContentLoaded', () => {
   const cartItemsContainer = document.getElementById('cartItems');
   const cartTotalPrice      = document.getElementById('cartTotalPrice');
   const clearCartBtn        = document.getElementById('clearCartBtn');
   const checkoutBtn         = document.getElementById('checkoutBtn');
   const products = window.LUNCH_DATA?.products ?? [];
+  const lastQty = new Map();
 
   Store.updateBadges();
 
@@ -15,7 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!cart.length) {
       cartItemsContainer.innerHTML = `<div class="empty-cart"><h3>Ваша корзина пуста</h3><p>Самое время добавить что-нибудь вкусное!</p><a href="menu.html" class="button button-primary">Перейти в меню</a></div>`;
       if (cartTotalPrice) cartTotalPrice.textContent = '0 ₽';
+      const emptyWeight = document.getElementById('cartTotalWeight');
+      if (emptyWeight) emptyWeight.textContent = '—';
       if (checkoutBtn) checkoutBtn.disabled = true;
+      lastQty.clear();
       return;
     }
     if (checkoutBtn) checkoutBtn.disabled = false;
@@ -26,15 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!p) return '';
       total += p.price * qty;
       const isFav = favs.includes(id);
+      const prevQty = lastQty.get(id);
       return `
         <article class="cart-item">
           <div class="cart-item-img" style="background-image:url('${ProductCard.esc(p.image)}')"></div>
           <div class="cart-item-info">
-            <h3 style="margin:0 0 6px;font-size:15px;line-height:1.3;">${ProductCard.esc(p.name)}</h3>
-            <p style="margin:0;font-size:13px;color:#a49ab8;">${ProductCard.esc(p.weight || '')} · ${ProductCard.esc(p.category)}</p>
+            <h3 class="cart-item-name">${ProductCard.esc(p.name)}</h3>
+            <p class="cart-item-meta">${ProductCard.esc(p.weight || '')} · ${ProductCard.esc(p.category)}</p>
           </div>
           <div class="cart-item-controls">
-            ${ProductCard.renderAction(id, qty)}
+            ${ProductCard.renderAction(id, qty, prevQty)}
             <div class="cart-item-price">${p.price * qty} ₽</div>
             <button type="button" class="cart-fav-btn ${isFav ? 'active' : ''}" data-action="favorite" data-id="${id}"
                     title="${isFav ? 'Убрать из избранного' : 'В избранное'}">
@@ -45,9 +49,34 @@ document.addEventListener('DOMContentLoaded', () => {
         </article>`;
     }).join('');
     if (cartTotalPrice) cartTotalPrice.textContent = `${total} ₽`;
+
+    const weightEl = document.getElementById('cartTotalWeight');
+    if (weightEl) {
+      const grams = cart.reduce((sum, { id, qty }) => {
+        const product = products.find((x) => String(x.id) === id);
+        const numbers = String(product?.weight || '').match(/\d+(?:[.,]\d+)?/g);
+        if (!numbers) return sum;
+        const perPortion = numbers.reduce((acc, n) => acc + parseFloat(n.replace(',', '.')), 0);
+        return sum + perPortion * qty;
+      }, 0);
+
+      if (grams >= 1000) {
+        weightEl.textContent = `${(grams / 1000).toFixed(2).replace('.', ',')} кг`;
+      } else if (grams > 0) {
+        weightEl.textContent = `${Math.round(grams)} г`;
+      } else {
+        weightEl.textContent = '—';
+      }
+    }
+
+    const itemsCount = document.getElementById('cartItemsCount');
+    if (itemsCount) itemsCount.textContent = String(cart.reduce((sum, item) => sum + Number(item.qty), 0));
+    lastQty.clear();
+    cart.forEach(({ id, qty }) => lastQty.set(id, qty));
+    ProductCard.pulseChanged?.(cartItemsContainer);
   }
 
-  // ВСЕ действия (включая remove) через единый биндер ProductCard
+
   ProductCard.bind(cartItemsContainer, {
     onAdd: (id, p) => {
       ProductCard.defaultAdd(cartItemsContainer, id, p);

@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminPanel   = document.getElementById('adminPanel');
 
   const token = Store.getToken();
-  
+
   if (!currentUser || currentUser.isAdmin !== true || !token) {
     accessDenied?.classList.remove('hidden');
     adminPanel?.classList.add('hidden');
@@ -65,6 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (activeTab === 'menu') {
       pageTitle.textContent = 'Управление меню';
       renderMenuUpload();
+    } else if (activeTab === 'gallery') {
+      pageTitle.textContent = 'Галерея';
+      renderGallery();
     } else if (activeTab === 'settings') {
       pageTitle.textContent = 'Настройки системы';
       renderSettings();
@@ -78,12 +81,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="admin-card">
         <h3>🛡️ Защита от локального копирования</h3>
         <p>Если эта функция включена, при открытии сайта локально (через Ctrl+S) будут блокироваться картинки, кнопки и формы. Отключите её, если вам нужно настроить сайт локально и потом загрузить на сервер.</p>
-        
+
         <label style="display: flex; align-items: center; gap: 15px; margin-top: 20px; cursor: pointer; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px;">
           <input type="checkbox" id="protectToggle" ${!isProtectDisabled ? 'checked' : ''} style="width: 20px; height: 20px; accent-color: #a879ff;">
           <span style="font-weight: 700; color: #f6f1ff; font-size: 15px;">Защита включена</span>
         </label>
-        
+
         <button id="saveSettingsBtn" class="admin-btn admin-btn-primary" style="margin-top: 20px;">Сохранить настройки</button>
         <div id="settingsStatus" style="margin-top: 15px; color: #b7ff70; font-weight: 700; display: none;">✓ Настройки сохранены</div>
       </div>
@@ -96,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         localStorage.setItem('nyxora:disable_local_protect', 'true');
       }
-      
+
       const status = document.getElementById('settingsStatus');
       status.style.display = 'block';
       setTimeout(() => { status.style.display = 'none'; }, 3000);
@@ -114,9 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const orders = await res.json();
       window.ordersData = orders;
 
-      if (!orders.length) { 
-        tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>'; 
-        return; 
+      if (!orders.length) {
+        tabContent.innerHTML = '<div class="admin-empty">Заказов пока нет.</div>';
+        return;
       }
 
       const clearBtnHTML = `
@@ -129,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       tabContent.innerHTML = clearBtnHTML + orders.map(o => {
         const isJur = (o.payerType || o.payer_type || '').includes('Юр');
-        
+
         let deliveryText = 'Курьером';
         if (o.deliveryMethod === 'pickup') deliveryText = 'Самовывоз';
 
@@ -148,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { console.error('Ошибка парсинга companyData', e); }
 
         let detailsHtml = '';
-        
+
         if (isJur) {
           detailsHtml = `
             <li><strong>Желаемое время доставки:</strong> ${escapeHTML(o.deliveryTime || o.delivery_time || '—')}</li>
@@ -274,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function renderReviews() {
     tabContent.innerHTML = '<div class="admin-empty">Загрузка отзывов...</div>';
     try {
-      const res = await adminFetch(`${APP_CONFIG.API.reviews}?status=all`); 
+      const res = await adminFetch(`${APP_CONFIG.API.reviews}?status=all`);
       if (res.status === 401) {
         tabContent.innerHTML = '<div class="admin-empty" style="color:#ff6d78;">Нет доступа к отзывам. Сессия истекла.</div>';
         return;
@@ -288,8 +291,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       tabContent.innerHTML = reviews.map(r => {
-        const statusBadge = r.status === 'pending' 
-          ? '<span style="color:#ffaa00; font-size: 11px; border: 1px solid #ffaa00; padding: 2px 6px; border-radius: 4px; margin-left: 10px;">На модерации</span>' 
+        const statusBadge = r.status === 'pending'
+          ? '<span style="color:#ffaa00; font-size: 11px; border: 1px solid #ffaa00; padding: 2px 6px; border-radius: 4px; margin-left: 10px;">На модерации</span>'
           : r.status === 'approved'
           ? '<span style="color:#b7ff70; font-size: 11px; border: 1px solid #b7ff70; padding: 2px 6px; border-radius: 4px; margin-left: 10px;">Опубликован</span>'
           : '';
@@ -307,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <p>${escapeHTML(r.text || '')}</p>
           <small>${r.date ? new Date(r.date).toLocaleString('ru-RU') : '—'}</small>
-          
+
           ${r.status === 'pending' ? `
             <div class="admin-actions" style="margin-top: 15px;">
               <button class="admin-btn-success" data-review-action="approve" data-review-id="${escapeAttr(r.id)}">✓ Одобрить</button>
@@ -372,15 +375,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     reviewConfirmDelete.onclick = async () => {
       reviewConfirmOverlay.classList.remove('open');
-      
+
       try {
         const res = await adminFetch(APP_CONFIG.API.review(id), {
           method: 'DELETE'
         });
-        
-        if (res.status === 401) { 
-          showAdminToast('Нет прав или сессия истекла', 'error'); 
-          return; 
+
+        if (res.status === 401) {
+          showAdminToast('Нет прав или сессия истекла', 'error');
+          return;
         }
         if (!res.ok) throw new Error('server');
 
@@ -392,6 +395,103 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
   };
+
+  const GALLERY_KEY = 'usnayed:gallery';
+
+  function readGallery() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(GALLERY_KEY) || '[]');
+      return Array.isArray(raw) ? raw : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveGallery(list) {
+    try {
+      localStorage.setItem(GALLERY_KEY, JSON.stringify(list));
+      return true;
+    } catch (error) {
+      adminToast('Не хватает места в браузере — удалите пару фото', 'error');
+      return false;
+    }
+  }
+
+  function fileToShot(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const max = 1400;
+          const scale = Math.min(1, max / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(img.width * scale));
+          canvas.height = Math.max(1, Math.round(img.height * scale));
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.onerror = () => resolve(null);
+        img.src = String(reader.result);
+      };
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderGallery() {
+    tabContent.innerHTML = `
+      <div class="admin-card">
+        <h3>🖼 Галерея на главной</h3>
+        <p>Фотографии попадают в блок «Галерея» на главной странице. Сохраняются в этом браузере — для загрузки на сайт для всех посетителей нужно положить файлы в папку <code>images/site/gallery</code>.</p>
+        <label class="admin-upload" for="galleryInput">📷 Добавить фото</label>
+        <input type="file" id="galleryInput" accept="image/*" multiple hidden>
+        <div class="admin-gallery" id="adminGallery"></div>
+      </div>
+    `;
+
+    const input = document.getElementById('galleryInput');
+    const grid = document.getElementById('adminGallery');
+
+    const draw = () => {
+      const list = readGallery();
+      if (!list.length) {
+        grid.innerHTML = '<p class="admin-status">Пока нет добавленных фото.</p>';
+        return;
+      }
+      grid.innerHTML = list.map((src, index) => `
+        <figure class="admin-gallery-item">
+          <img src="${src}" alt="Фото ${index + 1}">
+          <button type="button" class="admin-gallery-remove" data-index="${index}" aria-label="Удалить фото">✕</button>
+        </figure>
+      `).join('');
+      grid.querySelectorAll('.admin-gallery-remove').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const list2 = readGallery();
+          list2.splice(Number(btn.dataset.index), 1);
+          if (saveGallery(list2)) draw();
+        });
+      });
+    };
+
+    input?.addEventListener('change', async () => {
+      const files = [...input.files];
+      input.value = '';
+      if (!files.length) return;
+
+      const list = readGallery();
+      for (const file of files) {
+        const shot = await fileToShot(file);
+        if (shot) list.push(shot);
+      }
+      if (saveGallery(list)) {
+        draw();
+        adminToast('Фото добавлены в галерею', 'success');
+      }
+    });
+
+    draw();
+  }
 
   function renderMenuUpload() {
     tabContent.innerHTML = `
@@ -455,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (text) {
           const lines = text.split('\n').filter(l => l.trim());
           lines.forEach(line => {
-            const m = line.match(/^(.+?)[\s—–-]+(\d+)\s*(₽|руб)?/);
+            const m = line.match(/^(.+?)[s—–-]+(\d+)\s*(₽|руб)?/);
             if (m) {
               items.push({
                 id: 'MENU-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
@@ -517,11 +617,11 @@ window.printOrder = function(orderNumber) {
 
   let detailsHtml = '';
   const isJur = (order.payerType || order.payer_type || '').includes('Юр');
-  
+
   if (isJur) {
     let c = {};
-    try { 
-      const rawData = order.companyData || order.company_data; 
+    try {
+      const rawData = order.companyData || order.company_data;
       c = typeof rawData === 'string' ? JSON.parse(rawData) : rawData || {};
     } catch(e) { console.error('Ошибка парсинга', e); }
 
@@ -571,7 +671,7 @@ window.printOrder = function(orderNumber) {
       <body>
         <h1>Накладная на заказ</h1>
         <div class="subtitle">Заказ №${order.number} от ${orderDate}</div>
-        
+
         <div class="info-block">
           ${detailsHtml}
           <div><strong>Адрес доставки:</strong> г. ${order.city || '—'}, ${order.address || '—'}</div>
@@ -580,7 +680,7 @@ window.printOrder = function(orderNumber) {
           <div><strong>Вид оплаты:</strong> ${paymentStr}</div>
           ${order.comment ? `<div><strong>Комментарий:</strong> ${order.comment}</div>` : ''}
         </div>
-        
+
         <table>
           <thead>
             <tr>
@@ -594,11 +694,11 @@ window.printOrder = function(orderNumber) {
             ${itemsHtml}
           </tbody>
         </table>
-        
+
         <div class="total-row">
           Итого к оплате: ${order.total} ₽
         </div>
-        
+
         <div class="footer">
           Спасибо большое за заказ! Ждём вас снова.
         </div>
@@ -607,7 +707,7 @@ window.printOrder = function(orderNumber) {
   `);
 
   printWindow.document.close();
-  
+
   setTimeout(() => {
     printWindow.focus();
     printWindow.print();

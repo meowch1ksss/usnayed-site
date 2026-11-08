@@ -1,4 +1,3 @@
-// js/ui/product-card.js
 (() => {
   'use strict';
 
@@ -9,14 +8,17 @@
   const cartSvg = `<svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>`;
   const heartSvg = `<svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>`;
 
-  // Рендер блока действий (кнопка / счётчик)
-  function renderAction(id, qty) {
+
+  function renderAction(id, qty, prevQty) {
     const sid = String(id);
     if (qty > 0) {
+      const changed = prevQty !== undefined && Number(prevQty) !== Number(qty);
       return `
-        <div class="qty-counter" data-id="${sid}">
+        <div class="qty-counter" data-id="${sid}"${changed ? ` data-prev="${prevQty}"` : ''}>
           <button type="button" class="qty-btn minus" data-action="minus" data-id="${sid}">−</button>
-          <input type="number" class="qty-input" data-action="input" data-id="${sid}" value="${qty}" min="1" max="99">
+          <span class="qty-field">
+            <input type="number" class="qty-input" data-action="input" data-id="${sid}" value="${qty}" min="1" max="99" aria-label="Количество">
+          </span>
           <button type="button" class="qty-btn plus" data-action="plus" data-id="${sid}">+</button>
         </div>`;
     }
@@ -26,7 +28,25 @@
       </button>`;
   }
 
-  // Рендер всей карточки
+  function pulseChanged(root) {
+    if (!root) return;
+    root.querySelectorAll?.('.qty-counter[data-prev]').forEach((counter) => {
+      const input = counter.querySelector('.qty-input');
+      const from = Number(counter.dataset.prev);
+      counter.removeAttribute('data-prev');
+      if (!input || !Number.isFinite(from)) return;
+      const to = Number(input.value);
+      if (from === to) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const up = to > from;
+      input.animate([
+        { transform: `translateY(${up ? '45%' : '-45%'})`, opacity: 0.15 },
+        { transform: 'translateY(0)', opacity: 1 },
+      ], { duration: 220, easing: 'cubic-bezier(.2,.7,.2,1)' });
+    });
+  }
+
+
   function renderProductCard(item, opts = {}) {
     const sid = String(item.id);
     const qty = Store.getCartQty(sid);
@@ -38,7 +58,7 @@
       <article class="product-card" data-card-id="${sid}">
         <div class="product-image-wrap" data-product="${sid}" role="button" tabindex="0" aria-label="Подробнее: ${esc(item.name)}">
           <img src="${esc(item.image)}" alt="${esc(item.name)}" loading="lazy"
-               onerror="this.onerror=null;this.src='https://placehold.co/600x600/21182e/c8a9ff?text=Блюдо'">
+               onerror="this.onerror=null;this.src='images/placeholder.svg'">
         </div>
 
         ${showFavBtn ? `
@@ -67,14 +87,18 @@
       </article>`;
   }
 
-  // Обновить только кнопки/счётчик на карточке
+
   function updateActionUI(grid, id, { qty, favorite } = {}) {
     const card = grid.querySelector(`[data-card-id="${id}"]`);
     if (!card) return;
 
     if (qty !== undefined) {
       const container = card.querySelector('.card-action-container');
-      if (container) container.innerHTML = renderAction(id, qty);
+      if (container) {
+        const prev = container.querySelector('.qty-input')?.value;
+        container.innerHTML = renderAction(id, qty, prev === undefined ? undefined : Number(prev));
+        pulseChanged(container);
+      }
     }
     if (favorite !== undefined) {
       const favBtn = card.querySelector('.favorite-button');
@@ -86,10 +110,19 @@
     }
   }
 
-  // НАДЕЖНЫЙ BIND
+
+  const handlerMap = new WeakMap();
+
+  function findRoot(el) {
+    for (let node = el; node; node = node.parentElement) {
+      if (handlerMap.has(node)) return node;
+    }
+    return null;
+  }
+
   function bindProductGrid(grid, handlers = {}) {
     if (!grid) return;
-    window.__pcHandlers = handlers;
+    handlerMap.set(grid, handlers);
 
     if (window.__pcBound) return;
     window.__pcBound = true;
@@ -103,13 +136,16 @@
       e.stopPropagation();
 
       const action = btn.dataset.action;
-      // СТРАХОВКА: если у кнопки нет data-id, ищем его у родителя (например, .qty-counter)
+
       const id = btn.dataset.id || btn.closest('[data-id]')?.dataset.id;
-      
-      if (!id) return; // Если id вообще нет — ничего не делаем
+
+      if (!id) return;
+
+      const root = findRoot(btn);
+      if (!root) return;
 
       const product = findProduct(id);
-      const h = window.__pcHandlers || {};
+      const h = handlerMap.get(root) || {};
 
       switch (action) {
         case 'add':             h.onAdd?.(id, product); break;
@@ -126,9 +162,10 @@
       const id = e.target.dataset.id || e.target.closest('[data-id]')?.dataset.id;
       if (!id) return;
 
-      const product = findProduct(id);
-      const h = window.__pcHandlers || {};
-      h.onInput?.(id, product, e.target);
+      const root = findRoot(e.target);
+      if (!root) return;
+
+      handlerMap.get(root)?.onInput?.(id, findProduct(id), e.target);
     }, true);
   }
 
@@ -137,7 +174,7 @@
     return products.find(p => String(p.id) === String(id));
   }
 
-  // Стандартные действия
+
   function defaultAdd(grid, id, product, toast = window.showToast) {
     Store.addToCart(id, +1);
     updateActionUI(grid, id, { qty: Store.getCartQty(id) });
@@ -171,10 +208,11 @@
     return isFav;
   }
 
-  // Экспорт
+
   window.ProductCard = {
     render: renderProductCard,
     renderAction,
+    pulseChanged,
     updateUI: updateActionUI,
     bind: bindProductGrid,
     find: findProduct,
