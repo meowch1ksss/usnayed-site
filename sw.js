@@ -1,4 +1,4 @@
-const VERSION = '1';
+const VERSION = '2';
 const IMAGE_CACHE = `usnayed-img-${VERSION}`;
 const ASSET_CACHE = `usnayed-assets-${VERSION}`;
 
@@ -48,14 +48,14 @@ self.addEventListener('fetch', (event) => {
   if (isAsset(url)) {
     event.respondWith(
       caches.open(ASSET_CACHE).then(async (cache) => {
-        const cached = await cache.match(request);
-        const network = fetch(request)
-          .then((response) => {
-            if (response.ok) cache.put(request, response.clone());
-            return response;
-          })
-          .catch(() => cached || Response.error());
-        return cached || network;
+        try {
+          const response = await fetch(request);
+          if (response.ok) cache.put(request, response.clone());
+          return response;
+        } catch (error) {
+          const cached = await cache.match(request);
+          return cached || Response.error();
+        }
       })
     );
   }
