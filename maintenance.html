@@ -4,25 +4,28 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b0713">
-  <title>Доступ запрещён — У нас обед</title>
-  <meta name="description" content="Эта страница доступна только сотрудникам «У нас обед». Войдите в профиль администратора или вернитесь на главную.">
+  <title>Технические работы — У нас обед</title>
+  <meta name="description" content="Сайт «У нас обед» временно на техническом обслуживании. Совсем скоро вернёмся — а пока можно позвонить и оформить заказ по телефону.">
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/error.css">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&amp;display=block&amp;text=0123456789" rel="stylesheet">
 </head>
-<body class="error-page" data-error="403">
+<body class="error-page" data-error="maintenance">
   <span class="error-blob error-blob--one" aria-hidden="true"></span>
   <span class="error-blob error-blob--two" aria-hidden="true"></span>
   <span class="error-blob error-blob--three" aria-hidden="true"></span>
 
   <main class="error-shell">
     <div class="error-stack">
-      <p class="error-code" aria-hidden="true">403</p>
+      <span class="maint-gear" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
+          <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.4 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.7 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.4a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.04 1.7 1.7 0 0 0 10.03 2.5V2a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.6 3.7a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.96 8c.14.34.4.62.72.8H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.03Z"/>
+        </svg>
+      </span>
 
       <section class="error-card">
         <span class="error-mark" aria-hidden="true">
@@ -34,20 +37,22 @@
           </svg>
         </span>
 
-        <span class="error-pill">Ошибка 403</span>
-        <h1 class="error-title">Доступ <em>закрыт</em></h1>
+        <span class="error-pill">Технические работы</span>
+        <h1 class="error-title">Скоро <em>вернёмся</em></h1>
         <p class="error-text">
-          Эта страница — для сотрудников. Если вы администратор, войдите в профиль.
-          Всем остальным здесь точно нечего делать — а вот в меню есть.
+          Обновляем сайт: правим меню и делаем заказ чуть удобнее. Обычно это занимает меньше часа —
+          загляните чуть позже или позвоните, мы примем заказ по телефону.
         </p>
 
+        <div class="maint-bar" aria-hidden="true"><span></span></div>
+
         <div class="error-actions">
-          <a class="error-btn error-btn--primary" href="profile.html">Войти в профиль</a>
-          <a class="error-btn" href="index.html">На главную</a>
+          <button type="button" class="error-btn error-btn--primary" id="retryBtn">Проверить снова</button>
+          <a class="error-btn" href="tel:+79185647212">8 (918) 564-72-12</a>
         </div>
 
         <p class="error-call">
-          Думаете, это ошибка? Напишите: <a href="mailto:kolibri831@yandex.ru">kolibri831@yandex.ru</a>
+          Страница сама обновится через минуту. Вопросы — <a href="mailto:kolibri831@yandex.ru">kolibri831@yandex.ru</a>
         </p>
       </section>
     </div>
@@ -59,5 +64,8 @@
   </main>
 
   <script src="js/error.js" defer></script>
+  <script>
+    setTimeout(function () { location.reload(); }, 60000);
+  </script>
 </body>
 </html>

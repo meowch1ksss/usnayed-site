@@ -203,6 +203,22 @@
   window.showToast = showToast;
 
   document.addEventListener('DOMContentLoaded', () => {
+    const pageName = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    const isServicePage = pageName === 'maintenance.html' || /^(403|404|500)\.html$/.test(pageName);
+
+    if (!isServicePage && localStorage.getItem('usnayed:maintenance') === 'on') {
+      let admin = false;
+      try {
+        admin = Store.getUser()?.isAdmin === true;
+      } catch (error) {
+        admin = false;
+      }
+      if (!admin) {
+        window.location.replace('maintenance.html');
+        return;
+      }
+    }
+
     Store.updateBadges();
     initFaq();
     initEmailPicker();

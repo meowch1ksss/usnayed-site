@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderSettings() {
     const isProtectDisabled = localStorage.getItem('nyxora:disable_local_protect') === 'true';
+    const isMaintenance = localStorage.getItem('usnayed:maintenance') === 'on';
 
     tabContent.innerHTML = `
       <div class="admin-card">
@@ -92,6 +93,21 @@ document.addEventListener('DOMContentLoaded', () => {
         <button id="saveSettingsBtn" class="admin-btn admin-btn-primary" style="margin-top: 20px;">Сохранить настройки</button>
         <div id="settingsStatus" style="margin-top: 15px; color: #b7ff70; font-weight: 700; display: none;">✓ Настройки сохранены</div>
       </div>
+
+      <div class="admin-card" style="margin-top: 20px;">
+        <h3>🚧 Технические работы</h3>
+        <p>Пока режим включён, посетители вместо сайта видят страницу «Технические работы», а админ — сайт как обычно. Работает в этом браузере: чтобы закрыть сайт для всех, включите правило в Cloudflare или поднимите флаг на сервере.</p>
+
+        <label style="display: flex; align-items: center; gap: 15px; margin-top: 20px; cursor: pointer; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px;">
+          <input type="checkbox" id="maintenanceToggle" ${isMaintenance ? 'checked' : ''} style="width: 20px; height: 20px; accent-color: #ffbe2e;">
+          <span style="font-weight: 700; color: #f6f1ff; font-size: 15px;">Режим технических работ включён</span>
+        </label>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px;">
+          <a class="admin-btn" href="maintenance.html" target="_blank" rel="noopener">Открыть страницу</a>
+          <span id="maintenanceState" style="align-self: center; color: #9c8fb4; font-size: 13px;">${isMaintenance ? 'Сайт закрыт для посетителей' : 'Сайт открыт'}</span>
+        </div>
+      </div>
     `;
 
     document.getElementById('saveSettingsBtn').addEventListener('click', () => {
@@ -105,6 +121,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const status = document.getElementById('settingsStatus');
       status.style.display = 'block';
       setTimeout(() => { status.style.display = 'none'; }, 3000);
+    });
+
+    document.getElementById('maintenanceToggle').addEventListener('change', (event) => {
+      const on = event.target.checked;
+      if (on) {
+        localStorage.setItem('usnayed:maintenance', 'on');
+      } else {
+        localStorage.removeItem('usnayed:maintenance');
+      }
+      const state = document.getElementById('maintenanceState');
+      if (state) state.textContent = on ? 'Сайт закрыт для посетителей' : 'Сайт открыт';
+      showAdminToast(on ? 'Технические работы включены' : 'Сайт снова открыт', on ? 'error' : 'success');
     });
   }
 

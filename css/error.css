@@ -532,3 +532,60 @@ body[data-error="500"] .error-pill {
     transform: none;
   }
 }
+
+.maint-gear {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 128px;
+  height: 128px;
+  margin: 0 auto -18px;
+  color: #c6a6ff;
+  filter: drop-shadow(0 18px 40px rgba(124, 58, 237, .45));
+  animation: maint-spin 14s linear infinite;
+}
+
+.maint-gear svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+}
+
+@keyframes maint-spin {
+  to { rotate: 360deg; }
+}
+
+.maint-bar {
+  position: relative;
+  width: min(320px, 100%);
+  height: 6px;
+  margin: 4px auto 26px;
+  border-radius: 999px;
+  background: rgba(220, 204, 255, .1);
+  overflow: hidden;
+}
+
+.maint-bar span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #a879ff, #b7ff70);
+  animation: maint-slide 2.6s cubic-bezier(.45, .05, .55, .95) infinite;
+}
+
+@keyframes maint-slide {
+  0% { left: -40%; }
+  100% { left: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .maint-gear,
+  .maint-bar span {
+    animation: none;
+  }
+
+  .maint-bar span {
+    left: 30%;
+  }
+}

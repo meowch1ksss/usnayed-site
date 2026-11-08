@@ -157,6 +157,67 @@ check('обычного пользователя кидает на 403', adminRe
 
 await evaluate(`(() => { localStorage.removeItem('nyxora:user'); localStorage.removeItem('nyxora:token'); return true; })()`);
 
+
+await evaluate(`(() => {
+  localStorage.setItem('nyxora:user', JSON.stringify({ name: 'Админ', email: 'admin@mail.ru', isAdmin: true }));
+  localStorage.setItem('nyxora:token', 'test-token');
+  return true;
+})()`);
+
+await go('admin.html');
+await sleep(500);
+const adminPanel = await evaluate(`(() => {
+  const btn = document.querySelector('.admin-nav-btn[data-tab="settings"]');
+  if (btn) btn.click();
+  return new Promise((resolve) => setTimeout(() => {
+    const toggle = document.getElementById('maintenanceToggle');
+    resolve({
+      panel: !!document.getElementById('adminPanel'),
+      toggle: !!toggle,
+      link: document.querySelector('a[href="maintenance.html"]') ? true : false,
+    });
+  }, 400));
+})()`);
+check('в админке есть переключатель техработ', adminPanel.toggle === true, `панель=${adminPanel.panel}`);
+check('есть ссылка на страницу техработ', adminPanel.link === true);
+
+await evaluate(`(() => {
+  const toggle = document.getElementById('maintenanceToggle');
+  if (toggle) {
+    toggle.checked = true;
+    toggle.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  return true;
+})()`);
+await sleep(300);
+const flagOn = await evaluate(`(() => localStorage.getItem('usnayed:maintenance'))()`);
+check('включение сохраняет флаг', flagOn === 'on', String(flagOn));
+
+await go('index.html');
+await sleep(500);
+const adminStays = await evaluate(`(() => location.pathname.split('/').pop() || 'index.html')()`);
+check('админ не выкидывается с сайта', adminStays === 'index.html', adminStays);
+
+await evaluate(`(() => {
+  localStorage.removeItem('nyxora:user');
+  localStorage.removeItem('nyxora:token');
+  return true;
+})()`);
+await go('index.html');
+await sleep(600);
+const guestRedirect = await evaluate(`(() => location.pathname.split('/').pop())()`);
+check('гостя кидает на страницу техработ', guestRedirect === 'maintenance.html', guestRedirect);
+
+await evaluate(`(() => { localStorage.removeItem('usnayed:maintenance'); return true; })()`);
+await go('maintenance.html');
+const maintPage = await evaluate(`(() => {
+  const title = document.querySelector('.error-title');
+  const gear = document.querySelector('.maint-gear');
+  const btn = document.getElementById('retryBtn');
+  return { title: title ? title.textContent.trim() : '', gear: !!gear, retry: !!btn };
+})()`);
+check('страница техработ на месте', maintPage.gear && maintPage.retry, maintPage.title);
+
 const failed = results.filter((ok) => !ok).length;
 console.log(failed ? `\nПРОВАЛЕНО: ${failed}` : '\nвсе проверки пройдены');
 

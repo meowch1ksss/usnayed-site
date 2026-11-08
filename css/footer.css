@@ -588,3 +588,233 @@
     font-size: 10px;
   }
 }
+
+.ft-made {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #8d7fa6;
+  font-size: 11.5px;
+  text-decoration: none;
+  transition: color .25s ease;
+}
+
+.ft-made:hover {
+  color: #d9c2ff;
+}
+
+.ft-made strong {
+  color: #e6dcf6;
+  font-weight: 800;
+  letter-spacing: .06em;
+  transition: color .25s ease;
+}
+
+.ft-made:hover strong {
+  color: #b7ff70;
+}
+
+.ft-cat {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 26px;
+}
+
+.ft-cat svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: #c6a6ff;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: stroke .25s ease;
+}
+
+.ft-made:hover .ft-cat svg {
+  stroke: #b7ff70;
+}
+
+.ft-cat .cat-eye {
+  fill: #c6a6ff;
+  stroke: none;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cat-blink 4.6s ease-in-out infinite;
+  transition: fill .25s ease;
+}
+
+.ft-made:hover .cat-eye {
+  fill: #b7ff70;
+}
+
+.ft-cat-heart {
+  position: absolute;
+  top: -7px;
+  right: -5px;
+  color: #ff8da1;
+  font-size: 10px;
+  line-height: 1;
+  animation: cat-heart 2.2s ease-in-out infinite;
+}
+
+@keyframes cat-blink {
+  0%, 89%, 100% { transform: scaleY(1); }
+  93% { transform: scaleY(.12); }
+  97% { transform: scaleY(1); }
+}
+
+@keyframes cat-heart {
+  0%, 100% { transform: scale(.85); opacity: .65; }
+  50% { transform: scale(1.18); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ft-cat .cat-eye,
+  .ft-cat-heart {
+    animation: none;
+  }
+}
+
+.ft-made {
+  margin-left: 4px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.ft-made strong {
+  font-size: 10.5px;
+  letter-spacing: .12em;
+}
+
+.ft-cat {
+  width: 30px;
+  height: 28px;
+}
+
+.ft-cat svg {
+  animation: cat-bob 3.4s ease-in-out infinite;
+}
+
+.cat-ear {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+}
+
+.cat-ear--l {
+  animation: cat-ear-left 5.6s ease-in-out infinite;
+}
+
+.cat-ear--r {
+  animation: cat-ear-right 5.6s ease-in-out infinite .12s;
+}
+
+.cat-whisk {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.cat-whisk--a { animation: cat-whisk-a 4.2s ease-in-out infinite; }
+.cat-whisk--b { animation: cat-whisk-b 4.6s ease-in-out infinite; }
+.cat-whisk--c { animation: cat-whisk-c 4.4s ease-in-out infinite; }
+.cat-whisk--d { animation: cat-whisk-d 4.8s ease-in-out infinite; }
+
+@keyframes cat-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.2px); }
+}
+
+@keyframes cat-ear-left {
+  0%, 84%, 100% { transform: rotate(0deg); }
+  88% { transform: rotate(-9deg); }
+  92% { transform: rotate(4deg); }
+  96% { transform: rotate(-3deg); }
+}
+
+@keyframes cat-ear-right {
+  0%, 84%, 100% { transform: rotate(0deg); }
+  88% { transform: rotate(9deg); }
+  92% { transform: rotate(-4deg); }
+  96% { transform: rotate(3deg); }
+}
+
+@keyframes cat-whisk-a {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-5deg); }
+}
+
+@keyframes cat-whisk-b {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(4deg); }
+}
+
+@keyframes cat-whisk-c {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
+}
+
+@keyframes cat-whisk-d {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-4deg); }
+}
+
+@media (max-width: 760px) {
+  .ft-made {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-self: start;
+    margin: 8px 0 0;
+    font-size: 9.5px;
+  }
+
+  .ft-cat {
+    width: 26px;
+    height: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ft-cat svg,
+  .cat-ear,
+  .cat-whisk {
+    animation: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .ft-bottom {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto auto;
+    row-gap: 5px;
+  }
+
+  .ft-copy {
+    grid-area: 1 / 1;
+  }
+
+  .ft-policy {
+    grid-area: 2 / 1;
+    justify-self: start;
+  }
+
+  .ft-cookie {
+    grid-area: 3 / 1;
+    justify-self: start;
+  }
+
+  .ft-up {
+    grid-area: 1 / 2 / span 2;
+    align-self: center;
+  }
+
+  .ft-made {
+    grid-area: 4 / 1 / 5 / -1;
+    justify-self: start;
+    margin: 8px 0 0;
+  }
+}
