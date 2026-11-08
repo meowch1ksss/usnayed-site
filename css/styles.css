@@ -2725,3 +2725,116 @@ body.page-leaving { overflow: hidden; }
     transition: none;
   }
 }
+
+.cookie-banner {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 90;
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: min(980px, calc(100% - 32px));
+  padding: 16px 20px;
+  border: 1px solid rgba(220, 204, 255, .16);
+  border-radius: 18px;
+  background: rgba(18, 12, 30, .93);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .46);
+  animation: cookie-in .5s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+.cookie-banner.is-closing {
+  animation: cookie-out .3s ease both;
+}
+
+@keyframes cookie-in {
+  from { opacity: 0; translate: -50% 20px; }
+  to { opacity: 1; translate: -50% 0; }
+}
+
+@keyframes cookie-out {
+  from { opacity: 1; translate: -50% 0; }
+  to { opacity: 0; translate: -50% 14px; }
+}
+
+.cookie-text {
+  min-width: 0;
+}
+
+.cookie-text strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #f6f1ff;
+  font-size: 14px;
+}
+
+.cookie-text p {
+  margin: 0;
+  color: #a99dbe;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.cookie-text a {
+  color: #b391ff;
+}
+
+.cookie-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.cookie-actions .button {
+  padding: 10px 16px;
+  font-size: 12.5px;
+}
+
+.cookie-more {
+  color: #9c8fb4;
+  font-size: 12px;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(156, 143, 180, .5);
+  transition: color .2s ease, border-color .2s ease;
+}
+
+.cookie-more:hover {
+  color: #b7ff70;
+  border-color: rgba(183, 255, 112, .5);
+}
+
+@media (max-width: 760px) {
+  .cookie-banner {
+    bottom: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .cookie-actions {
+    flex-wrap: wrap;
+    margin-left: 0;
+  }
+
+  .cookie-actions .button {
+    flex: 1;
+  }
+
+  .cookie-more {
+    text-align: center;
+    border-bottom: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cookie-banner,
+  .cookie-banner.is-closing {
+    animation: none;
+  }
+}

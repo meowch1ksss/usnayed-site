@@ -18,7 +18,7 @@ const WIDTHS = [320, 360, 390, 414, 768, 1024, 1440];
 const PAGES = [
   'index.html', 'menu.html', 'cart.html', 'checkout.html', 'orders.html',
   'favorites.html', 'profile.html', 'admin.html', 'about.html', 'contacts.html',
-  'delivery.html', 'organizations.html', 'privacy.html', '404.html', '403.html', '500.html',
+  'delivery.html', 'organizations.html', 'privacy.html', 'cookies.html', '404.html', '403.html', '500.html',
 ];
 
 const SHOTS = process.argv.includes('--shots');

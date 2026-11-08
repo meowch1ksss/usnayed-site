@@ -68,6 +68,34 @@ const check = (name, ok, detail) => {
 
 await go('index.html');
 
+await sleep(1400);
+const cookieState = await evaluate(`(() => {
+  const banner = document.querySelector('.cookie-banner');
+  if (!banner) return { missing: true };
+  const buttons = [...banner.querySelectorAll('[data-cookie]')].map((b) => b.textContent.trim());
+  const link = banner.querySelector('.cookie-more');
+  return { buttons, link: link ? link.getAttribute('href') : '', text: banner.textContent.slice(0, 40) };
+})()`);
+check('плашка cookie появляется', !cookieState.missing, cookieState.missing ? 'нет' : 'есть');
+check('в плашке три действия', cookieState.buttons?.length === 2 && cookieState.link === 'cookies.html', `${cookieState.buttons?.join(', ')} + ${cookieState.link}`);
+
+await evaluate(`(() => {
+  document.querySelector('.cookie-banner [data-cookie="accept"]')?.click();
+  return true;
+})()`);
+await sleep(500);
+const cookieAfter = await evaluate(`(() => ({
+  banner: !!document.querySelector('.cookie-banner'),
+  choice: localStorage.getItem('usnayed:cookie-choice'),
+}))()`);
+check('после «Принять» плашка скрывается', cookieAfter.banner === false && cookieAfter.choice === 'accepted', `choice=${cookieAfter.choice}`);
+
+await go('index.html');
+await sleep(1500);
+const cookieAgain = await evaluate(`(() => !!document.querySelector('.cookie-banner'))()`);
+check('повторно плашка не показывается', cookieAgain === false);
+
+
 const tel = await evaluate(`(() => {
   const link = document.querySelector('a[href^="tel:"]');
   if (!link) return { missing: true };
@@ -110,11 +138,24 @@ const headerRadius = await evaluate(`(() => {
 check('у шапки скруглённые углы', headerRadius.startsWith('20px'), headerRadius);
 
 await go('admin.html');
-const adminNav = await evaluate(`(() => {
+const galleryGone = await evaluate(`(() => {
   const btn = document.querySelector('.admin-nav-btn[data-tab="gallery"]');
-  return btn ? btn.textContent.trim() : '';
+  return btn === null;
 })()`);
-check('в админке есть вкладка «Галерея»', adminNav.includes('Галерея'), adminNav);
+check('вкладки «Галерея» в админке больше нет', galleryGone === true);
+
+
+await evaluate(`(() => {
+  localStorage.setItem('nyxora:user', JSON.stringify({ name: 'Гость', email: 'guest@mail.ru', isAdmin: false }));
+  localStorage.setItem('nyxora:token', 'test-token');
+  return true;
+})()`);
+await go('admin.html');
+await sleep(600);
+const adminRedirect = await evaluate(`(() => location.pathname.split('/').pop())()`);
+check('обычного пользователя кидает на 403', adminRedirect === '403.html', adminRedirect);
+
+await evaluate(`(() => { localStorage.removeItem('nyxora:user'); localStorage.removeItem('nyxora:token'); return true; })()`);
 
 const failed = results.filter((ok) => !ok).length;
 console.log(failed ? `\nПРОВАЛЕНО: ${failed}` : '\nвсе проверки пройдены');

@@ -568,3 +568,23 @@
     transform: none;
   }
 }
+
+.ft-cookie {
+  color: #9c8fb8;
+  font-size: 11.5px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(220, 204, 255, .16);
+  padding-bottom: 1px;
+  transition: color .2s, border-color .2s;
+}
+
+.ft-cookie:hover {
+  color: #d9c2ff;
+  border-color: rgba(183, 255, 112, .45);
+}
+
+@media (max-width: 760px) {
+  .ft-cookie {
+    font-size: 10px;
+  }
+}

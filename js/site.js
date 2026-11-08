@@ -216,26 +216,70 @@
       document.body.appendChild(aura);
     }
 
-    const galleryGrid = document.querySelector('.gallery-grid');
-    if (galleryGrid) {
-      try {
-        const saved = JSON.parse(localStorage.getItem('usnayed:gallery') || '[]');
-        if (Array.isArray(saved)) {
-          saved.forEach((src, index) => {
-            if (typeof src !== 'string' || !src.startsWith('data:image')) return;
-            const figure = document.createElement('figure');
-            figure.style.backgroundImage = `url('${src}')`;
-            figure.style.backgroundSize = 'cover';
-            figure.style.backgroundPosition = 'center';
-            const caption = document.createElement('figcaption');
-            caption.textContent = `Из галереи · ${String(index + 1).padStart(2, '0')}`;
-            figure.appendChild(caption);
-            galleryGrid.appendChild(figure);
-          });
-        }
-      } catch (error) {
-        /* пустая галерея — не мешаем странице */
+    const COOKIE_KEY = 'usnayed:cookie-choice';
+
+    const pinFooter = () => {
+      const main = document.querySelector('body > main');
+      const footer = document.querySelector('.site-footer');
+      if (!main || !footer) return;
+
+      main.style.minHeight = '';
+      const header = document.querySelector('.site-header');
+      const headerHeight = header ? header.getBoundingClientRect().height : 0;
+      const footerHeight = footer.getBoundingClientRect().height;
+      const available = window.innerHeight - headerHeight - footerHeight - 24;
+
+      if (main.getBoundingClientRect().height < available) {
+        main.style.minHeight = `${Math.max(0, available)}px`;
       }
+    };
+
+    pinFooter();
+    window.addEventListener('load', pinFooter);
+    window.addEventListener('resize', pinFooter);
+    setTimeout(pinFooter, 400);
+
+    if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+
+    const showCookieBanner = () => {
+      if (localStorage.getItem(COOKIE_KEY)) return;
+      if (document.querySelector('.cookie-banner')) return;
+
+      const banner = document.createElement('div');
+      banner.className = 'cookie-banner';
+      banner.setAttribute('role', 'dialog');
+      banner.setAttribute('aria-label', 'Использование cookie');
+      banner.innerHTML = `
+        <div class="cookie-text">
+          <strong>Мы используем cookie 🍪</strong>
+          <p>Они помогают запомнить корзину, избранное и вход в кабинет. Подробнее — в разделе «Что это такое».</p>
+        </div>
+        <div class="cookie-actions">
+          <button type="button" class="button button-primary" data-cookie="accept">Принять</button>
+          <button type="button" class="button button-quiet" data-cookie="decline">Отказаться</button>
+          <a class="cookie-more" href="cookies.html">Что это такое?</a>
+        </div>
+      `;
+
+      document.body.appendChild(banner);
+
+      banner.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-cookie]');
+        if (!button) return;
+        localStorage.setItem(COOKIE_KEY, button.dataset.cookie === 'accept' ? 'accepted' : 'declined');
+        banner.classList.add('is-closing');
+        setTimeout(() => banner.remove(), 320);
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => setTimeout(showCookieBanner, 1200));
+    } else {
+      setTimeout(showCookieBanner, 1200);
     }
 
     document.addEventListener('click', (event) => {

@@ -5,6 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const token = Store.getToken();
 
+  if (currentUser && currentUser.isAdmin !== true) {
+    window.location.replace('403.html');
+    return;
+  }
+
   if (!currentUser || currentUser.isAdmin !== true || !token) {
     accessDenied?.classList.remove('hidden');
     adminPanel?.classList.add('hidden');
@@ -65,9 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (activeTab === 'menu') {
       pageTitle.textContent = 'Управление меню';
       renderMenuUpload();
-    } else if (activeTab === 'gallery') {
-      pageTitle.textContent = 'Галерея';
-      renderGallery();
     } else if (activeTab === 'settings') {
       pageTitle.textContent = 'Настройки системы';
       renderSettings();
@@ -395,103 +397,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
   };
-
-  const GALLERY_KEY = 'usnayed:gallery';
-
-  function readGallery() {
-    try {
-      const raw = JSON.parse(localStorage.getItem(GALLERY_KEY) || '[]');
-      return Array.isArray(raw) ? raw : [];
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function saveGallery(list) {
-    try {
-      localStorage.setItem(GALLERY_KEY, JSON.stringify(list));
-      return true;
-    } catch (error) {
-      adminToast('Не хватает места в браузере — удалите пару фото', 'error');
-      return false;
-    }
-  }
-
-  function fileToShot(file) {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const img = new Image();
-        img.onload = () => {
-          const max = 1400;
-          const scale = Math.min(1, max / Math.max(img.width, img.height));
-          const canvas = document.createElement('canvas');
-          canvas.width = Math.max(1, Math.round(img.width * scale));
-          canvas.height = Math.max(1, Math.round(img.height * scale));
-          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-          resolve(canvas.toDataURL('image/jpeg', 0.82));
-        };
-        img.onerror = () => resolve(null);
-        img.src = String(reader.result);
-      };
-      reader.onerror = () => resolve(null);
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function renderGallery() {
-    tabContent.innerHTML = `
-      <div class="admin-card">
-        <h3>🖼 Галерея на главной</h3>
-        <p>Фотографии попадают в блок «Галерея» на главной странице. Сохраняются в этом браузере — для загрузки на сайт для всех посетителей нужно положить файлы в папку <code>images/site/gallery</code>.</p>
-        <label class="admin-upload" for="galleryInput">📷 Добавить фото</label>
-        <input type="file" id="galleryInput" accept="image/*" multiple hidden>
-        <div class="admin-gallery" id="adminGallery"></div>
-      </div>
-    `;
-
-    const input = document.getElementById('galleryInput');
-    const grid = document.getElementById('adminGallery');
-
-    const draw = () => {
-      const list = readGallery();
-      if (!list.length) {
-        grid.innerHTML = '<p class="admin-status">Пока нет добавленных фото.</p>';
-        return;
-      }
-      grid.innerHTML = list.map((src, index) => `
-        <figure class="admin-gallery-item">
-          <img src="${src}" alt="Фото ${index + 1}">
-          <button type="button" class="admin-gallery-remove" data-index="${index}" aria-label="Удалить фото">✕</button>
-        </figure>
-      `).join('');
-      grid.querySelectorAll('.admin-gallery-remove').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const list2 = readGallery();
-          list2.splice(Number(btn.dataset.index), 1);
-          if (saveGallery(list2)) draw();
-        });
-      });
-    };
-
-    input?.addEventListener('change', async () => {
-      const files = [...input.files];
-      input.value = '';
-      if (!files.length) return;
-
-      const list = readGallery();
-      for (const file of files) {
-        const shot = await fileToShot(file);
-        if (shot) list.push(shot);
-      }
-      if (saveGallery(list)) {
-        draw();
-        adminToast('Фото добавлены в галерею', 'success');
-      }
-    });
-
-    draw();
-  }
 
   function renderMenuUpload() {
     tabContent.innerHTML = `

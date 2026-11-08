@@ -134,14 +134,14 @@
         "h": 21
       }
     ],
-    "tinyCount": 28,
+    "tinyCount": 30,
     "smallFontFields": [
       {
         "sel": "input#reviewConsent",
         "fs": 12
       }
     ],
-    "docHeight": 8855,
+    "docHeight": 8875,
     "errors": []
   },
   {
@@ -279,9 +279,9 @@
         "h": 21
       }
     ],
-    "tinyCount": 34,
+    "tinyCount": 35,
     "smallFontFields": [],
-    "docHeight": 2377,
+    "docHeight": 2397,
     "errors": []
   },
   {
@@ -399,14 +399,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 179,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 1603,
+    "docHeight": 1624,
     "errors": []
   },
   {
@@ -534,12 +539,17 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 179,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 24,
+    "tinyCount": 25,
     "smallFontFields": [
       {
         "sel": "textarea",
@@ -550,7 +560,7 @@
         "fs": 14
       }
     ],
-    "docHeight": 3809,
+    "docHeight": 3829,
     "errors": []
   },
   {
@@ -614,13 +624,13 @@
       },
       {
         "sel": "a",
-        "w": 110,
-        "h": 38
+        "w": 121,
+        "h": 21
       },
       {
         "sel": "a",
-        "w": 110,
-        "h": 38
+        "w": 116,
+        "h": 21
       },
       {
         "sel": "a",
@@ -659,13 +669,18 @@
       },
       {
         "sel": "button.footer-email.email-picker-trigger",
-        "w": 234,
+        "w": 266,
         "h": 36
       },
       {
         "sel": "a.ft-policy",
-        "w": 147,
-        "h": 33
+        "w": 179,
+        "h": 18
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 179,
+        "h": 18
       },
       {
         "sel": "button.ft-up",
@@ -673,9 +688,9 @@
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 1605,
+    "docHeight": 1541,
     "errors": []
   },
   {
@@ -793,14 +808,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 179,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 1326,
+    "docHeight": 1114,
     "errors": []
   },
   {
@@ -918,14 +938,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 179,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 1423,
+    "docHeight": 1443,
     "errors": []
   },
   {
@@ -1038,14 +1063,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 179,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 21,
+    "tinyCount": 22,
     "smallFontFields": [],
-    "docHeight": 1186,
+    "docHeight": 1207,
     "errors": []
   },
   {
@@ -1163,14 +1193,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 179,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 4243,
+    "docHeight": 4264,
     "errors": []
   },
   {
@@ -1303,14 +1338,14 @@
         "h": 18
       },
       {
-        "sel": "button.ft-up",
-        "w": 75,
-        "h": 32
+        "sel": "a.ft-cookie",
+        "w": 179,
+        "h": 18
       }
     ],
-    "tinyCount": 25,
+    "tinyCount": 26,
     "smallFontFields": [],
-    "docHeight": 2469,
+    "docHeight": 2489,
     "errors": []
   },
   {
@@ -1428,14 +1463,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 179,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 4704,
+    "docHeight": 4724,
     "errors": []
   },
   {
@@ -1573,7 +1613,7 @@
         "h": 36
       }
     ],
-    "tinyCount": 27,
+    "tinyCount": 28,
     "smallFontFields": [
       {
         "sel": "input#orgPeople.org-range",
@@ -1588,7 +1628,7 @@
         "fs": 13.5
       }
     ],
-    "docHeight": 7069,
+    "docHeight": 7089,
     "errors": []
   },
   {
@@ -1726,9 +1766,149 @@
         "h": 21
       }
     ],
-    "tinyCount": 32,
+    "tinyCount": 33,
     "smallFontFields": [],
-    "docHeight": 7311,
+    "docHeight": 7331,
+    "errors": []
+  },
+  {
+    "page": "cookies.html",
+    "width": 320,
+    "vw": 320,
+    "overflowScroll": 0,
+    "realScroll": 0,
+    "overflow": [],
+    "overflowCount": 0,
+    "tiny": [
+      {
+        "sel": "a.brand",
+        "w": 105,
+        "h": 34
+      },
+      {
+        "sel": "input#search-input",
+        "w": 219,
+        "h": 27
+      },
+      {
+        "sel": "a",
+        "w": 44,
+        "h": 36
+      },
+      {
+        "sel": "a",
+        "w": 32,
+        "h": 36
+      },
+      {
+        "sel": "a",
+        "w": 42,
+        "h": 36
+      },
+      {
+        "sel": "a",
+        "w": 21,
+        "h": 36
+      },
+      {
+        "sel": "a",
+        "w": 52,
+        "h": 36
+      },
+      {
+        "sel": "a",
+        "w": 250,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 250,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 250,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 250,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 250,
+        "h": 32
+      },
+      {
+        "sel": "a.privacy-back",
+        "w": 78,
+        "h": 19
+      },
+      {
+        "sel": "a.brand.footer-brand",
+        "w": 146,
+        "h": 37
+      },
+      {
+        "sel": "a",
+        "w": 55,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 82,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 121,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 116,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 69,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 87,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 110,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 45,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 56,
+        "h": 21
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 124,
+        "h": 21
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 121,
+        "h": 21
+      }
+    ],
+    "tinyCount": 29,
+    "smallFontFields": [],
+    "docHeight": 3678,
     "errors": []
   },
   {
@@ -1946,14 +2126,14 @@
         "h": 21
       }
     ],
-    "tinyCount": 29,
+    "tinyCount": 30,
     "smallFontFields": [
       {
         "sel": "input#reviewConsent",
         "fs": 12
       }
     ],
-    "docHeight": 8529,
+    "docHeight": 8550,
     "errors": []
   },
   {
@@ -2091,9 +2271,9 @@
         "h": 21
       }
     ],
-    "tinyCount": 34,
+    "tinyCount": 35,
     "smallFontFields": [],
-    "docHeight": 2276,
+    "docHeight": 2297,
     "errors": []
   },
   {
@@ -2211,14 +2391,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 219,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 1518,
+    "docHeight": 1538,
     "errors": []
   },
   {
@@ -2346,12 +2531,17 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 219,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 24,
+    "tinyCount": 25,
     "smallFontFields": [
       {
         "sel": "textarea",
@@ -2362,7 +2552,7 @@
         "fs": 14
       }
     ],
-    "docHeight": 3700,
+    "docHeight": 3720,
     "errors": []
   },
   {
@@ -2471,12 +2661,17 @@
       },
       {
         "sel": "button.footer-email.email-picker-trigger",
-        "w": 274,
+        "w": 306,
         "h": 36
       },
       {
         "sel": "a.ft-policy",
-        "w": 187,
+        "w": 219,
+        "h": 18
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 219,
         "h": 18
       },
       {
@@ -2485,9 +2680,9 @@
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 1505,
+    "docHeight": 1433,
     "errors": []
   },
   {
@@ -2605,14 +2800,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 219,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 1257,
+    "docHeight": 1045,
     "errors": []
   },
   {
@@ -2730,14 +2930,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 219,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 1354,
+    "docHeight": 1374,
     "errors": []
   },
   {
@@ -2850,14 +3055,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 219,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 21,
+    "tinyCount": 22,
     "smallFontFields": [],
-    "docHeight": 1117,
+    "docHeight": 1138,
     "errors": []
   },
   {
@@ -2975,14 +3185,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 219,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 3928,
+    "docHeight": 3949,
     "errors": []
   },
   {
@@ -3115,14 +3330,14 @@
         "h": 18
       },
       {
-        "sel": "button.ft-up",
-        "w": 75,
-        "h": 32
+        "sel": "a.ft-cookie",
+        "w": 219,
+        "h": 18
       }
     ],
-    "tinyCount": 25,
+    "tinyCount": 26,
     "smallFontFields": [],
-    "docHeight": 2353,
+    "docHeight": 2374,
     "errors": []
   },
   {
@@ -3240,14 +3455,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 219,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 4390,
+    "docHeight": 4413,
     "errors": []
   },
   {
@@ -3385,7 +3605,7 @@
         "h": 36
       }
     ],
-    "tinyCount": 27,
+    "tinyCount": 28,
     "smallFontFields": [
       {
         "sel": "input#orgPeople.org-range",
@@ -3400,7 +3620,7 @@
         "fs": 13.5
       }
     ],
-    "docHeight": 6729,
+    "docHeight": 6745,
     "errors": []
   },
   {
@@ -3538,9 +3758,149 @@
         "h": 21
       }
     ],
-    "tinyCount": 32,
+    "tinyCount": 33,
     "smallFontFields": [],
-    "docHeight": 6461,
+    "docHeight": 6481,
+    "errors": []
+  },
+  {
+    "page": "cookies.html",
+    "width": 360,
+    "vw": 360,
+    "overflowScroll": 0,
+    "realScroll": 0,
+    "overflow": [],
+    "overflowCount": 0,
+    "tiny": [
+      {
+        "sel": "a.brand",
+        "w": 105,
+        "h": 34
+      },
+      {
+        "sel": "input#search-input",
+        "w": 259,
+        "h": 27
+      },
+      {
+        "sel": "a",
+        "w": 44,
+        "h": 36
+      },
+      {
+        "sel": "a",
+        "w": 32,
+        "h": 36
+      },
+      {
+        "sel": "a",
+        "w": 42,
+        "h": 36
+      },
+      {
+        "sel": "a",
+        "w": 21,
+        "h": 36
+      },
+      {
+        "sel": "a",
+        "w": 52,
+        "h": 36
+      },
+      {
+        "sel": "a",
+        "w": 290,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 290,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 290,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 290,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 290,
+        "h": 32
+      },
+      {
+        "sel": "a.privacy-back",
+        "w": 78,
+        "h": 19
+      },
+      {
+        "sel": "a.brand.footer-brand",
+        "w": 146,
+        "h": 37
+      },
+      {
+        "sel": "a",
+        "w": 55,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 82,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 121,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 116,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 69,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 87,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 110,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 45,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 56,
+        "h": 21
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 124,
+        "h": 21
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 121,
+        "h": 21
+      }
+    ],
+    "tinyCount": 29,
+    "smallFontFields": [],
+    "docHeight": 3400,
     "errors": []
   },
   {
@@ -3753,19 +4113,19 @@
         "h": 18
       },
       {
-        "sel": "button.ft-up",
-        "w": 75,
-        "h": 32
+        "sel": "a.ft-cookie",
+        "w": 249,
+        "h": 18
       }
     ],
-    "tinyCount": 25,
+    "tinyCount": 26,
     "smallFontFields": [
       {
         "sel": "input#reviewConsent",
         "fs": 12
       }
     ],
-    "docHeight": 8410,
+    "docHeight": 8430,
     "errors": []
   },
   {
@@ -3903,9 +4263,9 @@
         "h": 21
       }
     ],
-    "tinyCount": 31,
+    "tinyCount": 32,
     "smallFontFields": [],
-    "docHeight": 2335,
+    "docHeight": 2356,
     "errors": []
   },
   {
@@ -4008,14 +4368,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 249,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 1506,
+    "docHeight": 1526,
     "errors": []
   },
   {
@@ -4128,12 +4493,17 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 249,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 21,
+    "tinyCount": 22,
     "smallFontFields": [
       {
         "sel": "textarea",
@@ -4144,7 +4514,7 @@
         "fs": 14
       }
     ],
-    "docHeight": 3688,
+    "docHeight": 3709,
     "errors": []
   },
   {
@@ -4238,12 +4608,17 @@
       },
       {
         "sel": "button.footer-email.email-picker-trigger",
-        "w": 304,
+        "w": 336,
         "h": 36
       },
       {
         "sel": "a.ft-policy",
-        "w": 217,
+        "w": 249,
+        "h": 18
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 249,
         "h": 18
       },
       {
@@ -4252,9 +4627,9 @@
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 1465,
+    "docHeight": 1422,
     "errors": []
   },
   {
@@ -4357,14 +4732,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 249,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 1269,
+    "docHeight": 1057,
     "errors": []
   },
   {
@@ -4467,14 +4847,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 249,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 1364,
+    "docHeight": 1384,
     "errors": []
   },
   {
@@ -4572,14 +4957,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 249,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 18,
+    "tinyCount": 19,
     "smallFontFields": [],
-    "docHeight": 1127,
+    "docHeight": 1148,
     "errors": []
   },
   {
@@ -4682,14 +5072,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 249,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 3920,
+    "docHeight": 3941,
     "errors": []
   },
   {
@@ -4807,14 +5202,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 249,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 2365,
+    "docHeight": 2386,
     "errors": []
   },
   {
@@ -4917,14 +5317,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 249,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 4421,
+    "docHeight": 4445,
     "errors": []
   },
   {
@@ -5052,12 +5457,17 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 249,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 24,
+    "tinyCount": 25,
     "smallFontFields": [
       {
         "sel": "input#orgPeople.org-range",
@@ -5072,7 +5482,7 @@
         "fs": 13.5
       }
     ],
-    "docHeight": 6663,
+    "docHeight": 6684,
     "errors": []
   },
   {
@@ -5210,9 +5620,149 @@
         "h": 21
       }
     ],
-    "tinyCount": 29,
+    "tinyCount": 30,
     "smallFontFields": [],
-    "docHeight": 6004,
+    "docHeight": 6001,
+    "errors": []
+  },
+  {
+    "page": "cookies.html",
+    "width": 390,
+    "vw": 390,
+    "overflowScroll": 0,
+    "realScroll": 0,
+    "overflow": [],
+    "overflowCount": 0,
+    "tiny": [
+      {
+        "sel": "a.brand",
+        "w": 113,
+        "h": 38
+      },
+      {
+        "sel": "input#search-input",
+        "w": 285,
+        "h": 27
+      },
+      {
+        "sel": "a",
+        "w": 35,
+        "h": 40
+      },
+      {
+        "sel": "a",
+        "w": 23,
+        "h": 40
+      },
+      {
+        "sel": "a",
+        "w": 320,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 320,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 320,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 320,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 320,
+        "h": 32
+      },
+      {
+        "sel": "a.privacy-back",
+        "w": 78,
+        "h": 19
+      },
+      {
+        "sel": "a.brand.footer-brand",
+        "w": 146,
+        "h": 37
+      },
+      {
+        "sel": "a",
+        "w": 55,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 82,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 121,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 116,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 69,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 87,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 110,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 45,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 56,
+        "h": 21
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 124,
+        "h": 21
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 121,
+        "h": 21
+      },
+      {
+        "sel": "button.footer-email.email-picker-trigger",
+        "w": 336,
+        "h": 36
+      },
+      {
+        "sel": "a.ft-policy",
+        "w": 249,
+        "h": 18
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 249,
+        "h": 18
+      }
+    ],
+    "tinyCount": 26,
+    "smallFontFields": [],
+    "docHeight": 3231,
     "errors": []
   },
   {
@@ -5425,19 +5975,19 @@
         "h": 18
       },
       {
-        "sel": "button.ft-up",
-        "w": 75,
-        "h": 32
+        "sel": "a.ft-cookie",
+        "w": 273,
+        "h": 18
       }
     ],
-    "tinyCount": 25,
+    "tinyCount": 26,
     "smallFontFields": [
       {
         "sel": "input#reviewConsent",
         "fs": 12
       }
     ],
-    "docHeight": 8366,
+    "docHeight": 8387,
     "errors": []
   },
   {
@@ -5575,9 +6125,9 @@
         "h": 21
       }
     ],
-    "tinyCount": 31,
+    "tinyCount": 32,
     "smallFontFields": [],
-    "docHeight": 2372,
+    "docHeight": 2393,
     "errors": []
   },
   {
@@ -5680,14 +6230,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 273,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 1506,
+    "docHeight": 1526,
     "errors": []
   },
   {
@@ -5800,12 +6355,17 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 273,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 21,
+    "tinyCount": 22,
     "smallFontFields": [
       {
         "sel": "textarea",
@@ -5816,7 +6376,7 @@
         "fs": 14
       }
     ],
-    "docHeight": 3629,
+    "docHeight": 3650,
     "errors": []
   },
   {
@@ -5910,12 +6470,17 @@
       },
       {
         "sel": "button.footer-email.email-picker-trigger",
-        "w": 328,
+        "w": 360,
         "h": 36
       },
       {
         "sel": "a.ft-policy",
-        "w": 241,
+        "w": 273,
+        "h": 18
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 273,
         "h": 18
       },
       {
@@ -5924,9 +6489,9 @@
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 1465,
+    "docHeight": 1422,
     "errors": []
   },
   {
@@ -6029,14 +6594,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 273,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 1269,
+    "docHeight": 1057,
     "errors": []
   },
   {
@@ -6139,14 +6709,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 273,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 1364,
+    "docHeight": 1384,
     "errors": []
   },
   {
@@ -6244,14 +6819,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 273,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 18,
+    "tinyCount": 19,
     "smallFontFields": [],
-    "docHeight": 1127,
+    "docHeight": 1148,
     "errors": []
   },
   {
@@ -6354,14 +6934,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 273,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 3920,
+    "docHeight": 3940,
     "errors": []
   },
   {
@@ -6479,14 +7064,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 273,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [],
-    "docHeight": 2344,
+    "docHeight": 2365,
     "errors": []
   },
   {
@@ -6589,14 +7179,19 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 273,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
-    "docHeight": 4409,
+    "docHeight": 4427,
     "errors": []
   },
   {
@@ -6724,12 +7319,17 @@
         "h": 18
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 273,
+        "h": 18
+      },
+      {
         "sel": "button.ft-up",
         "w": 75,
         "h": 32
       }
     ],
-    "tinyCount": 24,
+    "tinyCount": 25,
     "smallFontFields": [
       {
         "sel": "input#orgPeople.org-range",
@@ -6744,7 +7344,7 @@
         "fs": 13.5
       }
     ],
-    "docHeight": 6586,
+    "docHeight": 6640,
     "errors": []
   },
   {
@@ -6882,9 +7482,149 @@
         "h": 21
       }
     ],
-    "tinyCount": 29,
+    "tinyCount": 30,
     "smallFontFields": [],
-    "docHeight": 5746,
+    "docHeight": 5767,
+    "errors": []
+  },
+  {
+    "page": "cookies.html",
+    "width": 414,
+    "vw": 414,
+    "overflowScroll": 0,
+    "realScroll": 0,
+    "overflow": [],
+    "overflowCount": 0,
+    "tiny": [
+      {
+        "sel": "a.brand",
+        "w": 113,
+        "h": 38
+      },
+      {
+        "sel": "input#search-input",
+        "w": 309,
+        "h": 27
+      },
+      {
+        "sel": "a",
+        "w": 35,
+        "h": 40
+      },
+      {
+        "sel": "a",
+        "w": 23,
+        "h": 40
+      },
+      {
+        "sel": "a",
+        "w": 344,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 344,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 344,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 344,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 344,
+        "h": 32
+      },
+      {
+        "sel": "a.privacy-back",
+        "w": 78,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 203,
+        "h": 18
+      },
+      {
+        "sel": "a.brand.footer-brand",
+        "w": 146,
+        "h": 37
+      },
+      {
+        "sel": "a",
+        "w": 55,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 82,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 121,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 116,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 69,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 87,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 110,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 45,
+        "h": 21
+      },
+      {
+        "sel": "a",
+        "w": 56,
+        "h": 21
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 124,
+        "h": 21
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 121,
+        "h": 21
+      },
+      {
+        "sel": "button.footer-email.email-picker-trigger",
+        "w": 360,
+        "h": 36
+      },
+      {
+        "sel": "a.ft-policy",
+        "w": 273,
+        "h": 18
+      }
+    ],
+    "tinyCount": 27,
+    "smallFontFields": [],
+    "docHeight": 3184,
     "errors": []
   },
   {
@@ -7102,7 +7842,7 @@
         "h": 38
       }
     ],
-    "tinyCount": 27,
+    "tinyCount": 28,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -7259,7 +7999,7 @@
         "h": 19
       }
     ],
-    "tinyCount": 37,
+    "tinyCount": 38,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -7370,8 +8110,13 @@
       },
       {
         "sel": "a.ft-policy",
-        "w": 158,
+        "w": 139,
         "h": 38
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       },
       {
         "sel": "button.ft-up",
@@ -7379,7 +8124,7 @@
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [],
     "docHeight": 1791,
     "errors": []
@@ -7495,8 +8240,13 @@
       },
       {
         "sel": "a.ft-policy",
-        "w": 158,
+        "w": 139,
         "h": 38
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       },
       {
         "sel": "button.ft-up",
@@ -7504,7 +8254,7 @@
         "h": 36
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -7643,8 +8393,13 @@
       },
       {
         "sel": "a.ft-policy",
-        "w": 140,
+        "w": 139,
         "h": 38
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       },
       {
         "sel": "button.ft-up",
@@ -7652,14 +8407,14 @@
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
         "fs": 14
       }
     ],
-    "docHeight": 1693,
+    "docHeight": 1629,
     "errors": []
   },
   {
@@ -7763,8 +8518,13 @@
       },
       {
         "sel": "a.ft-policy",
-        "w": 158,
+        "w": 139,
         "h": 38
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       },
       {
         "sel": "button.ft-up",
@@ -7772,14 +8532,14 @@
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
         "fs": 14
       }
     ],
-    "docHeight": 1552,
+    "docHeight": 1323,
     "errors": []
   },
   {
@@ -7883,8 +8643,13 @@
       },
       {
         "sel": "a.ft-policy",
-        "w": 158,
+        "w": 139,
         "h": 38
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       },
       {
         "sel": "button.ft-up",
@@ -7892,7 +8657,7 @@
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#loginEmail",
@@ -8002,8 +8767,13 @@
       },
       {
         "sel": "a.ft-policy",
-        "w": 158,
+        "w": 139,
         "h": 38
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       },
       {
         "sel": "button.ft-up",
@@ -8011,7 +8781,7 @@
         "h": 36
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
     "docHeight": 1462,
     "errors": []
@@ -8117,8 +8887,13 @@
       },
       {
         "sel": "a.ft-policy",
-        "w": 158,
+        "w": 139,
         "h": 38
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       },
       {
         "sel": "button.ft-up",
@@ -8126,7 +8901,7 @@
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -8252,8 +9027,13 @@
       },
       {
         "sel": "a.ft-policy",
-        "w": 158,
+        "w": 139,
         "h": 38
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       },
       {
         "sel": "button.ft-up",
@@ -8261,7 +9041,7 @@
         "h": 36
       }
     ],
-    "tinyCount": 23,
+    "tinyCount": 24,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -8372,8 +9152,13 @@
       },
       {
         "sel": "a.ft-policy",
-        "w": 158,
+        "w": 139,
         "h": 38
+      },
+      {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       },
       {
         "sel": "button.ft-up",
@@ -8381,7 +9166,7 @@
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -8517,16 +9302,16 @@
       },
       {
         "sel": "a.ft-policy",
-        "w": 158,
+        "w": 139,
         "h": 38
       },
       {
-        "sel": "button.ft-up",
-        "w": 86,
-        "h": 36
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       }
     ],
-    "tinyCount": 25,
+    "tinyCount": 26,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -8699,7 +9484,7 @@
         "h": 19
       }
     ],
-    "tinyCount": 30,
+    "tinyCount": 31,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -8707,6 +9492,151 @@
       }
     ],
     "docHeight": 4346,
+    "errors": []
+  },
+  {
+    "page": "cookies.html",
+    "width": 768,
+    "vw": 768,
+    "overflowScroll": 0,
+    "realScroll": 0,
+    "overflow": [],
+    "overflowCount": 0,
+    "tiny": [
+      {
+        "sel": "input#search-input",
+        "w": 293,
+        "h": 24
+      },
+      {
+        "sel": "a",
+        "w": 44,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 42,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 21,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 52,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 336,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 336,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 336,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 336,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 336,
+        "h": 32
+      },
+      {
+        "sel": "a.privacy-back",
+        "w": 78,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 203,
+        "h": 18
+      },
+      {
+        "sel": "a",
+        "w": 60,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 88,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 131,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 125,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 75,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 94,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 119,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 49,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 60,
+        "h": 19
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 156,
+        "h": 32
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 153,
+        "h": 32
+      },
+      {
+        "sel": "button.footer-email.email-picker-trigger",
+        "w": 360,
+        "h": 38
+      }
+    ],
+    "tinyCount": 28,
+    "smallFontFields": [
+      {
+        "sel": "input#search-input",
+        "fs": 14
+      }
+    ],
+    "docHeight": 2892,
     "errors": []
   },
   {
@@ -8924,7 +9854,7 @@
         "h": 38
       }
     ],
-    "tinyCount": 27,
+    "tinyCount": 28,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -9081,7 +10011,7 @@
         "h": 19
       }
     ],
-    "tinyCount": 37,
+    "tinyCount": 38,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -9196,12 +10126,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [],
     "docHeight": 1417,
     "errors": []
@@ -9321,12 +10256,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -9460,7 +10400,7 @@
       },
       {
         "sel": "button.footer-email.email-picker-trigger",
-        "w": 196,
+        "w": 210,
         "h": 38
       },
       {
@@ -9469,19 +10409,24 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
         "fs": 14
       }
     ],
-    "docHeight": 1330,
+    "docHeight": 1266,
     "errors": []
   },
   {
@@ -9589,19 +10534,24 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
         "fs": 14
       }
     ],
-    "docHeight": 1178,
+    "docHeight": 961,
     "errors": []
   },
   {
@@ -9709,12 +10659,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#loginEmail",
@@ -9828,12 +10783,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
     "docHeight": 1088,
     "errors": []
@@ -9943,12 +10903,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -10078,12 +11043,22 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
+      },
+      {
+        "sel": "a.cookie-more",
+        "w": 84,
+        "h": 20
       }
     ],
-    "tinyCount": 23,
+    "tinyCount": 25,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -10198,12 +11173,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -10343,12 +11323,12 @@
         "h": 20
       },
       {
-        "sel": "button.ft-up",
-        "w": 86,
-        "h": 36
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       }
     ],
-    "tinyCount": 25,
+    "tinyCount": 26,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -10521,7 +11501,7 @@
         "h": 19
       }
     ],
-    "tinyCount": 30,
+    "tinyCount": 31,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -10529,6 +11509,151 @@
       }
     ],
     "docHeight": 3833,
+    "errors": []
+  },
+  {
+    "page": "cookies.html",
+    "width": 1024,
+    "vw": 1024,
+    "overflowScroll": 0,
+    "realScroll": 0,
+    "overflow": [],
+    "overflowCount": 0,
+    "tiny": [
+      {
+        "sel": "input#search-input",
+        "w": 188,
+        "h": 24
+      },
+      {
+        "sel": "a",
+        "w": 40,
+        "h": 16
+      },
+      {
+        "sel": "a",
+        "w": 29,
+        "h": 16
+      },
+      {
+        "sel": "a",
+        "w": 38,
+        "h": 16
+      },
+      {
+        "sel": "a",
+        "w": 19,
+        "h": 16
+      },
+      {
+        "sel": "a",
+        "w": 48,
+        "h": 16
+      },
+      {
+        "sel": "a",
+        "w": 220,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 220,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 220,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 220,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 220,
+        "h": 32
+      },
+      {
+        "sel": "a.privacy-back",
+        "w": 78,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 60,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 88,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 131,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 125,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 75,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 94,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 119,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 49,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 60,
+        "h": 19
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 156,
+        "h": 32
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 153,
+        "h": 32
+      },
+      {
+        "sel": "button.footer-email.email-picker-trigger",
+        "w": 210,
+        "h": 38
+      },
+      {
+        "sel": "a.ft-policy",
+        "w": 174,
+        "h": 20
+      }
+    ],
+    "tinyCount": 27,
+    "smallFontFields": [
+      {
+        "sel": "input#search-input",
+        "fs": 14
+      }
+    ],
+    "docHeight": 2365,
     "errors": []
   },
   {
@@ -10746,7 +11871,7 @@
         "h": 38
       }
     ],
-    "tinyCount": 27,
+    "tinyCount": 28,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -10903,7 +12028,7 @@
         "h": 19
       }
     ],
-    "tinyCount": 37,
+    "tinyCount": 38,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -11018,12 +12143,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [],
     "docHeight": 1233,
     "errors": []
@@ -11143,12 +12273,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 22,
+    "tinyCount": 23,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -11282,7 +12417,7 @@
       },
       {
         "sel": "button.footer-email.email-picker-trigger",
-        "w": 229,
+        "w": 253,
         "h": 38
       },
       {
@@ -11291,19 +12426,24 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
         "fs": 14
       }
     ],
-    "docHeight": 1356,
+    "docHeight": 1292,
     "errors": []
   },
   {
@@ -11411,19 +12551,24 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
         "fs": 14
       }
     ],
-    "docHeight": 1198,
+    "docHeight": 987,
     "errors": []
   },
   {
@@ -11531,12 +12676,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#loginEmail",
@@ -11650,12 +12800,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 19,
+    "tinyCount": 20,
     "smallFontFields": [],
     "docHeight": 1108,
     "errors": []
@@ -11765,12 +12920,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -11900,12 +13060,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 23,
+    "tinyCount": 24,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -12020,12 +13185,17 @@
         "h": 20
       },
       {
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
+      },
+      {
         "sel": "button.ft-up",
         "w": 86,
         "h": 36
       }
     ],
-    "tinyCount": 20,
+    "tinyCount": 21,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -12165,12 +13335,12 @@
         "h": 20
       },
       {
-        "sel": "button.ft-up",
-        "w": 86,
-        "h": 36
+        "sel": "a.ft-cookie",
+        "w": 37,
+        "h": 20
       }
     ],
-    "tinyCount": 25,
+    "tinyCount": 26,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -12343,7 +13513,7 @@
         "h": 19
       }
     ],
-    "tinyCount": 30,
+    "tinyCount": 31,
     "smallFontFields": [
       {
         "sel": "input#search-input",
@@ -12351,6 +13521,151 @@
       }
     ],
     "docHeight": 3530,
+    "errors": []
+  },
+  {
+    "page": "cookies.html",
+    "width": 1440,
+    "vw": 1440,
+    "overflowScroll": 0,
+    "realScroll": 0,
+    "overflow": [],
+    "overflowCount": 0,
+    "tiny": [
+      {
+        "sel": "input#search-input",
+        "w": 386,
+        "h": 24
+      },
+      {
+        "sel": "a",
+        "w": 44,
+        "h": 17
+      },
+      {
+        "sel": "a",
+        "w": 32,
+        "h": 17
+      },
+      {
+        "sel": "a",
+        "w": 42,
+        "h": 17
+      },
+      {
+        "sel": "a",
+        "w": 21,
+        "h": 17
+      },
+      {
+        "sel": "a",
+        "w": 52,
+        "h": 17
+      },
+      {
+        "sel": "a",
+        "w": 220,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 220,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 220,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 220,
+        "h": 32
+      },
+      {
+        "sel": "a",
+        "w": 220,
+        "h": 32
+      },
+      {
+        "sel": "a.privacy-back",
+        "w": 78,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 203,
+        "h": 18
+      },
+      {
+        "sel": "a",
+        "w": 60,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 88,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 131,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 125,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 75,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 94,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 119,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 49,
+        "h": 19
+      },
+      {
+        "sel": "a",
+        "w": 60,
+        "h": 19
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 156,
+        "h": 32
+      },
+      {
+        "sel": "a.ft-phone",
+        "w": 153,
+        "h": 32
+      },
+      {
+        "sel": "button.footer-email.email-picker-trigger",
+        "w": 253,
+        "h": 38
+      }
+    ],
+    "tinyCount": 28,
+    "smallFontFields": [
+      {
+        "sel": "input#search-input",
+        "fs": 14
+      }
+    ],
+    "docHeight": 2249,
     "errors": []
   },
   {
